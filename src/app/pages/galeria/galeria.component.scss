@@ -1,0 +1,16 @@
+.content {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  padding-top: 3.5%;
+  gap: 16px;
+  background-color: blueviolet;
+  div {
+    width: 40svw;
+    height: 40svw;
+    background-color: aqua;
+  }
+}
+

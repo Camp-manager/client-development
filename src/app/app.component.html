@@ -1,1 +1,18 @@
-<router-outlet />
+<div class="container">
+  <router-outlet />
+</div>
+
+<footer>
+  <a [routerLink]="['/nossa-historia']" [routerLinkActive]="['ativo']">
+    <i class="fa-solid fa-clock-rotate-left"></i>
+    Nossa História
+  </a>
+  <a [routerLink]="['/galeria']" routerLinkActive="ativo">
+    <i class="fa-regular fa-images"></i>
+    Galeria de Fotos
+  </a>
+  <a [routerLink]="['/cronograma']" routerLinkActive="ativo">
+    <i class="fa-solid fa-calendar-days"></i>
+    Agenda
+  </a>
+</footer>
