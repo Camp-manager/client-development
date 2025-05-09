@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'nossa-historia',
+  },
+  {
     path: 'nossa-historia',
     loadChildren: () =>
       import('./pages/nossa-historia/nossa-historia.module').then(

@@ -1,12 +1,24 @@
 <div class="content">
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
+  @for (galeria of galerias; track $index) {
+    @for (image of galeria.images; track $index) {
+      @if (image.isCapa) {
+        <div
+          class="galeria-item"
+          [style.backgroundImage]="'url(' + image.path + ')'"
+          (click)="open(galeria)"
+        >
+          <h3 style="position: absolute; bottom: -20px; left: 5px">{{ galeria.title }}</h3>
+          <p style="position: absolute; bottom: -35px; left: 5px">{{ galeria.images.length }}</p>
+        </div>
+      }
+    }
+    @if(!galeria.images) {
+      <div
+        class="galeria-item"
+        [style.opacity]="galeria.id !== undefined ? 1 : 0"
+      ></div>
+    }
+  }
 </div>
 
+<router-outlet />
