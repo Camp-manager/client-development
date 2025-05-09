@@ -1,12 +1,12 @@
 <div class="content">
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
+  @for (galeria of galerias; track $index) {
+    <div
+      class="galeria-item"
+      [style.backgroundImage]="'url(' + galeria.image + ')'"
+      [style.opacity]="galeria.id !== undefined ? 1 : 0"
+    >
+      <h3 style="position: absolute; bottom: -20px; left: 5px">{{ galeria.title }}</h3>
+      <p style="position: absolute; bottom: -35px; left: 5px">{{ galeria.title }}</p>
+    </div>
+  }
 </div>
-
