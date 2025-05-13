@@ -103,7 +103,7 @@ export class GaleriaComponent implements OnInit {
     }
   }
 
-  open(galeria: any) {
+  openGaleria(galeria: any) {
     this.router.navigate(['galeria', galeria.id]);
   }
 

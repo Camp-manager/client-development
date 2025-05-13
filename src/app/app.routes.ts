@@ -17,5 +17,10 @@ export const routes: Routes = [
     path: 'galeria',
     loadChildren: () =>
       import('./pages/galeria/galeria.module').then((m) => m.GaleriaModule),
+  },
+  {
+    path: 'agenda',
+    loadChildren: () =>
+      import('./pages/agenda/agenda.module').then((m) => m.AgendaModule),
   }
 ];

@@ -1,0 +1,20 @@
+.content {
+  width: auto;
+  height: 100%;
+  padding: 16px 16px;
+  .datas {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+    .data {
+      width: auto;
+      height: 92px;
+      padding: 18px 24px;
+      background-color: #EFEFEF;
+      border: 2px solid #DCDCDC;
+      border-radius: 16px;
+    }
+  }
+}

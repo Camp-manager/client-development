@@ -17,11 +17,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     z-index: 99;
+    filter: drop-shadow(0px 0px 2px #00000044);
     .icon {
-      width: 40px;
-      height: 40px;
+      width: 30px;
+      height: 30px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -68,7 +69,8 @@
     scroll-snap-align: center;
     transform: scale(1);
     transition: all 0.3s ease-in-out;
-    touch-action: none;
+    box-shadow: 0px 0px 5px #00000044;
+    background-color: #fffcde;
     &.selected {
       transform: scale(1.2);
     }
