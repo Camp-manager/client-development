@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   standalone: false,
@@ -6,6 +6,15 @@ import { Component } from '@angular/core';
   templateUrl: './nossa-historia.component.html',
   styleUrl: './nossa-historia.component.scss'
 })
-export class NossaHistoriaComponent {
+export class NossaHistoriaComponent implements OnInit {
+  constructor() {}
+
+  ngOnInit(): void {
+    const elementoConteudo = document.querySelector('.scroll');
+    if (elementoConteudo) {
+      elementoConteudo.scrollTop = elementoConteudo.scrollHeight;
+    }
+  }
+
 
 }

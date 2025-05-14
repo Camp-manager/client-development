@@ -31,7 +31,7 @@
   border-radius: 0 0 15px 15px;
   border: 2px solid #BDBDBD;
   border-top: 2px solid transparent;
-  margin-top: -35vh;
+  margin-top: -40vh;
   margin-left: 50%;
   margin-right: 50%;
   transform: translateX(-50%);
@@ -55,6 +55,16 @@
 
 .content {
   width: auto;
-  height: 40%;
+  height: auto;
   padding: 8px 16px;
+  a {
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+    line-height: 40px;
+  }
+  a:hover {
+    opacity: 0.8;
+  }
 }

@@ -17,7 +17,7 @@ export class DetalhesComponent implements OnInit {
       id: 1,
       title: 'Galeria 1',
       images: [
-        { id: 1, path: 'teste.jpg', title: 'Teste 1', isCapa: true },
+        { id: 1, path: 'galeria.png', title: 'Teste 1', isCapa: true },
         { id: 2, path: 'teste.jpg', title: 'Teste 2' },
         { id: 3, path: 'teste.jpg', title: 'Teste 3' },
         { id: 4, path: 'right.png', title: 'Teste 1' },

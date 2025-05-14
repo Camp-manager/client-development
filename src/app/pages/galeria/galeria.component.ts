@@ -91,14 +91,13 @@ export class GaleriaComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    const element = document.querySelector('.content') as HTMLElement;
+    const element = document.querySelector('.galeria') as HTMLElement;
     if (element) {
       const rect = element.getBoundingClientRect();
+      var quantidadeDeElementos = this.galerias.length;
       var quantidade = Math.floor(rect.width / (170 + 16));
-      if(quantidade < this.galerias.length) {
-        for(let i = 0; i < quantidade-1; i++) {
-          this.galerias.push({});
-        }
+      for(; quantidadeDeElementos%quantidade != 0; quantidadeDeElementos++) {
+        this.galerias.push({});
       }
     }
   }

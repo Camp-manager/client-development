@@ -10,15 +10,45 @@
 body {
   width: 100svw;
   height: 100svh;
+  &::-webkit-scrollbar-thumb {
+    background-color: #5e5e5e;
+    border-radius: 20px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #BDBDBD;
+  }
 }
 
 h1 {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bolder;
   line-height: 36px;
 }
-h1 {
+h2 {
+  font-size: 22px;
+  font-weight: bolder;
+  line-height: 34px;
+}
+h3 {
+  font-size: 20px;
+  font-weight: bolder;
+  line-height: 32px;
+}
+h4 {
   font-size: 18px;
   font-weight: bolder;
+  line-height: 30px;
 }
-
+h5 {
+  font-size: 16px;
+  font-weight: bolder;
+  line-height: 28px;
+}
+h6 {
+  font-size: 14px;
+  font-weight: bolder;
+  line-height: 26px;
+}
+p {
+  font-size: 14px;
+}
