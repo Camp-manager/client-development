@@ -10,6 +10,7 @@
 body {
   width: 100svw;
   height: 100svh;
+  overflow: hidden;
   &::-webkit-scrollbar-thumb {
     background-color: #5e5e5e;
     border-radius: 20px;
@@ -20,35 +21,39 @@ body {
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bolder;
   line-height: 36px;
 }
 h2 {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: bolder;
   line-height: 34px;
 }
 h3 {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bolder;
   line-height: 32px;
 }
 h4 {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bolder;
   line-height: 30px;
 }
 h5 {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bolder;
   line-height: 28px;
 }
 h6 {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bolder;
   line-height: 26px;
 }
 p {
-  font-size: 14px;
+  font-size: 16px;
+}
+.container {
+  height: 100%;
+  overflow-x: auto;
 }
