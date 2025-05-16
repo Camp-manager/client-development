@@ -23,6 +23,7 @@
     background-color: #FFFFFF;
     a {
       width: 120px;
+      height: 60px;
       color: #000000;
       text-decoration: none;
       font-size: 14px;
@@ -79,22 +80,4 @@
   flex-direction: row !important;
   text-align: start !important;
 }
-.whatsapp {
-  position: fixed;
-  bottom: 90px;
-  right: 30px;
-  background-color: #25D366;
-  border-radius: 50px;
-  width: 140px;
-  height: 44px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 98;
-  font-size: 12px;
-  gap: 6px;
-  i {
-    color: #FFFFFF;
-    font-size: 24px;
-  }
-}
+
