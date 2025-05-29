@@ -1,0 +1,71 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1 class="title">Entrar no CampManager</h1>
+
+    <form [formGroup]="form" (ngSubmit)="login()" novalidate>
+      <div class="form-group">
+        <label for="email" class="sr-only">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="E-mail"
+          class="input"
+          [class.invalid]="email?.touched && email?.invalid"
+          aria-label="Endereço de E-mail"
+          [attr.aria-invalid]="email?.touched && email?.invalid"
+        />
+        @if (email?.touched && email?.invalid) {
+        <div class="error-message">
+          @if (email?.hasError('required')) {
+          <span>O e-mail é obrigatório.</span>
+          } @if (email?.hasError('email')) {
+          <span>Por favor, insira um e-mail válido.</span>
+          }
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="sr-only">Senha</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Senha"
+          class="input"
+          [class.invalid]="password?.touched && password?.invalid"
+          aria-label="Senha"
+          [attr.aria-invalid]="password?.touched && password?.invalid"
+        />
+        @if (password?.touched && password?.invalid) {
+        <div class="error-message">
+          @if (password?.hasError('required')) {
+          <span>A senha é obrigatória.</span>
+          } @if (password?.hasError('minlength')) {
+          <span>A senha deve ter pelo menos 6 caracteres.</span>
+          }
+        </div>
+        }
+      </div>
+
+      @if (errorMessage) {
+      <div class="error-message general-error">
+        {{ errorMessage }}
+      </div>
+      }
+
+      <button
+        type="submit"
+        class="login-button"
+        [disabled]="form.invalid || isLoading"
+      >
+        @if (isLoading) {
+        <span>Carregando...</span>
+        } @else {
+        <span>Entrar</span>
+        }
+      </button>
+    </form>
+  </div>
+</div>

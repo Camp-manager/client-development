@@ -1,29 +1,34 @@
-import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+// src/app/app.routes.ts
+import { Routes } from '@angular/router';
+import { acampamentosRoutes } from './components/acampamentos/acampamentos.routes';
 
 export const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./pages/landing-page/landing-page.module').then(
-        (m) => m.LandingPageModule
-      ),
+    redirectTo: 'menu-principal',
+    pathMatch: 'full',
   },
   {
-    path: 'formulario',
-    loadChildren: () =>
-      import('./pages/formulario/formulario.module').then(
-        (m) => m.FormularioModule
+    path: 'menu-principal',
+    title: 'Menu Principal',
+    data: { breadcrumb: 'Início' },
+    loadComponent: () =>
+      import('./components/menu-principal/menu-principal.component').then(
+        (m) => m.MenuPrincipalComponent
       ),
-  }
-];
+  },
 
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      preloadingStrategy: PreloadAllModules,
-    }),
-  ],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}
+  // Apenas espalha as rotas de acampamentos (que agora são aninhadas)
+  ...acampamentosRoutes,
+
+  // ... (outras rotas como 'equipe-trabalho') ...
+
+  {
+    path: '**',
+    title: 'Página Não Encontrada',
+    loadComponent: () =>
+      import('./components/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent
+      ),
+  },
+];

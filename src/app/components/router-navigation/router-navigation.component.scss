@@ -1,0 +1,122 @@
+@use "../../shared/styles/variables" as vars; // Ajuste o caminho
+
+// Dentro de router-navigation.component.scss
+:host-context(.sidebar.minimized) {
+  // Seletor para quando um pai .sidebar tem .minimized
+  ul li a span,
+  ul li a .arrow {
+    display: none;
+  }
+  ul li a .icon {
+    margin-right: 0;
+    // etc.
+  }
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  transition: padding 0.6s ease; // Suaviza a transição do padding
+
+  &:not(.submenu-list) {
+    padding-top: 1rem;
+  }
+}
+
+li {
+  width: 100%;
+  position: relative;
+}
+
+a {
+  display: flex;
+  align-items: center;
+  padding: 0.9rem 1.5rem;
+  color: vars.$sidebar-text;
+  text-decoration: none;
+  font-weight: 500;
+  width: 100%;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, color 0.2s ease, padding 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden; // Importante para esconder texto na transição
+
+  .icon {
+    margin-right: 1rem;
+    width: 20px; // Largura base do ícone
+    text-align: center; // Centraliza se o ícone não preencher width
+    font-size: 1.1rem;
+    opacity: 0.8;
+    transition: margin 0.2s ease, font-size 0.2s ease;
+  }
+
+  .link-text {
+    flex-grow: 1;
+    opacity: 1;
+    transition: opacity 0.1s ease; // Transição para o texto sumir
+  }
+
+  .arrow {
+    margin-left: 0.5rem;
+    font-size: 0.7rem;
+    transition: transform 0.3s ease, opacity 0.1s ease;
+    opacity: 1;
+  }
+
+  &:hover {
+    background: vars.$sidebar-hover-bg;
+  }
+  // ... (estado de foco) ...
+}
+
+li.active > a {
+  background: vars.$sidebar-hover-bg;
+  color: vars.$sidebar-active-text;
+  font-weight: 600;
+  .icon {
+    opacity: 1;
+  }
+  .arrow.open {
+    transform: rotate(180deg);
+  }
+}
+
+// --- Estilos para Navegação Minimizada ---
+ul.minimized-nav {
+  // Se precisar de algum ajuste na ul principal quando minimizada
+  // Ex: padding-top: 0.5rem;
+
+  li a {
+    justify-content: center; // Centraliza o ícone
+    padding: 1rem 0; // Ajusta padding para centralizar ícone
+
+    .icon-only {
+      // Classe aplicada ao ícone quando minimizado
+      margin-right: 0;
+      font-size: 1.4rem; // Ícone um pouco maior
+      width: auto; // Permite que o ícone determine sua largura
+    }
+
+    .link-text,
+    .arrow {
+      // Esconde texto e seta
+      opacity: 0;
+      width: 0; // Para ajudar na transição e evitar que ocupem espaço
+      display: none; // Garante que não ocupe espaço
+    }
+  }
+}
+
+// --- Estilos para Submenus (podem precisar de ajuste se visíveis no modo minimizado) ---
+.submenu-list {
+  // ... (estilos anteriores) ...
+  // Se a navegação pai estiver minimizada, os submenus também estarão (ou serão escondidos)
+  &.minimized-nav {
+    li a {
+      padding-left: 0; // Remove indentação se for centralizar
+      // Outros ajustes para submenus minimizados se eles forem mostrados
+    }
+  }
+}

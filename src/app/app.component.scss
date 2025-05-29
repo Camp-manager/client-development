@@ -1,26 +1,145 @@
-.whatsapp {
-  position: fixed;
-  bottom: 90px;
-  right: 30px;
-  background-color: #25D366;
-  border-radius: 50px;
-  width: 140px;
-  height: 44px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 98;
-  font-size: 12px;
-  gap: 6px;
-  color: #000;
-  i {
-    color: #FFFFFF;
-    font-size: 24px;
-  }
-  transition: color 0.5s 0.3s, width 0.5s;
+@use "./shared/styles/variables" as vars; // Ajuste o caminho
 
+// --- Variáveis de Layout ---
+$sidebar-width: 240px;
+$sidebar-minimized-width: 80px; // Nova largura para sidebar minimizada
+$header-height: 60px;
+$background: vars.$background; // Usando a variável global
+$danger-color: vars.$danger-color;
+$danger-hover: vars.$danger-hover;
+$transition-speed: 0.3s; // Velocidade da transição
+
+// --- Layout Principal ---
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative; // Para o main-content se ajustar corretamente
 }
-.formulario-style {
-  width: 44px;
-  color: transparent;
+
+// --- Barra Lateral (Container) ---
+.sidebar {
+  width: $sidebar-width;
+  min-width: $sidebar-width; // Mantém para o estado expandido
+  background: #2c4053; // vars.$sidebar-bg ou cor específica
+  color: vars.$sidebar-text;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: width $transition-speed ease, min-width $transition-speed ease; // Transição suave
+  z-index: 100; // Garante que fique por cima se houver sobreposição na transição
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 1rem; // Padding consistente
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    height: $header-height; // Altura do header da sidebar
+    box-sizing: border-box;
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: vars.$sidebar-text;
+      margin: 0;
+      white-space: nowrap; // Impede quebra de linha
+      overflow: hidden; // Esconde texto que transborda
+      transition: opacity $transition-speed ease;
+    }
+    .sidebar-logo-minimized {
+      font-size: 1.5rem; // Pode ser um ícone real aqui
+      text-align: center;
+      width: 100%;
+    }
+
+    .sidebar-toggle-button {
+      background: none;
+      border: none;
+      color: vars.$sidebar-text;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      line-height: 1;
+      &:hover {
+        color: vars.$sidebar-active-text; // Exemplo
+      }
+    }
+  }
+
+  // Estilos quando a sidebar está minimizada
+  &.minimized {
+    width: $sidebar-minimized-width;
+    min-width: $sidebar-minimized-width;
+
+    .sidebar-header {
+      padding: 1.5rem 0.5rem; // Menos padding horizontal
+      justify-content: center; // Centraliza o botão toggle
+      h1:not(.sidebar-logo-minimized) {
+        // Esconde o h1 normal
+        opacity: 0;
+        width: 0; // Para ajudar na transição
+      }
+    }
+  }
+}
+
+// --- Conteúdo Principal ---
+.main-content {
+  flex-grow: 1;
+  height: 100%;
+  background: $background;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  transition: margin-left $transition-speed ease;
+}
+
+.card.mini {
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: $header-height;
+  margin: 0;
+  width: 100%;
+  border-radius: 1rem; // Garante o border-radius
+  background: #ffffff; // Garante o fundo
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); // Garante a sombra
+}
+
+// --- Botão Logout ---
+.logout-button {
+  cursor: pointer;
+  font-weight: bold;
+  color: $danger-color;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $danger-hover;
+  }
+}
+
+// --- Responsividade (Layout) ---
+@media (max-width: 768px) {
+  .sidebar {
+    // Adicionar lógica para menu hamburger aqui (ex: position absolute, transform)
+    // Ou simplesmente empilhar:
+    width: 100%;
+    height: auto;
+    min-width: auto;
+  }
+
+  .dashboard-container {
+    flex-direction: column;
+    overflow-y: auto; // Permite scroll no container no mobile
+  }
+
+  .main-content {
+    padding: 1rem;
+    overflow-y: visible; // Remove scroll interno
+  }
 }

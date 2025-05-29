@@ -1,0 +1,17 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb-list">
+    <li><a routerLink="/">Início</a></li>
+
+    @for(crumb of breadcrumbs; track crumb.url) { @if(crumb.label !== 'Início')
+    {
+    <li><i class="fa-solid fa-arrow-right"></i></li>
+    <li>
+      @if(crumb.url && crumb.url !== '/') {
+      <a [routerLink]="crumb.url">{{ crumb.label }}</a>
+      } @else {
+      <span>{{ crumb.label }}</span>
+      }
+    </li>
+    } }
+  </ol>
+</nav>

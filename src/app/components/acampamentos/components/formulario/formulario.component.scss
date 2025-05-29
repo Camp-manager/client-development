@@ -1,0 +1,142 @@
+// Importa suas variáveis globais (ajuste o caminho!)
+@use "../../../../shared/styles/variables" as vars;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  .form-container-responsive {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2%;
+    padding: 1rem 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 180px;
+  }
+}
+
+:host(.container-padrao) {
+  .form-group {
+    flex: 1 1 48%;
+  }
+  .cancel-button {
+    display: inline-block;
+  }
+}
+
+:host(.container-pequeno) {
+  .form-group {
+    flex: 1 1 100%;
+  }
+  .cancel-button {
+    display: none;
+  }
+  .button-container {
+    justify-content: center;
+    button {
+      width: 100%;
+    }
+  }
+}
+
+.form-section {
+  flex-basis: 100%;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: vars.$secondary-text;
+  h5 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 48%;
+  min-width: 200px;
+
+  label {
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  input,
+  select {
+    display: block;
+    width: 100%;
+    padding: 0.65rem 0.8rem;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 0.4rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+    background-color: white;
+
+    &:focus {
+      border-color: vars.$primary-blue;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
+    }
+    &.invalid {
+      border-color: vars.$danger-color;
+      &:focus {
+        box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.3);
+      }
+    }
+  }
+}
+
+.full-w {
+  flex-basis: 100%;
+}
+
+.button-container {
+  flex-basis: 100%;
+  text-align: right;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+button {
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, opacity 0.3s;
+
+  &[type="submit"] {
+    background-color: vars.$primary-blue;
+    color: white;
+    &:hover:not(:disabled) {
+      background-color: vars.$button-hover-bg;
+    }
+    &:disabled {
+      background-color: vars.$button-disabled-bg;
+      cursor: not-allowed;
+    }
+  }
+
+  &.cancel-button {
+    background-color: vars.$secondary-text;
+    color: white;
+    &:hover {
+      background-color: vars.$secondary-text-hover;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+@use "../../shared/styles/variables" as vars;
+
+.breadcrumb-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: vars.$secondary-text;
+
+  a {
+    text-decoration: none;
+    color: vars.$primary-blue;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  span {
+    font-weight: bold;
+    color: vars.$primary-text;
+  }
+
+  .separator {
+    color: vars.$separator-color;
+  }
+}

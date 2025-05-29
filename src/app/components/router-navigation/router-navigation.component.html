@@ -1,0 +1,30 @@
+<ul [class.submenu-list]="isSubmenu" [class.minimized-nav]="isMinimized">
+  @for (rota of rotas; track rota.path) {
+  <li
+    routerLinkActive="active"
+    #rla="routerLinkActive"
+    [routerLinkActiveOptions]="{
+      exact: !rota.children || rota.children.length === 0
+    }"
+  >
+    <a [routerLink]="rota.path" [title]="isMinimized ? rota.nome : null">
+      @if (rota.icon) {
+      <i class="icon fas {{ rota.icon }}" [class.icon-only]="isMinimized"></i>
+      } @if (!isMinimized && rota.nome) {
+      <span class="link-text">{{ rota.nome }}</span>
+      } @if (!isMinimized && rota.children && rota.children.length > 0) {
+      <i class="arrow fas fa-chevron-down" [class.open]="rla.isActive"></i>
+      }
+    </a>
+
+    @if (!isMinimized && rota.children && rota.children.length > 0 &&
+    rla.isActive) {
+    <router-nav
+      [rotas]="rota.children"
+      [isSubmenu]="true"
+      [isMinimized]="isMinimized"
+    ></router-nav>
+    }
+  </li>
+  }
+</ul>

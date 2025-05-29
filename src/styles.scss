@@ -1,59 +1,114 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+/* Global Styles - styles.scss */
+@use "./app/shared/styles/variables" as vars;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
+// --- Reset e Base ---
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a {
+  color: vars.$primary-text;
+}
+
+html,
 body {
-  width: 100svw;
-  height: 100svh;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  &::-webkit-scrollbar-thumb {
-    background-color: #5e5e5e;
-    border-radius: 20px;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: #BDBDBD;
+  background-color: vars.$background;
+}
+
+// --- Componente Card (Global) ---
+.card {
+  background: vars.$background-card;
+  border-radius: vars.$border-radius;
+  padding: 2rem;
+  box-shadow: vars.$box-shadow;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
   }
 }
 
-h1 {
-  font-size: 28px;
-  font-weight: bolder;
-  line-height: 36px;
+// --- Variações de Card ---
+.card.default {
+  min-height: 120px;
 }
-h2 {
-  font-size: 26px;
-  font-weight: bolder;
-  line-height: 34px;
+.card.justify {
+  display: flex;
+  align-items: center;
 }
-h3 {
-  font-size: 24px;
-  font-weight: bolder;
-  line-height: 32px;
+.card.mega {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: stretch;
 }
-h4 {
-  font-size: 22px;
-  font-weight: bolder;
-  line-height: 30px;
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+  .card a {
+    text-decoration: none;
+  }
 }
-h5 {
-  font-size: 20px;
-  font-weight: bolder;
-  line-height: 28px;
+
+.col-1 {
+  grid-column: span 3;
 }
-h6 {
-  font-size: 18px;
-  font-weight: bolder;
-  line-height: 26px;
+.col-2 {
+  grid-column: span 6;
 }
-p {
-  font-size: 16px;
+.col-3 {
+  grid-column: span 9;
 }
-.container {
-  height: 100%;
-  overflow-y: auto;
+.full-w {
+  grid-column: span 12;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+// --- Responsividade (Grid) ---
+@media (max-width: 1200px) {
+  .col-1 {
+    grid-column: span 4;
+  }
+  .col-2 {
+    grid-column: span 8;
+  }
+  .col-3 {
+    grid-column: span 12;
+  }
+}
+@media (max-width: 992px) {
+  .col-1 {
+    grid-column: span 6;
+  }
+  .col-2 {
+    grid-column: span 12;
+  }
+}
+@media (max-width: 768px) {
+  .col-1,
+  .col-2,
+  .col-3,
+  .full-w {
+    grid-column: span 12;
+  }
 }

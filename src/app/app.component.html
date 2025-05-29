@@ -1,8 +1,35 @@
-<router-outlet />
+@if(token == null) {
+<app-login (token)="setToken()" />
+} @else {
+<div
+  class="dashboard-container"
+  [class.sidebar-minimized-active]="isSidebarMinimized"
+>
+  <nav class="sidebar" [class.minimized]="isSidebarMinimized">
+    <div class="sidebar-header">
+      @if(!isSidebarMinimized) {
+      <h1>CampManager</h1>
+      }
+      <button (click)="toggleSidebar()" class="sidebar-toggle-button">
+        <i
+          class="fas {{
+            isSidebarMinimized ? 'fa-chevron-right' : 'fa-chevron-left'
+          }}"
+        ></i>
+      </button>
+    </div>
+    <router-nav
+      [rotas]="navigationRoutes"
+      [isMinimized]="isSidebarMinimized"
+    ></router-nav>
+  </nav>
 
-
-<div class="button whatsapp"
-[ngClass]="{ 'formulario-style': isFormularioRoute() }">
-  <i class="fa-brands fa-whatsapp"></i>
-  {{ isFormularioRoute() ? '' : 'Fale Conosco' }}
+  <main class="main-content">
+    <header class="card mini">
+      <breadcrumb />
+      <p class="logout-button" (click)="logout()"><strong>Sair</strong></p>
+    </header>
+    <router-outlet></router-outlet>
+  </main>
 </div>
+}

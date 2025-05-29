@@ -1,0 +1,48 @@
+@use "../../shared/styles/variables" as vars;
+
+.card {
+  display: flex;
+  flex-direction: column;
+
+  &.has-link {
+    cursor: pointer;
+  }
+
+  header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+
+    .icon-header {
+      margin-right: 0.5em;
+    }
+  }
+
+  .card-content {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    color: vars.$secondary-text;
+  }
+
+  .embedded-form-container {
+    flex-grow: 1;
+    display: flex;
+    overflow: hidden;
+    padding-top: 0.5rem;
+  }
+
+  .card-action-link {
+    display: block;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    text-align: right;
+    font-weight: 500;
+    color: vars.$primary-blue;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
