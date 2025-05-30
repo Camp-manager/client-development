@@ -1,5 +1,6 @@
 /* Global Styles - styles.scss */
 @use "./app/shared/styles/variables" as vars;
+@use "sass:color";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
 // --- Reset e Base ---
@@ -111,4 +112,349 @@ body {
   .full-w {
     grid-column: span 12;
   }
+}
+
+.app-table {
+  width: 100%;
+  margin-bottom: 1rem; // Espaçamento abaixo da tabela
+  color: vars.$secondary-text; // Cor padrão do texto dentro da tabela
+  border-collapse: collapse; // Remove espaços entre bordas das células
+  font-size: 0.9rem; // Tamanho de fonte um pouco menor para tabelas
+
+  // Estilo para o caption da tabela (título opcional)
+  caption {
+    padding: 0.75rem;
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: vars.$primary-text;
+    // border-bottom: 1px solid vars.$table-border-color; // Opcional
+  }
+
+  // Cabeçalho da Tabela
+  thead {
+    th {
+      vertical-align: bottom;
+      border-bottom: 2px solid vars.$table-border-color; // Borda mais forte abaixo do header
+      background-color: vars.$table-header-bg;
+      color: vars.$table-header-text;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+
+      // Para cabeçalhos fixos ao rolar
+      position: sticky;
+      top: 0;
+      z-index: 10; // Garante que fique por cima durante o scroll
+    }
+  }
+
+  // Corpo da Tabela
+  tbody {
+    tr {
+      border-bottom: 1px solid vars.$table-row-border-color;
+
+      // Linhas zebradas (alternando cores de fundo)
+      &:nth-of-type(even) {
+        background-color: vars.$table-stripe-bg;
+      }
+
+      // Efeito hover nas linhas
+      &:hover {
+        background-color: vars.$table-hover-bg;
+      }
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      vertical-align: middle; // Alinha o conteúdo da célula verticalmente ao meio
+    }
+  }
+
+  // Rodapé da Tabela (opcional)
+  tfoot {
+    td {
+      font-weight: 600;
+      color: vars.$primary-text;
+      background-color: vars.$table-footer-bg;
+      padding: 0.75rem 1rem;
+      border-top: 2px solid vars.$table-border-color; // Borda mais forte acima do footer
+    }
+  }
+
+  // Estilos para tabelas "bordered" (com todas as bordas)
+  &.table-bordered {
+    border: 1px solid vars.$table-border-color;
+    th,
+    td {
+      border: 1px solid vars.$table-border-color;
+    }
+    thead th {
+      border-bottom-width: 2px; // Mantém a borda do header mais forte
+    }
+  }
+
+  // Estilos para tabelas "compactas" (menos padding)
+  &.table-sm {
+    th,
+    td {
+      padding: 0.4rem 0.6rem;
+    }
+  }
+}
+
+// Wrapper para tornar a tabela responsiva com scroll horizontal
+// Use este wrapper ao redor da sua <table class="app-table">
+.table-responsive-wrapper {
+  display: block; // Necessário para overflow-x funcionar corretamente em alguns contextos
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; // Para scroll suave em iOS
+}
+
+// --- Classe Base do Botão ---
+.btn {
+  display: inline-block;
+  font-weight: 500; // Peso da fonte padrão
+  line-height: 1.5;
+  color: vars.$primary-text; // Cor de texto padrão para botões não coloridos (ex: outline)
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none; // Impede seleção de texto ao clicar
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.6rem 1.2rem; // Padding padrão (ajuste conforme seu design)
+  font-size: 1rem; // Tamanho de fonte padrão
+  border-radius: vars.$small-border-radius; // Usa o raio de borda menor
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  // Estado de Foco
+  &:focus {
+    outline: 0;
+    // Sombra de foco sutil, usando a cor primária por padrão
+    box-shadow: 0 0 0 0.2rem color.change(vars.$primary-blue, $alpha: 0.25);
+  }
+
+  // Estado Desabilitado
+  &:disabled,
+  &.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    pointer-events: none; // Impede eventos de mouse
+  }
+
+  // Para links <a> estilizados como botões que não devem ter borda dupla
+  &.no-border {
+    border-color: transparent !important;
+  }
+
+  // Para botões com ícones
+  i,
+  .fas,
+  .far,
+  .fab {
+    // Classes comuns do Font Awesome
+    margin-right: 0.5em; // Espaço entre ícone e texto
+    &:only-child {
+      // Se o botão só tiver um ícone
+      margin-right: 0;
+    }
+  }
+}
+
+// --- Modificadores de Cor ---
+
+// Botão Primário
+.btn-primary {
+  color: vars.$sidebar-text; // Texto branco
+  background-color: vars.$primary-blue;
+  border-color: vars.$primary-blue;
+
+  &:hover {
+    color: vars.$sidebar-text;
+    background-color: color.adjust(vars.$primary-blue, $lightness: -8%);
+    border-color: color.adjust(vars.$primary-blue, $lightness: -10%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem color.change(vars.$primary-blue, $alpha: 0.5);
+  }
+  &:active,
+  &.active {
+    background-color: color.adjust(vars.$primary-blue, $lightness: -10%);
+    border-color: color.adjust(vars.$primary-blue, $lightness: -12%);
+  }
+}
+
+// Botão Secundário
+.btn-secondary {
+  color: vars.$sidebar-text;
+  background-color: vars.$secondary-text; // Usando $secondary-text como um cinza
+  border-color: vars.$secondary-text;
+
+  &:hover {
+    color: vars.$sidebar-text;
+    background-color: color.adjust(vars.$secondary-text, $lightness: -8%);
+    border-color: color.adjust(vars.$secondary-text, $lightness: -10%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem color.change(vars.$secondary-text, $alpha: 0.5);
+  }
+  &:active,
+  &.active {
+    background-color: color.adjust(vars.$secondary-text, $lightness: -10%);
+    border-color: color.adjust(vars.$secondary-text, $lightness: -12%);
+  }
+}
+
+// Botão de Sucesso
+.btn-success {
+  color: vars.$sidebar-text;
+  background-color: vars.$success-color;
+  border-color: vars.$success-color;
+
+  &:hover {
+    color: vars.$sidebar-text;
+    background-color: color.adjust(vars.$success-color, $lightness: -8%);
+    border-color: color.adjust(vars.$success-color, $lightness: -10%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem color.change(vars.$success-color, $alpha: 0.5);
+  }
+  &:active,
+  &.active {
+    background-color: color.adjust(vars.$success-color, $lightness: -10%);
+    border-color: color.adjust(vars.$success-color, $lightness: -12%);
+  }
+}
+
+// Botão de Perigo
+.btn-danger {
+  color: vars.$sidebar-text;
+  background-color: vars.$danger-color;
+  border-color: vars.$danger-color;
+
+  &:hover {
+    color: vars.$sidebar-text;
+    background-color: vars.$danger-hover; // Usando sua variável de hover
+    border-color: color.adjust(vars.$danger-color, $lightness: -10%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem color.change(vars.$danger-color, $alpha: 0.5);
+  }
+  &:active,
+  &.active {
+    background-color: vars.$danger-hover;
+    border-color: color.adjust(vars.$danger-color, $lightness: -12%);
+  }
+}
+
+// Botão de Aviso
+.btn-warning {
+  color: vars.$primary-text; // Texto escuro em fundo claro
+  background-color: vars.$warning-color;
+  border-color: vars.$warning-color;
+
+  &:hover {
+    color: vars.$primary-text;
+    background-color: color.adjust(vars.$warning-color, $lightness: -8%);
+    border-color: color.adjust(vars.$warning-color, $lightness: -10%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem color.change(vars.$warning-color, $alpha: 0.5);
+  }
+  &:active,
+  &.active {
+    background-color: color.adjust(vars.$warning-color, $lightness: -10%);
+    border-color: color.adjust(vars.$warning-color, $lightness: -12%);
+  }
+}
+
+// Botão de Informação
+.btn-info {
+  color: vars.$sidebar-text;
+  background-color: vars.$info-color;
+  border-color: vars.$info-color;
+
+  &:hover {
+    color: vars.$sidebar-text;
+    background-color: color.adjust(vars.$info-color, $lightness: -8%);
+    border-color: color.adjust(vars.$info-color, $lightness: -10%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem color.change(vars.$info-color, $alpha: 0.5);
+  }
+  &:active,
+  &.active {
+    background-color: color.adjust(vars.$info-color, $lightness: -10%);
+    border-color: color.adjust(vars.$info-color, $lightness: -12%);
+  }
+}
+
+// --- Botões Outline (Contorno) ---
+// Loop para gerar botões outline para as cores principais
+$theme-colors: (
+  "primary": vars.$primary-blue,
+  "secondary": vars.$secondary-text,
+  "success": vars.$success-color,
+  "danger": vars.$danger-color,
+  "warning": vars.$warning-color,
+  "info": vars.$info-color
+    // Adicione "light" e "dark" se desejar outlines para eles,,
+);
+
+@each $name, $color in $theme-colors {
+  .btn-outline-#{$name} {
+    color: $color;
+    border-color: $color;
+    background-color: transparent;
+
+    &:hover {
+      color: if(
+        $name == "warning",
+        vars.$primary-text,
+        vars.$sidebar-text
+      ); // Texto branco, exceto para warning
+      background-color: $color;
+      border-color: $color;
+    }
+    &:focus {
+      box-shadow: 0 0 0 0.2rem color.change($color, $alpha: 0.5);
+    }
+    &:active,
+    &.active {
+      color: if($name == "warning", vars.$primary-text, vars.$sidebar-text);
+      background-color: color.adjust(
+        $color,
+        $lightness: -5%
+      ) !important; // Adiciona !important se necessário para sobrescrever hover
+      border-color: color.adjust($color, $lightness: -5%) !important;
+    }
+    &:disabled,
+    &.disabled {
+      color: $color; // Mantém a cor do texto, mas com opacidade geral do .btn:disabled
+      background-color: transparent;
+    }
+  }
+}
+
+// --- Modificadores de Tamanho ---
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  // border-radius: vars.$border-radius; // Opcional: raio maior para botões maiores
+}
+
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  // border-radius: vars.$small-border-radius; // Ou um raio ainda menor
+}
+
+// --- Modificador de Bloco ---
+.btn-block {
+  display: block;
+  width: 100%;
 }

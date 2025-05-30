@@ -17,19 +17,4 @@
     margin-bottom: 1rem;
     color: vars.$secondary-text;
   }
-
-  .back-button {
-    display: inline-block;
-    margin-top: 1.5rem;
-    padding: 0.8rem 1.5rem;
-    background-color: vars.$primary-blue;
-    color: vars.$sidebar-text;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-      background-color: vars.$button-hover-bg;
-    }
-  }
 }

@@ -110,33 +110,3 @@
   justify-content: flex-end;
   gap: 1rem;
 }
-
-button {
-  padding: 0.7rem 1.2rem;
-  border: none;
-  border-radius: 0.4rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s, opacity 0.3s;
-
-  &[type="submit"] {
-    background-color: vars.$primary-blue;
-    color: white;
-    &:hover:not(:disabled) {
-      background-color: vars.$button-hover-bg;
-    }
-    &:disabled {
-      background-color: vars.$button-disabled-bg;
-      cursor: not-allowed;
-    }
-  }
-
-  &.cancel-button {
-    background-color: vars.$secondary-text;
-    color: white;
-    &:hover {
-      background-color: vars.$secondary-text-hover;
-    }
-  }
-}

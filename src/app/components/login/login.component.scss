@@ -72,30 +72,6 @@
   }
 }
 
-.login-button {
-  width: 100%;
-  padding: 0.9rem;
-  background-color: vars.$primary-blue;
-  color: vars.$sidebar-text;
-  font-size: 1.1rem;
-  font-weight: 500;
-  border: none;
-  border-radius: vars.$small-border-radius;
-  cursor: pointer;
-  transition: background-color 0.2s, opacity 0.2s;
-  margin-top: 1rem;
-
-  &:hover:not(:disabled) {
-    background-color: vars.$button-hover-bg;
-  }
-
-  &:disabled {
-    background-color: vars.$button-disabled-bg;
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-}
-
 .sr-only {
   position: absolute;
   width: 1px;

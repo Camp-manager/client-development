@@ -9,13 +9,14 @@ export const acampamentosRoutes: Routes = [
       import('./acampamentos.component') // Crie este
         .then((m) => m.AcampamentosComponent),
   },
-  // {
-  //     path: 'lista',
-  //     title: 'Lista de Acampamentos',
-  //     data: { breadcrumb: 'Lista' },
-  //     loadComponent: () => import('./components/acampamentos/components/lista/lista.component') // Crie este
-  //         .then(m => m.AcampamentoListaComponent),
-  // },
+  {
+    path: 'acampamentos/lista',
+    title: 'Lista de Acampamentos',
+    data: { breadcrumb: 'Lista' },
+    loadComponent: () =>
+      import('./components/listar/listar.component') // Crie este
+        .then((m) => m.ListarComponent),
+  },
   {
     path: 'acampamentos/formulario', // Para 'Novo'
     title: 'Novo Acampamento',

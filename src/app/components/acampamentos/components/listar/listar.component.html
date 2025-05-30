@@ -1,0 +1,239 @@
+<div class="card full-page-card">
+  @if (!containerPequeno) {
+  <div class="card-header">
+    <h4 class="card-title">Lista de Acampamentos</h4>
+
+    <button class="btn btn-primary" [routerLink]="['/acampamentos/formulario']">
+      <i class="fas fa-plus"></i> Novo Acampamento
+    </button>
+  </div>
+  }
+  <div class="card-body no-padding">
+    @if (acampamentos.length > 0) {
+    <div class="table-responsive-wrapper">
+      <table class="app-table">
+        <thead>
+          <tr>
+            <th>
+              @if (containerPequeno) {
+              <span>Info</span>
+              } @else {
+              <span>Tipo</span>
+              }
+            </th>
+            @if (containerPadrao) {
+            <th class="col-tema">Tema</th>
+            }
+
+            <th>
+              @if (containerPequeno) {
+              <span>Período</span>
+              } @else {
+              <span>Data Início</span>
+              }
+            </th>
+            @if (containerPadrao) {
+            <th class="col-data-fim">Data Fim</th>
+            } @if (containerPadrao) {
+            <th class="col-vagas">Vagas Campistas</th>
+            } @if (containerPadrao) {
+            <th class="col-ocupacao">Ocupação</th>
+            }
+
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (acamp of acampamentos; track acamp.id) {
+          <tr>
+            <td>
+              @if (containerPequeno) {
+              <div>{{ acamp.tipo }}</div>
+              <small class="text-muted">{{ acamp.tema.descricao }}</small>
+              } @else {
+              {{ acamp.tipo }}
+              }
+            </td>
+            @if (containerPadrao) {
+            <td class="col-tema">{{ acamp.tema.descricao }}</td>
+            }
+
+            <td>
+              @if (containerPequeno) {
+              <span
+                >{{ acamp.dataInicio | date : "dd/MM/yyyy" }} <br />
+                {{ acamp.dataFim | date : "dd/MM/yyyy" }}</span
+              >
+              } @else {
+              {{ acamp.dataInicio | date : "dd/MM/yyyy" }}
+              }
+            </td>
+            @if (containerPadrao) {
+            <td class="col-data-fim">
+              {{ acamp.dataFim | date : "dd/MM/yyyy" }}
+            </td>
+            } @if (containerPadrao) {
+            <td class="col-vagas">
+              {{ acamp.numeroAtualCampistas }}/{{ acamp.limiteCampistas }}
+            </td>
+            } @if (containerPadrao) {
+            <td class="col-ocupacao">
+              <div class="progress-bar-container">
+                <div
+                  class="progress-bar"
+                  [style.width.%]="calcularOcupacao(acamp)"
+                  [class.full]="calcularOcupacao(acamp) >= 100"
+                  [class.high]="
+                    calcularOcupacao(acamp) >= 75 &&
+                    calcularOcupacao(acamp) < 100
+                  "
+                  [class.medium]="
+                    calcularOcupacao(acamp) >= 40 &&
+                    calcularOcupacao(acamp) < 75
+                  "
+                >
+                  {{ calcularOcupacao(acamp) | number : "1.0-0" }}%
+                </div>
+              </div>
+            </td>
+            }
+
+            <td>
+              <button
+                class="button-icon"
+                (click)="abrirDialogoDetalhes(acamp)"
+                title="Ver Detalhes"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+              <button
+                class="button-icon"
+                [routerLink]="['/acampamentos/formulario', acamp.id]"
+                title="Editar"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+              <button
+                class="button-icon"
+                (click)="abrirDialogoQRCode(acamp)"
+                title="Gerar QRCode Inscrição"
+              >
+                <i class="fas fa-qrcode"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    } @else {
+    <p class="empty-state">Nenhum acampamento encontrado.</p>
+    }
+  </div>
+</div>
+
+<dialog
+  [isOpen]="mostrarDialogoDetalhes"
+  (close)="fecharDialogoDetalhes()"
+  dialogTitle="Detalhes do Acampamento"
+>
+  <ng-container dialog-body>
+    @if (acampamentoSelecionado) {
+    <div class="detail-grid">
+      <div class="detail-item">
+        <strong>Tipo:</strong> <span>{{ acampamentoSelecionado.tipo }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Data Início:</strong>
+        <span>{{
+          acampamentoSelecionado.dataInicio | date : "dd/MM/yyyy"
+        }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Data Fim:</strong>
+        <span>{{ acampamentoSelecionado.dataFim | date : "dd/MM/yyyy" }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Limite Campistas:</strong>
+        <span>{{ acampamentoSelecionado.limiteCampistas }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Campistas Registrados:</strong>
+        <span>{{ acampamentoSelecionado.numeroAtualCampistas }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Limite Equipe:</strong>
+        <span>{{ acampamentoSelecionado.limiteEquipeTrabalho }}</span>
+      </div>
+    </div>
+    <hr />
+    <h5>Tema e Valores</h5>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <strong>Descrição:</strong>
+        <span>{{ acampamentoSelecionado.tema.descricao }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Preço Camisa:</strong>
+        <span>{{
+          acampamentoSelecionado.tema.precoCamisa
+            | currency : "BRL" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Preço Inscrição:</strong>
+        <span>{{
+          acampamentoSelecionado.tema.precoInscricao
+            | currency : "BRL" : "symbol" : "1.2-2"
+        }}</span>
+      </div>
+    </div>
+    } @else {
+    <p>Nenhum acampamento selecionado.</p>
+    }
+  </ng-container>
+
+  <ng-container dialog-footer>
+    <button class="button-secondary" (click)="fecharDialogoDetalhes()">
+      OK
+    </button>
+  </ng-container>
+</dialog>
+@if(acampamentoParaQRCode) {
+<dialog
+  [isOpen]="mostrarDialogoQRCode"
+  (close)="fecharDialogoQRCode()"
+  [dialogTitle]="
+    'QR Code para Inscrição: ' +
+    acampamentoParaQRCode.tipo +
+    ' - ' +
+    acampamentoParaQRCode.tema.descricao
+  "
+>
+  <ng-container dialog-body>
+    <div class="qrcode-container">
+      @if(qrCodeData) {
+      <qrcode
+        [qrdata]="qrCodeData"
+        [width]="256"
+        [errorCorrectionLevel]="'M'"
+        [elementType]="'canvas'"
+        [cssClass]="'qrcode-canvas'"
+      >
+      </qrcode>
+      <p class="qrcode-link-info">
+        Escaneie para acessar:
+        <a [href]="qrCodeData" target="_blank">{{ qrCodeData }}</a>
+      </p>
+      } @else {
+      <p>Erro ao gerar dados do QRCode.</p>
+      }
+    </div>
+  </ng-container>
+  <ng-container dialog-footer>
+    <button class="button-secondary" (click)="fecharDialogoQRCode()">
+      Fechar
+    </button>
+  </ng-container>
+</dialog>
+}

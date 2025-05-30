@@ -43,3 +43,19 @@ $header-height: 60px;
 
 // --- Outras Cores ---
 $separator-color: #aaaaaa;
+
+// --- Variáveis para Tabelas ---
+$table-header-bg: #e9ecef; // Fundo do cabeçalho da tabela
+$table-header-text: $primary-text; // Cor do texto do cabeçalho
+$table-border-color: #dee2e6; // Cor principal da borda da tabela
+$table-row-border-color: #e9ecef; // Cor da borda das linhas (mais suave)
+$table-stripe-bg: #f8f9fa; // Cor de fundo para linhas zebradas
+$table-hover-bg: #f1f1f1; // Cor de fundo para linha em hover
+$table-footer-bg: $table-header-bg; // Fundo do rodapé da tabela (opcional)
+
+$success-color: #28a745;
+$warning-color: #ffc107;
+$info-color: #17a2b8; // Um azul mais claro/ciano
+
+$light-gray-btn-bg: #f8f9fa; // Para botões claros
+$dark-gray-btn-bg: #343a40; // Para botões escuros

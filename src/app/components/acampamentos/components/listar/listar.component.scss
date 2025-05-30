@@ -1,0 +1,179 @@
+@use "../../../../shared/styles/variables" as vars; // Ajuste conforme sua estrutura!
+
+:host {
+  display: flex; // Permite que o filho .full-page-card use flex-grow
+  flex-direction: column;
+  flex-grow: 1; // Ocupa o espaço vertical no container pai (router-outlet)
+  overflow: hidden;
+}
+
+// O card principal que ocupa "toda a página" dentro do main-content
+.full-page-card {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; // Faz este card ocupar todo o espaço do :host
+  overflow-y: auto;
+  gap: 1rem;
+}
+
+// Ajustes específicos para o cabeçalho do card nesta tela
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0; // Impede que o header encolha
+  // Padding, border-bottom, background-color vêm do estilo global de .card ou .card-header
+}
+
+// Remove padding do card-body para que a tabela (com seu wrapper) ocupe todo o espaço
+.card-body.no-padding {
+  padding: 0;
+  flex-grow: 1; // O corpo do card ocupa o espaço restante
+  overflow-y: auto; // Scroll vertical AQUI se a tabela for muito grande
+  display: flex; // Para que o table-responsive-wrapper possa crescer
+  flex-direction: column;
+}
+
+:host(.container-pequeno) {
+  .full-page-card {
+    padding: 0rem;
+  }
+  .app-table {
+    th.col-tema,
+    td.col-tema,
+    th.col-data-fim,
+    td.col-data-fim,
+    th.col-vagas,
+    td.col-vagas,
+    th.col-ocupacao,
+    td.col-ocupacao {
+      display: none;
+    }
+
+    // Ajustes de padding para economizar espaço
+    th,
+    td {
+      padding: 0.5rem 0.5rem; // Padding menor
+    }
+
+    // Faz a coluna de Ações ter uma largura mínima para os botões
+    td:last-child,
+    th:last-child {
+      min-width: 80px; // Para caber os dois ícones
+      text-align: right; // Alinha os botões à direita
+    }
+  }
+}
+
+// Estilos para a barra de progresso na coluna "Ocupação"
+.progress-bar-container {
+  width: 100%;
+  min-width: 80px; // Garante visibilidade mínima
+  max-width: 120px; // Evita que fique muito larga
+  background-color: vars.$table-stripe-bg; // Ou lighten(vars.$background, 5%)
+  border-radius: vars.$small-border-radius;
+  overflow: hidden; // Para o border-radius funcionar na barra interna
+  height: 20px;
+  font-size: 0.7rem; // Texto menor dentro da barra
+  line-height: 20px; // Centraliza texto verticalmente
+  text-align: center;
+  color: vars.$primary-text;
+  position: relative; // Para o texto ficar "por cima"
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.07);
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: vars.$primary-blue; // Cor base (para < 40%)
+  color: vars.$sidebar-text; // Texto branco sobre a barra colorida
+  transition: width 0.4s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  white-space: nowrap; // Evita que o texto "%" quebre linha
+
+  &.medium {
+    // 40% a 74%
+    background-color: #ffc107; // Amarelo (considere adicionar a vars: $warning-color)
+    color: vars.$primary-text; // Texto escuro em fundo claro
+  }
+  &.high {
+    // 75% a 99%
+    background-color: #28a745; // Verde (considere adicionar a vars: $success-color)
+  }
+  &.full {
+    // 100% ou mais
+    background-color: #17a2b8; // Azul Info (considere adicionar a vars: $info-color)
+  }
+}
+
+// Estilos para os botões de ação (ícones) na tabela
+.button-icon {
+  background: transparent;
+  border: none;
+  color: vars.$primary-blue; // Cor base do ícone
+  cursor: pointer;
+  font-size: 1.1rem; // Tamanho do ícone
+  padding: 0.5rem; // Área de clique
+  margin: 0 0.15rem; // Pequeno espaçamento entre botões
+  line-height: 1;
+  border-radius: 50%; // Para um hover circular se desejar
+  transition: color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    color: vars.$button-hover-bg; // Cor do ícone no hover
+    background-color: rgba(vars.$primary-blue, 0.1); // Fundo sutil no hover
+  }
+
+  &:disabled {
+    color: vars.$secondary-text;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  i {
+    // Caso o ícone FontAwesome precise de ajuste vertical
+    vertical-align: middle;
+  }
+}
+
+// Estilo para a mensagem de "Nenhum acampamento encontrado"
+.empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: vars.$secondary-text;
+  flex-grow: 1; // Para centralizar se o card-body for flex
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.qrcode-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .qrcode-canvas {
+    border: 1px solid vars.$border-color-light; // Borda sutil
+  }
+
+  .qrcode-link-info {
+    font-size: 0.9rem;
+    color: vars.$secondary-text;
+    word-break: break-all; // Para URLs longas
+    a {
+      color: vars.$primary-blue;
+    }
+  }
+}

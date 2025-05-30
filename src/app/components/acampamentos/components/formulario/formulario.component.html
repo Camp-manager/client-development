@@ -110,10 +110,14 @@
   </div>
 
   <div class="full-w button-container">
-    <button type="button" class="cancel-button" (click)="cancelar()">
+    <button type="button" class="btn btn-secondary" (click)="cancelar()">
       Cancelar
     </button>
-    <button type="submit" [disabled]="formulario.invalid">
+    <button
+      class="btn btn-primary"
+      type="submit"
+      [disabled]="formulario.invalid"
+    >
       {{ isEditMode ? "Salvar" : "Cadastrar" }}
     </button>
   </div>
