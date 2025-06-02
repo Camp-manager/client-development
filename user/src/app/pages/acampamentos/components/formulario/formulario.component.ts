@@ -10,7 +10,7 @@ import {
   ElementRef,
   ChangeDetectorRef,
   AfterViewInit,
-  OnDestroy, // Não se esqueça de OnDestroy se estiver usando ResizeObserver
+  OnDestroy,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -20,17 +20,33 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { TipoAcampamento } from '../../../../shared/enum/TipoAcampamento'; // Ajuste o caminho
+import { TipoAcampamento } from '../../../../shared/enum/TipoAcampamento';
 import { CommonModule } from '@angular/common';
+import { compareAsc, isValid, parse } from 'date-fns';
+import { NgxMaskDirective } from 'ngx-mask';
+
+export function customDateValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    if (!control.value) {
+      return null;
+    }
+    const dateValue = parse(control.value, 'd/M/yyyy', new Date());
+
+    if (!isValid(dateValue) || dateValue.getFullYear() < 1000) {
+      return { invalidDate: 'Formato de data inválido ou data não existe.' };
+    }
+    return null;
+  };
+}
 
 @Component({
   selector: 'app-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, NgxMaskDirective],
   templateUrl: './formulario.component.html',
   styleUrls: ['./formulario.component.scss'],
 })
-export class FormularioComponent
+export class AcampamentoFormularioComponent
   implements OnChanges, AfterViewInit, OnDestroy
 {
   // Adicionado OnDestroy
@@ -42,9 +58,8 @@ export class FormularioComponent
   tipos = Object.values(TipoAcampamento);
   isEditMode = false;
 
-  // Apenas duas classes de host para o tamanho do container
   @HostBinding('class.container-pequeno') containerPequeno = false;
-  @HostBinding('class.container-padrao') containerPadrao = true; // Começa como padrão
+  @HostBinding('class.container-padrao') containerPadrao = true;
 
   private fb = inject(FormBuilder);
   private elementRef = inject(ElementRef<HTMLElement>);
@@ -54,8 +69,8 @@ export class FormularioComponent
   constructor() {
     this.formulario = this.fb.group(
       {
-        dataInicio: ['', Validators.required],
-        dataFim: ['', Validators.required],
+        dataInicio: ['', [Validators.required, customDateValidator()]],
+        dataFim: ['', [Validators.required, customDateValidator()]],
         limiteCampistas: ['', [Validators.required, Validators.min(1)]],
         limiteEquipe: ['', [Validators.required, Validators.min(1)]],
         descricao: ['', Validators.required],
@@ -80,8 +95,6 @@ export class FormularioComponent
         }
       });
       this.resizeObserver.observe(elementoObservado);
-      // Garante que a detecção de mudanças ocorra após a atualização inicial
-      // para pegar as dimensões corretas na primeira vez.
       Promise.resolve().then(() =>
         this.atualizarClassesDeContainer(elementoObservado.clientWidth)
       );
@@ -95,17 +108,15 @@ export class FormularioComponent
   }
 
   private atualizarClassesDeContainer(width: number): void {
-    // Define seu breakpoint para "pequeno"
-    const ehPequeno = width < 450; // Exemplo de breakpoint, ajuste conforme necessário
+    const ehPequeno = width < 600;
 
-    // Atualiza as flags somente se houver mudança, para otimizar a detecção de mudanças
     if (this.containerPequeno !== ehPequeno) {
       this.containerPequeno = ehPequeno;
       this.containerPadrao = !ehPequeno;
       console.log(
         `Largura do Pai: ${width}px -> Pequeno: ${this.containerPequeno}, Padrão: ${this.containerPadrao}`
       );
-      this.cdr.detectChanges(); // Força a detecção de mudanças do Angular
+      this.cdr.detectChanges();
     }
   }
 
@@ -129,13 +140,41 @@ export class FormularioComponent
   }
 
   private validarDataFimMaior(): ValidatorFn {
-    // ... (mesma função)
     return (group: AbstractControl): { [key: string]: any } | null => {
-      const inicio = group.get('dataInicio')?.value;
-      const fim = group.get('dataFim')?.value;
-      return inicio && fim && new Date(fim) <= new Date(inicio)
-        ? { dataInvalida: 'Data fim deve ser posterior à data início' }
-        : null;
+      const dataInicioControl = group.get('dataInicio');
+      const dataFimControl = group.get('dataFim');
+
+      if (!dataInicioControl || !dataFimControl) {
+        return null;
+      }
+
+      const inicioStr = dataInicioControl.value;
+      const fimStr = dataFimControl.value;
+
+      if (
+        !inicioStr ||
+        !fimStr ||
+        dataInicioControl.invalid ||
+        dataFimControl.invalid
+      ) {
+        return null;
+      }
+
+      const dataInicio = parse(inicioStr, 'd/M/yyyy', new Date());
+      const dataFim = parse(fimStr, 'd/M/yyyy', new Date());
+
+      if (!isValid(dataInicio) || !isValid(dataFim)) {
+        return {
+          parseErrorIntervalo:
+            'Erro ao interpretar datas para comparação de intervalo.',
+        };
+      }
+
+      if (compareAsc(dataFim, dataInicio) <= 0) {
+        return { dataInvalida: 'Data fim deve ser posterior à data início' };
+      }
+
+      return null;
     };
   }
 

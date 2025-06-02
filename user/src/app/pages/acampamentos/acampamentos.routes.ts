@@ -15,7 +15,7 @@ export const acampamentosRoutes: Routes = [
     data: { breadcrumb: 'Lista' },
     loadComponent: () =>
       import('./components/listar/listar.component') // Crie este
-        .then((m) => m.ListarComponent),
+        .then((m) => m.AcampmanetoListarComponent),
   },
   {
     path: 'acampamentos/formulario', // Para 'Novo'
@@ -23,7 +23,7 @@ export const acampamentosRoutes: Routes = [
     data: { breadcrumb: 'Formulário' },
     loadComponent: () =>
       import('./components/formulario/formulario.component') // Crie este
-        .then((m) => m.FormularioComponent),
+        .then((m) => m.AcampamentoFormularioComponent),
   },
   {
     path: 'formulario/:id', // Para 'Editar'
@@ -31,6 +31,6 @@ export const acampamentosRoutes: Routes = [
     data: { breadcrumb: 'Editar' }, // O breadcrumb pode ser dinâmico no componente
     loadComponent: () =>
       import('./components/formulario/formulario.component') // Reusa o form
-        .then((m) => m.FormularioComponent),
+        .then((m) => m.AcampamentoFormularioComponent),
   },
 ];

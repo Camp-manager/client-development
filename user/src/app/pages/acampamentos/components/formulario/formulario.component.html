@@ -1,0 +1,134 @@
+<div class="card full-page-card">
+  <form
+    [formGroup]="formulario"
+    (ngSubmit)="onSubmit()"
+    novalidate
+    class="form-container-responsive"
+  >
+    <div class="form-section full-w"><h5>Dados Gerais</h5></div>
+    <div class="form-group">
+      <label for="dataInicio">Data Início</label>
+      <input
+        id="dataInicio"
+        type="text"
+        placeholder="dd/mm/aaaa"
+        formControlName="dataInicio"
+        mask="d0/m0/0000"
+        [class.invalid]="f['dataInicio'].invalid && f['dataInicio'].touched"
+      />
+      @if(f['dataInicio'].hasError('required') && f['dataInicio'].touched) {
+      <small class="error-text">Data Início é obrigatória.</small>
+      } @if(f['dataInicio'].hasError('invalidDate') && f['dataInicio'].touched)
+      { <small class="error-text">Data de Início inválida.</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="dataFim">Data Fim</label>
+      <input
+        id="dataFim"
+        type="text"
+        placeholder="dd/mm/aaaa"
+        formControlName="dataFim"
+        mask="d0/m0/0000"
+        [class.invalid]="f['dataFim'].invalid && f['dataFim'].touched"
+      />
+      @if(f['dataFim'].hasError('required') && f['dataFim'].touched) {
+      <small class="error-text">Data Fim é obrigatória.</small>
+      } @if(f['dataFim'].hasError('invalidDate') && f['dataFim'].touched) {
+      <small class="error-text">Data de Fim inválida.</small>
+      } @if(formulario.hasError('dataInvalida') && (f['dataFim'].touched ||
+      f['dataInicio'].touched)) {
+      <small class="error-text">Data Fim deve ser maior que Data Início.</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="limiteCampistas">Limite de Campistas</label>
+      <input
+        id="limiteCampistas"
+        type="number"
+        formControlName="limiteCampistas"
+        min="1"
+        [class.invalid]="
+          f['limiteCampistas'].invalid && f['limiteCampistas'].touched
+        "
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="limiteEquipe">Limite da Equipe</label>
+      <input
+        id="limiteEquipe"
+        type="number"
+        formControlName="limiteEquipe"
+        min="1"
+        [class.invalid]="f['limiteEquipe'].invalid && f['limiteEquipe'].touched"
+      />
+    </div>
+
+    <div class="form-section full-w"><h5>Tema e Valores</h5></div>
+    <div class="form-group">
+      <label for="tipo">Tipo</label>
+      <select
+        id="tipo"
+        formControlName="tipo"
+        [class.invalid]="f['tipo'].invalid && f['tipo'].touched"
+      >
+        <option value="" disabled selected>Selecione um tipo</option>
+        @for (tipo of tipos; track tipo) {
+        <option [value]="tipo">{{ tipo }}</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="descricao">Descrição / Tema</label>
+      <input
+        id="descricao"
+        type="text"
+        formControlName="descricao"
+        placeholder="Eu decidi..."
+        [class.invalid]="f['descricao'].invalid && f['descricao'].touched"
+      />
+    </div>
+    <div class="form-group">
+      <label for="precoCamisa">Preço da Camisa (R$)</label>
+      <input
+        id="precoCamisa"
+        type="number"
+        formControlName="precoCamisa"
+        step="0.01"
+        min="0"
+        placeholder="0.00"
+        [class.invalid]="f['precoCamisa'].invalid && f['precoCamisa'].touched"
+      />
+    </div>
+    <div class="form-group">
+      <label for="precoInscricao">Preço da Inscrição (R$)</label>
+      <input
+        id="precoInscricao"
+        type="number"
+        formControlName="precoInscricao"
+        step="0.01"
+        min="0"
+        placeholder="0.00"
+        [class.invalid]="
+          f['precoInscricao'].invalid && f['precoInscricao'].touched
+        "
+      />
+    </div>
+
+    <div class="full-w button-container">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        Cancelar
+      </button>
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="formulario.invalid"
+      >
+        {{ isEditMode ? "Salvar" : "Cadastrar" }}
+      </button>
+    </div>
+  </form>
+</div>

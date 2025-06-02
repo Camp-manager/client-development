@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "serve:php": "php -S localhost:8000 -t ../../api/relatorio",
+    "serve-user:angular": "cd ../client && ng s --host 192.168.3.13",
+    "serve-client:angular": "ng s",
+    "dev": "concurrently \"npm run serve:php\" \"npm run serve-user:angular\" \"npm run serve-client:angular\""
   },
   "private": true,
   "dependencies": {
@@ -19,7 +23,9 @@
     "@angular/router": "^19.2.0",
     "angularx-qrcode": "^19.0.0",
     "chart.js": "^4.4.9",
+    "date-fns": "^4.1.0",
     "ng2-charts": "^8.0.0",
+    "ngx-mask": "^19.0.7",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -29,6 +35,7 @@
     "@angular/cli": "^19.2.13",
     "@angular/compiler-cli": "^19.2.0",
     "@types/jasmine": "~5.1.0",
+    "concurrently": "^9.1.2",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

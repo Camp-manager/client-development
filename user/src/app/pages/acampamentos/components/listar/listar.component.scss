@@ -22,16 +22,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-shrink: 0; // Impede que o header encolha
-  // Padding, border-bottom, background-color vêm do estilo global de .card ou .card-header
+  flex-shrink: 0;
 }
 
-// Remove padding do card-body para que a tabela (com seu wrapper) ocupe todo o espaço
 .card-body.no-padding {
   padding: 0;
-  flex-grow: 1; // O corpo do card ocupa o espaço restante
-  overflow-y: auto; // Scroll vertical AQUI se a tabela for muito grande
-  display: flex; // Para que o table-responsive-wrapper possa crescer
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
   flex-direction: column;
 }
 

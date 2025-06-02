@@ -19,10 +19,6 @@
     <div class="card-content">
       <p>{{ card.content }}</p>
     </div>
-    } @if (card.embedComponent === 'formulario') {
-    <div class="embedded-form-container">
-      <app-formulario></app-formulario>
-    </div>
     } @if (card.routerLink && !card.embedComponent) {
     <a [routerLink]="card.routerLink" class="card-action-link">Ver mais</a>
     }

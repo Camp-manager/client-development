@@ -10,10 +10,9 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1rem 2%;
-    padding: 1rem 0;
+    padding: 1rem 2rem;
     width: 100%;
     height: 100%;
-    box-sizing: border-box;
     overflow-y: auto;
   }
 
@@ -46,11 +45,26 @@
       width: 100%;
     }
   }
+  .full-page-card {
+    padding: 0rem;
+  }
+  .form-container-responsive {
+    padding: 1rem 0rem;
+  }
+}
+
+.full-page-card {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+  gap: 1rem;
+  box-shadow: none;
 }
 
 .form-section {
   flex-basis: 100%;
-  border-bottom: 1px solid #eee;
   margin-bottom: 0.5rem;
   padding-bottom: 0.5rem;
   color: vars.$secondary-text;

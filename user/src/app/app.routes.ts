@@ -1,6 +1,6 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
-import { acampamentosRoutes } from './components/acampamentos/acampamentos.routes';
+import { acampamentosRoutes } from './pages/acampamentos/acampamentos.routes';
 
 export const routes: Routes = [
   {
@@ -13,7 +13,7 @@ export const routes: Routes = [
     title: 'Menu Principal',
     data: { breadcrumb: 'Início' },
     loadComponent: () =>
-      import('./components/menu-principal/menu-principal.component').then(
+      import('./pages/menu-principal/menu-principal.component').then(
         (m) => m.MenuPrincipalComponent
       ),
   },

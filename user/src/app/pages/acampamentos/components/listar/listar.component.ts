@@ -1,5 +1,4 @@
-import { CLIENT } from './../../../../.enviroment';
-
+import { CLIENT } from './../../../../../.enviroment';
 import {
   Component,
   OnInit,
@@ -10,21 +9,16 @@ import {
   OnDestroy, // Para limpar o observer
   inject, // Para injeção de dependências moderna
 } from '@angular/core';
-import {
-  CommonModule,
-  DatePipe,
-  CurrencyPipe,
-  DecimalPipe,
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import {
   Acampamento,
   Acampamentos,
-} from '../../shared/model/acampamento/acampamento'; // Ajuste o caminho
-import { TipoAcampamento } from '../../../../shared/enum/TipoAcampamento'; // Ajuste o caminho
-import { DialogComponent } from '../../../dialog/dialog.component'; // Ajuste o caminho para seu ReusableDialogComponent
+} from '../../shared/model/acampamento/acampamento';
+import { TipoAcampamento } from '../../../../shared/enum/TipoAcampamento';
 import { gerarCodigoAleatorio } from '../../../../shared/utils/code-generator';
 import { QRCodeComponent } from 'angularx-qrcode';
+import { DialogComponent } from '../../../../components/dialog/dialog.component';
 
 @Component({
   selector: 'app-listar',
@@ -33,7 +27,9 @@ import { QRCodeComponent } from 'angularx-qrcode';
   templateUrl: './listar.component.html',
   styleUrls: ['./listar.component.scss'],
 })
-export class ListarComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AcampmanetoListarComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   acampamentos: Acampamentos = [];
   acampamentoSelecionado: Acampamento | null = null;
   mostrarDialogoDetalhes = false;
@@ -56,7 +52,7 @@ export class ListarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.acampamentos = [
       {
         id: '1',
-        code: gerarCodigoAleatorio(), // Gera código aleatório
+        code: 'ABC12',
         dataInicio: '2025-01-15',
         dataFim: '2025-01-19',
         limiteCampistas: 100,
@@ -71,7 +67,7 @@ export class ListarComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       {
         id: '2',
-        code: gerarCodigoAleatorio(), // Gera código aleatório
+        code: 'XYZ78',
         dataInicio: '2025-03-10',
         dataFim: '2025-03-14',
         limiteCampistas: 80,
@@ -86,7 +82,7 @@ export class ListarComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       {
         id: '3',
-        code: gerarCodigoAleatorio(), // Gera código aleatório
+        code: gerarCodigoAleatorio(),
         dataInicio: '2025-07-20',
         dataFim: '2025-07-22',
         limiteCampistas: 40,

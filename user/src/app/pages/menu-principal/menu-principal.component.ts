@@ -1,13 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { FormularioComponent } from '../acampamentos/components/formulario/formulario.component';
 import { CardConfig } from '../../shared/model/CardConfig';
 
 @Component({
   selector: 'app-menu-principal',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormularioComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './menu-principal.component.html',
   styleUrl: './menu-principal.component.scss',
 })
