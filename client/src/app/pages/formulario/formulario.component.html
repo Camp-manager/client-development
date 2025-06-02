@@ -1,0 +1,215 @@
+<div class="container">
+  <div class="scroll">
+    <header>
+      <img src="arrow_left.png" (click)="goBack()" alt="Voltar" class="back-button" />
+      <h3>Ficha de Inscrição <br>Acampamento Senior 2026</h3>
+    </header>
+    <div class="content" *ngIf="pagina === 1">
+      <h5 class="title">Informações Pessoais</h5>
+      <p class="alert">
+        <strong>VALOR DA INSCRIÇÃO</strong> É DE <strong>R$180.00</strong>,
+        <strong>INCLUSO</strong> TODAS AS <strong>REFEIÇÕES</strong> E
+        <strong>MATERIAIS</strong> UTILIZADOS,
+        <strong>PAGAMENTO</strong> NO FINAL DA INSCRIÇÃO!
+      </p>
+
+      <form [formGroup]="formularioPagina1" novalidate>
+        <div class="form-group">
+          <label for="nome">Nome Completo:</label>
+          <input id="nome" type="text" formControlName="nome"
+                 [class.invalid]="formularioPagina1.get('nome')?.invalid && formularioPagina1.get('nome')?.touched"
+                 [class.valid]="formularioPagina1.get('nome')?.valid && formularioPagina1.get('nome')?.touched">
+        </div>
+
+        <div class="form-group">
+          <label for="telefone">Número de Telefone:</label>
+          <input id="telefone" type="tel" formControlName="telefone" mask="(00) 00000-0000"
+                 [class.invalid]="formularioPagina1.get('telefone')?.invalid && formularioPagina1.get('telefone')?.touched"
+                 [class.valid]="formularioPagina1.get('telefone')?.valid && formularioPagina1.get('telefone')?.touched">
+        </div>
+
+        <div class="form-group">
+          <label>Sexo:</label>
+          <div class="flex">
+            <label>
+              <input type="radio" value="masculino" formControlName="sexo"> Masculino
+            </label>
+            <label>
+              <input type="radio" value="feminino" formControlName="sexo"> Feminino
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group half">
+          <label for="dataNascimento">Data de Nascimento:</label>
+          <input id="dataNascimento" type="text" formControlName="dataNascimento" mask="d0/M0/0000"
+                 (change)="calcularIdade()" placeholder="dd/mm/aaaa"
+                 [class.invalid]="formularioPagina1.get('dataNascimento')?.invalid && formularioPagina1.get('dataNascimento')?.touched"
+                 [class.valid]="formularioPagina1.get('dataNascimento')?.valid && formularioPagina1.get('dataNascimento')?.touched">
+        </div>
+
+        <div class="form-group half">
+          <label for="idade">Idade:</label>
+          <input id="idade" type="number" formControlName="idade" readonly
+          [class.invalid]="formularioPagina1.get('dataNascimento')?.invalid && formularioPagina1.get('dataNascimento')?.touched"
+                 [class.valid]="formularioPagina1.get('dataNascimento')?.valid && formularioPagina1.get('dataNascimento')?.touched">
+        </div>
+
+        <div class="form-group half">
+          <label for="peso">Peso (kg):</label>
+          <input id="peso" type="text" formControlName="peso"
+                 [class.invalid]="formularioPagina1.get('peso')?.invalid && formularioPagina1.get('peso')?.touched"
+                 [class.valid]="formularioPagina1.get('peso')?.valid && formularioPagina1.get('peso')?.touched">
+        </div>
+
+        <div class="form-group half">
+          <label for="altura">Altura:</label>
+          <input id="altura" type="text" formControlName="altura"
+                 [class.invalid]="formularioPagina1.get('altura')?.invalid && formularioPagina1.get('altura')?.touched"
+                 [class.valid]="formularioPagina1.get('altura')?.valid && formularioPagina1.get('altura')?.touched">
+        </div>
+
+        <div class="form-group">
+          <label for="enderecoParticular">Endereço Particular:</label>
+          <input id="enderecoParticular" type="text" formControlName="enderecoParticular"
+                 [class.invalid]="formularioPagina1.get('enderecoParticular')?.invalid && formularioPagina1.get('enderecoParticular')?.touched"
+                 [class.valid]="formularioPagina1.get('enderecoParticular')?.valid && formularioPagina1.get('enderecoParticular')?.touched">
+        </div>
+
+        <div class="form-group">
+          <label for="cidade">Cidade:</label>
+          <input id="cidade" type="text" formControlName="cidade"
+                 [class.invalid]="formularioPagina1.get('cidade')?.invalid && formularioPagina1.get('cidade')?.touched"
+                 [class.valid]="formularioPagina1.get('cidade')?.valid && formularioPagina1.get('cidade')?.touched">
+        </div>
+
+        <div class="form-group">
+          <label for="pontoDeReferencia">Ponto De Referência:</label>
+          <input id="pontoDeReferencia" type="text" formControlName="pontoDeReferencia"
+                 [class.invalid]="formularioPagina1.get('pontoDeReferencia')?.invalid && formularioPagina1.get('pontoDeReferencia')?.touched"
+                 [class.valid]="formularioPagina1.get('pontoDeReferencia')?.valid && formularioPagina1.get('pontoDeReferencia')?.touched">
+        </div>
+      </form>
+      <button (click)="nextPage()">Proximos passos</button>
+    </div>
+    <div class="content" *ngIf="pagina === 2">
+      <h5 class="title">
+        Contato de um Familiar ou de um Conhecido que não estará fazendo o acampamento
+      </h5>
+
+      <form [formGroup]="formularioPagina2" novalidate>
+        <div class="form-group">
+          <label for="telefoneFamiliar">Telefone do Familiar:</label>
+          <input id="telefoneFamiliar" type="tel" formControlName="telefoneFamiliar" mask="(00) 00000-0000"
+            [class.invalid]="formularioPagina2.get('telefoneFamiliar')?.invalid && formularioPagina2.get('telefoneFamiliar')?.touched"
+            [class.valid]="formularioPagina2.get('telefoneFamiliar')?.valid && formularioPagina2.get('telefoneFamiliar')?.touched">
+        </div>
+
+        <div class="form-group">
+          <label for="enderecoFamiliar">Endereço do Familiar:</label>
+          <input id="enderecoFamiliar" type="text" formControlName="enderecoFamiliar"
+            [class.invalid]="formularioPagina2.get('enderecoFamiliar')?.invalid && formularioPagina2.get('enderecoFamiliar')?.touched"
+            [class.valid]="formularioPagina2.get('enderecoFamiliar')?.valid && formularioPagina2.get('enderecoFamiliar')?.touched">
+        </div>
+
+        <div class="form-group">
+          <label for="cidadeFamiliar">Cidade:</label>
+          <input id="cidadeFamiliar" type="text" formControlName="cidadeFamiliar"
+            [class.invalid]="formularioPagina2.get('cidadeFamiliar')?.invalid && formularioPagina2.get('cidadeFamiliar')?.touched"
+            [class.valid]="formularioPagina2.get('cidadeFamiliar')?.valid && formularioPagina2.get('cidadeFamiliar')?.touched">
+        </div>
+
+        <div class="form-group">
+          <label for="pontoDeReferenciaFamiliar">Ponto de Referência:</label>
+          <input id="pontoDeReferenciaFamiliar" type="text" formControlName="pontoDeReferenciaFamiliar"
+            [class.invalid]="formularioPagina2.get('pontoDeReferenciaFamiliar')?.invalid && formularioPagina2.get('pontoDeReferenciaFamiliar')?.touched"
+            [class.valid]="formularioPagina2.get('pontoDeReferenciaFamiliar')?.valid && formularioPagina2.get('pontoDeReferenciaFamiliar')?.touched">
+        </div>
+      </form>
+      <button (click)="nextPage()">Proximos passos</button>
+    </div>
+    <div class="content" *ngIf="pagina === 3">
+      <h5 class="title">
+        Informações Importantes
+      </h5>
+
+      <form [formGroup]="formularioPagina3" novalidate>
+
+        <div class="form-group" id="medicacoes" style="margin-bottom: 19px;">
+          <label for="medicacoes">Faz uso de medicação? Se <strong>Sim</strong>, qual?</label>
+          <ng-select
+            class="custom"
+            [items]="listaMedicacao"
+            bindLabel="descricao"
+            formControlName="medicacoes"
+            [multiple]="true"
+            placeholder="Selecione ou digite as medicações"
+          >
+          </ng-select>
+          <p>RESPONDA APENAS SE FAZER USO DE MEDICAÇÃO</p>
+        </div>
+
+        <div class="form-group">
+          <label for="alergias">É alérgico a alguma medicação? Qual?</label>
+          <ng-select
+            class="custom"
+            [items]="listaAlergias"
+            bindLabel="descricao"
+            formControlName="alergias"
+            [multiple]="true"
+            placeholder="Selecione ou digite alergias"
+          >
+          </ng-select>
+          <p>RESPONDA APENAS SE FOR ALÉRGICO A ALGUMA MEDICAÇÃO</p>
+        </div>
+
+        <div class="form-group">
+          <label for="acampamentos">Já fez algum acampamento? Qual?</label>
+          <ng-select
+            class="custom"
+            [items]="listaAcampamentos"
+            bindLabel="nome"
+            formControlName="acampamentos"
+            [multiple]="true"
+            placeholder="Selecione ou digite acampamentos"
+          >
+          </ng-select>
+          <p>RESPONDA APENAS SE JÁ FEZ ALGUM ACAMPAMENTO</p>
+        </div>
+
+        <div class="form-group">
+          <div class="flex">
+            <label for="temBarraca">
+              <input id="temBarraca" type="checkbox" formControlName="temBarraca">
+              Tem barraca?
+            </label>
+          </div>
+          <p>SENÃO POSSUIR O ACAMPAMENTO PROVIDENCIARÁ</p>
+        </div>
+
+        <div class="form-group">
+          <label for="tamanhoCamisa">Optar com camiseta, qual o tamanho?</label>
+          <ng-select
+            class="custom"
+            [items]="['PP', 'P', 'M', 'G', 'GG', 'XG']"
+            formControlName="tamanhoCamisa"
+            placeholder="Selecione o tamanho"
+          >
+          </ng-select>
+          <p>SE OPTAR COM A CAMISETA O VALOR <strong>ADICIONAL</strong> É DE <strong>R$45,00</strong>, ELA É OPCIONAL</p>
+        </div>
+
+      </form>
+
+      <label class="termos" for="termos">
+        <div>
+          <input id="termos" type="checkbox" [(ngModel)]="termos">
+        </div>
+        <p>Leia e aceite os <a href="">termos de uso de dados</a> antes de continuar.</p>
+      </label>
+      <button (click)="nextPage()">Métodos de pagamento</button>
+    </div>
+  </div>
+
+</div>
+

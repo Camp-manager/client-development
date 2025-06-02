@@ -1,0 +1,242 @@
+
+.container {
+  padding: 16px 0;
+  .scroll {
+    padding-bottom: 32px;
+    overflow: hidden;
+    header {
+      width: 100%;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      flex-direction: row;
+      gap: 3%;
+      img {
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+      }
+    }
+    .content {
+      padding: 32px 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      flex-direction: column;
+      .title {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      .alert {
+        color: red;
+        text-align: center;
+      }
+      .termos {
+        width: 80%;
+        margin-top: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        input {
+          width: 24px;
+          height: 24px;
+        }
+        p {
+          text-align: center;
+        }
+      }
+    }
+  }
+
+}
+form {
+  width: 90%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px 45px;
+  .form-group {
+    width: 90%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+    margin-top: 8px;
+    p {
+      text-transform: uppercase;
+      color: red;
+    }
+    .flex {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      flex-direction: row;
+      gap: 8px;
+      label {
+        width: 100%;
+        height: 44px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
+        input[type='radio'] {
+          width: 22px;
+          height: 22px;
+        }
+        input[type=checkbox] {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+    label {
+      width: 100%;
+      text-align: start;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      height: 44px;
+      padding: 0 16px;
+      font-size: 16px;
+      background-color: #EFEFEF;
+      border: 2px solid #DCDCDC;
+      border-radius: 8px;
+    }
+    .valid {
+      border: 2px solid #a7e0a4;
+      background-color:rgb(226, 255, 224)
+    }
+    .invalid {
+      border: 2px solid #e0a4a4;
+      background-color:rgb(255, 224, 224)
+    }
+    .ng-select.custom {
+      width: 100%;
+    }
+  }
+  .half {
+    width: 40%;
+    label {
+      width: 118%;
+    }
+    input {
+      width: 95%;
+    }
+  }
+}
+button {
+  width: 75%;
+  height: 44px;
+  background-color: #4A80C6;
+  color: #ffffff;
+  border-radius: 50px;
+  border: none;
+  margin-top: 32px;
+  transition: all 0.5s;
+  cursor: pointer;
+  &:active {
+    background-color: #2a4d7a;
+  }
+}
+button.invalid {
+  background-color: #e0a4a4;
+  color: #ffffff;
+  border-radius: 50px;
+  border: none;
+  margin-top: 32px;
+  transition: all 0.5s;
+  cursor: not-allowed;
+}
+@media (min-width: 768px) {
+  #medicacoes {
+    margin-bottom: 9px;
+  }
+  form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    .form-group {
+      width: 30%;
+      padding: 0 16px;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      flex-direction: column;
+      .flex {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        flex-direction: row;
+        gap: 4px;
+        label {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          gap: 8px;
+        }
+      }
+      label {
+        width: 100%;
+        margin-right: 30px;
+        text-align: start;
+        font-size: 16px;
+        margin-bottom: 6px;
+      }
+      input {
+        width: 100%;
+        height: 44px;
+        padding: 0 16px;
+        font-size: 16px;
+        background-color: #EFEFEF;
+        border: 2px solid #DCDCDC;
+        border-radius: 8px;
+      }
+      .valid {
+        border: 2px solid #a7e0a4;
+        background-color:rgb(226, 255, 224)
+      }
+      .invalid {
+        border: 2px solid #e0a4a4;
+        background-color:rgb(255, 224, 224)
+      }
+    }
+    .half {
+      width: 13.5%;
+      label {
+        width: 100%;
+      }
+      input[type='text'] {
+        width: 100%;
+      }
+    }
+  }
+  button {
+    width: 25%;
+  }
+}
+
