@@ -18,9 +18,9 @@
             "
           >
             <option value="" disabled>Selecione um acampamento</option>
-            @for(acamp of acampamentosDisponiveis; track acamp.code) {
-            <option [value]="acamp.code">
-              {{ acamp.tipo }} - {{ acamp.tema.descricao }} ({{
+            @for(acamp of acampamentosDisponiveis; track acamp.codigoRegistro) {
+            <option [value]="acamp.codigoRegistro">
+              {{ acamp.tipoAcampamento }} - {{ acamp.tema.descricao }} ({{
                 acamp.dataInicio | date : "dd/MM/yy"
               }})
             </option>

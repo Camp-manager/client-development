@@ -15,7 +15,7 @@ export const acampamentosRoutes: Routes = [
     data: { breadcrumb: 'Lista' },
     loadComponent: () =>
       import('./components/listar/listar.component') // Crie este
-        .then((m) => m.AcampmanetoListarComponent),
+        .then((m) => m.AcampamentoListarComponent),
   },
   {
     path: 'acampamentos/formulario', // Para 'Novo'

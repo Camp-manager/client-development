@@ -7,17 +7,16 @@ export const campistasRoutes: Routes = [
     data: { breadcrumb: 'Campistas' },
     loadComponent: () =>
       import('./components/listar/listar.component').then(
-        (m) => m.ListarCampistasComponent
+        (m) => m.CampistasListarComponent
       ),
   },
   {
     path: 'campistas/:acampamentoCode',
     title: 'Campistas do Acampamento',
-    // Breadcrumb can be made dynamic in the component if needed
     data: { breadcrumb: 'Campistas do Acampamento' },
     loadComponent: () =>
       import('./components/listar/listar.component').then(
-        (m) => m.ListarCampistasComponent
+        (m) => m.CampistasListarComponent
       ),
   },
 ];

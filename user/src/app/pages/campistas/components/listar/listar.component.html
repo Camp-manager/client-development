@@ -1,11 +1,13 @@
 <div class="container-campistas card full-page-card">
   <div class="card-header">
     <h3 class="card-title">
-      <!-- Lista de Campistas @if (acampamento && acampamento.code) {
+      Lista de Campistas @if (acampamento && acampamento.codigoRegistro) {
       <small class="text-muted"
-        >- Acamp. {{ acampamento.tipo }} ({{ acampamento.code }})</small
+        >- {{ acampamento.tipoAcampamento.descricao }} ({{
+          acampamento.codigoRegistro
+        }})</small
       >
-      } -->
+      }
     </h3>
   </div>
 

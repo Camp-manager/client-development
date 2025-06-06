@@ -1,6 +1,6 @@
 import { TemaRequest } from './../model/tema-request.form';
 import { inject, Injectable } from '@angular/core';
-import { Acampamentos } from '../model/acampamento';
+import { Acampamento, Acampamentos } from '../model/acampamento';
 import { Observable, of } from 'rxjs';
 import { SERVER } from '../../../../../.enviroment';
 import { HttpClient } from '@angular/common/http';
@@ -21,6 +21,12 @@ export class AcampamentoService {
     return this.http.get<Acampamentos>(`${this.API}/buscar-todos`);
   }
 
+  getAcampamentoBasicoPorId(idAcampamento: number) {
+    return this.http.get<Acampamento>(
+      `${this.API}/buscar-basico/${idAcampamento}`
+    );
+  }
+
   adicionarAcampamento(request: any) {
     this.SERVICE_TEMA.adicionarTema(
       new TemaRequest(
@@ -32,7 +38,7 @@ export class AcampamentoService {
       request = new AcampamentoRequest(request, success);
       this.http.post<any>(`${this.API}/adicionar`, request).subscribe(
         (success) => {
-          return success;
+          window.location.reload();
         },
         (error) => console.log(error)
       );

@@ -52,7 +52,7 @@ export function customDateValidator(): ValidatorFn {
 export class AcampamentoFormularioComponent
   implements OnChanges, AfterViewInit, OnDestroy, OnInit
 {
-  @Input() acampamentoId: string | null = null;
+  @Input() acampamentoId: number | null = null;
   @Output() formCancel = new EventEmitter<void>();
   @Output() formSubmit = new EventEmitter<any>();
 
@@ -126,9 +126,6 @@ export class AcampamentoFormularioComponent
     if (this.containerPequeno !== ehPequeno) {
       this.containerPequeno = ehPequeno;
       this.containerPadrao = !ehPequeno;
-      console.log(
-        `Largura do Pai: ${width}px -> Pequeno: ${this.containerPequeno}, Padrão: ${this.containerPadrao}`
-      );
       this.cdr.detectChanges();
     }
   }
@@ -137,13 +134,22 @@ export class AcampamentoFormularioComponent
     if (changes['acampamentoId']) {
       this.isEditMode = !!this.acampamentoId;
       if (this.isEditMode) {
-        console.log('Modo Edição (Input Mudou) - ID:', this.acampamentoId);
-        // TODO: Carregar os dados e preencher o formulário
+        this.service
+          .getAcampamentoBasicoPorId(this.acampamentoId!)
+          .subscribe((success) => {
+            this.formulario.reset({
+              dataInicio: [success.dataInicio],
+              dataFim: [success.dataFim],
+              limiteCampistas: [success.limiteCampistas],
+              limiteEquipe: [success.limiteFuncionarios],
+              descricao: [success.nomeAcampamento],
+              precoCamisa: [success.tema.precoCamisa],
+              precoInscricao: [success.tema.precoInscricao],
+              tipo: [success.tipoAcampamento.id],
+            });
+          });
       } else {
-        console.log('Modo Criação (Input Mudou)');
-        this.formulario.reset({
-          /* valores padrão */
-        });
+        this.formulario.reset();
       }
     }
   }
@@ -196,12 +202,11 @@ export class AcampamentoFormularioComponent
 
     payload.tipo = +payload.tipo;
 
-    let result = this.service.adicionarAcampamento(payload);
-    console.log(result);
+    this.service.adicionarAcampamento(payload);
+    this.formulario.reset();
   }
 
   cancelar(): void {
-    console.log('Emitindo Cancelar');
     this.formCancel.emit();
   }
 }

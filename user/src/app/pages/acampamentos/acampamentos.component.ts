@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AcampamentoFormularioComponent } from './components/formulario/formulario.component';
-import { AcampmanetoListarComponent } from './components/listar/listar.component';
+import { AcampamentoListarComponent } from './components/listar/listar.component';
 
 @Component({
   selector: 'app-acampamentos',
@@ -9,7 +9,7 @@ import { AcampmanetoListarComponent } from './components/listar/listar.component
   imports: [
     RouterModule,
     AcampamentoFormularioComponent,
-    AcampmanetoListarComponent,
+    AcampamentoListarComponent,
   ],
   templateUrl: './acampamentos.component.html',
   styleUrl: './acampamentos.component.scss',

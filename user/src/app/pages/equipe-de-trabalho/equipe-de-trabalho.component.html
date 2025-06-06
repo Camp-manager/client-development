@@ -1,11 +1,13 @@
 <div class="container-equipe-trabalho card full-page-card">
   <div class="card-header">
     <h3 class="card-title">
-      <!-- Equipe de Trabalho @if (acampamento && acampamento.code) {
+      Equipe de Trabalho @if (acampamento && acampamento.codigoRegistro) {
       <small class="text-muted"
-        >- Acamp. {{ acampamento.tipo }} ({{ acampamento.code }})</small
+        >- {{ acampamento.tipoAcampamento }} ({{
+          acampamento.codigoRegistro
+        }})</small
       >
-      } -->
+      }
     </h3>
   </div>
 

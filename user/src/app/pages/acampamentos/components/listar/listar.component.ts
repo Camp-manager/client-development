@@ -29,7 +29,7 @@ import { AcampamentoService } from '../../shared/service/acampamento.service';
   templateUrl: './listar.component.html',
   styleUrls: ['./listar.component.scss'],
 })
-export class AcampmanetoListarComponent
+export class AcampamentoListarComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   acampamentos: Acampamentos = [];
@@ -45,8 +45,8 @@ export class AcampmanetoListarComponent
 
   private elementRef = inject(ElementRef<HTMLElement>);
   private cdr = inject(ChangeDetectorRef);
+  private acampamentoService = inject(AcampamentoService);
   private resizeObserver: ResizeObserver | null = null;
-  private acampamentoService = inject(AcampamentoService); // Inject service
 
   constructor() {}
 
@@ -80,7 +80,7 @@ export class AcampmanetoListarComponent
     if (this.containerPequeno !== ehPequeno) {
       this.containerPequeno = ehPequeno;
       this.containerPadrao = !ehPequeno;
-      this.cdr.detectChanges(); // UsemarkForCheck for OnPush strategy
+      this.cdr.detectChanges();
     }
   }
 
@@ -104,10 +104,4 @@ export class AcampmanetoListarComponent
     this.acampamentoParaQRCode = null;
     this.qrCodeData = null;
   }
-
-  // calcularOcupacao(acamp: Acampamento): number {
-  //   if (!acamp.limiteCampistas || acamp.limiteCampistas === 0) return 0;
-  //   const ocupacao = (acamp.numeroAtualCampistas / acamp.limiteCampistas) * 100;
-  //   return Math.min(ocupacao, 100); // Cap at 100% for display
-  // }
 }

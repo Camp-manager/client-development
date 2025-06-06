@@ -19,6 +19,7 @@ export interface Acampamento {
   limiteCampistas: number;
   tipoAcampamento: TipoAcampamento;
   codigoRegistro: string;
+  tema: TemaAcampamento;
 }
 
 export type Acampamentos = Acampamento[];

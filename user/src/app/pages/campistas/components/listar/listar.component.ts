@@ -16,7 +16,7 @@ import { Campistas } from '../../shared/model/campista';
   templateUrl: './listar.component.html',
   styleUrls: ['./listar.component.scss'],
 })
-export class ListarCampistasComponent implements OnInit {
+export class CampistasListarComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private campistaService = inject(CampistaService);
   private acampamentoService = inject(AcampamentoService);

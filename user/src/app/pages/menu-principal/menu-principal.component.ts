@@ -67,7 +67,6 @@ export class MenuPrincipalComponent {
   ];
 
   private router = inject(Router);
-  // ...
   navigateTo(link: string | any[]): void {
     if (typeof link === 'string') {
       this.router.navigate([link]);
