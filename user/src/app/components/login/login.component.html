@@ -8,7 +8,7 @@
         <input
           id="email"
           type="email"
-          formControlName="email"
+          formControlName="login"
           placeholder="E-mail"
           class="input"
           [class.invalid]="email?.touched && email?.invalid"
@@ -19,7 +19,7 @@
         <div class="error-message">
           @if (email?.hasError('required')) {
           <span>O e-mail é obrigatório.</span>
-          } @if (email?.hasError('email')) {
+          } @if (email?.hasError('login')) {
           <span>Por favor, insira um e-mail válido.</span>
           }
         </div>
@@ -67,5 +67,8 @@
         }
       </button>
     </form>
+    <button class="btn btn-primary" (click)="register()">
+      <span>REGISTRO</span>
+    </button>
   </div>
 </div>

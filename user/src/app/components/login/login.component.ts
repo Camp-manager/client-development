@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 // CommonModule não é mais necessário para @if, @for etc.
 import { Router } from '@angular/router';
+import { AuthService } from './shared/service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,25 +18,23 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   form: FormGroup;
-  @Output() token = new EventEmitter<void>(); // Emitir void, pois o pai já lê o token
+  @Output() token = new EventEmitter<void>();
 
-  // Injeção de dependências moderna (opcional)
   private fb = inject(FormBuilder);
-  private router = inject(Router);
-  // private authService = inject(AuthService); // <-- Injetaria o serviço real
+  private service = inject(AuthService);
 
   isLoading = false;
   errorMessage: string | null = null;
 
   constructor() {
     this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      login: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
   get email() {
-    return this.form.get('email');
+    return this.form.get('login');
   }
 
   get password() {
@@ -43,38 +42,26 @@ export class LoginComponent {
   }
 
   login() {
-    // Se o formulário for inválido, marca tudo e sai.
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
     this.isLoading = true;
-    this.errorMessage = null;
-    const { email, password } = this.form.value;
+    this.service.login(this.form.value).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        localStorage.setItem('token', response.token);
+        this.token.emit();
+      },
+      error: (error: any) => {
+        this.isLoading = false;
+        this.errorMessage = 'Login falhou. Verifique suas credenciais.';
+        console.error('Erro ao fazer login:', error);
+      },
+      complete: () => {
+        this.isLoading;
+        false;
+      },
+    });
+  }
 
-    // --- !!! INÍCIO DO MOCK - SUBSTITUIR EM PRODUÇÃO !!! ---
-    // Simula uma pequena espera (como uma chamada de API)
-    setTimeout(() => {
-      // Em um app real, você chamaria:
-      // this.authService.login(email!, password!).subscribe({
-      //   next: () => {
-      //     this.token.emit();
-      //     this.isLoading = false;
-      //     // Opcional: Redirecionar aqui ou deixar o AppComponent fazer
-      //   },
-      //   error: (err) => {
-      //     this.errorMessage = "E-mail ou senha inválidos."; // Ou outra mensagem de erro
-      //     this.isLoading = false;
-      //   }
-      // });
-
-      // Lógica MOCK atual:
-      console.warn('Usando login MOCK. Não use em produção!');
-      localStorage.setItem('token', `mock_token_for_${email}`); // Salva um mock token
-      this.token.emit(); // Emite o evento para o AppComponent
-      this.isLoading = false;
-    }, 500); // Atraso de 0.5 segundos
-    // --- !!! FIM DO MOCK !!! ---
+  register() {
+    this.service.register();
   }
 }

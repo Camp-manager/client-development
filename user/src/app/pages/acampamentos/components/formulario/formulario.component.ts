@@ -11,6 +11,7 @@ import {
   ChangeDetectorRef,
   AfterViewInit,
   OnDestroy,
+  OnInit,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -20,10 +21,12 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { TipoAcampamento } from '../../../../shared/enum/TipoAcampamento';
 import { CommonModule } from '@angular/common';
 import { compareAsc, isValid, parse } from 'date-fns';
 import { NgxMaskDirective } from 'ngx-mask';
+import { AcampamentoService } from '../../shared/service/acampamento.service';
+import { TipoService } from '../../shared/service/tipo.service';
+import { TipoAcampamento } from '../../shared/model/acampamento';
 
 export function customDateValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -47,21 +50,22 @@ export function customDateValidator(): ValidatorFn {
   styleUrls: ['./formulario.component.scss'],
 })
 export class AcampamentoFormularioComponent
-  implements OnChanges, AfterViewInit, OnDestroy
+  implements OnChanges, AfterViewInit, OnDestroy, OnInit
 {
-  // Adicionado OnDestroy
   @Input() acampamentoId: string | null = null;
   @Output() formCancel = new EventEmitter<void>();
   @Output() formSubmit = new EventEmitter<any>();
 
   formulario: FormGroup;
-  tipos = Object.values(TipoAcampamento);
+  tipos: TipoAcampamento[] = [];
   isEditMode = false;
 
   @HostBinding('class.container-pequeno') containerPequeno = false;
   @HostBinding('class.container-padrao') containerPadrao = true;
 
   private fb = inject(FormBuilder);
+  private service = inject(AcampamentoService);
+  private tipoService = inject(TipoService);
   private elementRef = inject(ElementRef<HTMLElement>);
   private cdr = inject(ChangeDetectorRef);
   private resizeObserver: ResizeObserver | null = null;
@@ -76,12 +80,21 @@ export class AcampamentoFormularioComponent
         descricao: ['', Validators.required],
         precoCamisa: [0, [Validators.required, Validators.min(0)]],
         precoInscricao: [0, [Validators.required, Validators.min(0)]],
-        tipo: ['', Validators.required],
+        tipo: [0, Validators.required],
       },
       {
         validators: this.validarDataFimMaior(),
       }
     );
+  }
+
+  ngOnInit(): void {
+    this.tipoService
+      .buscarTodosTipo()
+      .subscribe((success: TipoAcampamento[]) => {
+        this.tipos = success;
+        console.log(this.tipos);
+      });
   }
 
   ngAfterViewInit(): void {
@@ -179,14 +192,12 @@ export class AcampamentoFormularioComponent
   }
 
   onSubmit() {
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      return;
-    }
-    this.formSubmit.emit({
-      id: this.acampamentoId,
-      data: this.formulario.value,
-    });
+    const payload = { ...this.formulario.value };
+
+    payload.tipo = +payload.tipo;
+
+    let result = this.service.adicionarAcampamento(payload);
+    console.log(result);
   }
 
   cancelar(): void {

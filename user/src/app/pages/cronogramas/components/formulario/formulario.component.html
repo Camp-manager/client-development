@@ -1,0 +1,247 @@
+<div class="card full-page-card">
+  <form
+    [formGroup]="cronogramaForm"
+    (ngSubmit)="onSubmit()"
+    novalidate
+    class="form-container-responsive"
+  >
+    <div class="form-section">
+      <h5><i class="fas fa-calendar-alt"></i> Dados Gerais do Cronograma</h5>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="idAcampamento">Acampamento Associado</label>
+          <select
+            id="idAcampamento"
+            formControlName="idAcampamento"
+            [class.ng-invalid.ng-touched]="
+              f['idAcampamento'].invalid && f['idAcampamento'].touched
+            "
+          >
+            <option value="" disabled>Selecione um acampamento</option>
+            @for(acamp of acampamentosDisponiveis; track acamp.code) {
+            <option [value]="acamp.code">
+              {{ acamp.tipo }} - {{ acamp.tema.descricao }} ({{
+                acamp.dataInicio | date : "dd/MM/yy"
+              }})
+            </option>
+            }
+          </select>
+          @if(f['idAcampamento'].invalid && f['idAcampamento'].touched) {
+          <small class="error-text">Acampamento é obrigatório.</small>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="dataInicial">Data Inicial</label>
+          <input
+            type="date"
+            id="dataInicial"
+            formControlName="dataInicial"
+            [class.ng-invalid.ng-touched]="
+              f['dataInicial'].invalid && f['dataInicial'].touched
+            "
+          />
+          @if(f['dataInicial'].hasError('required') && f['dataInicial'].touched)
+          {
+          <small class="error-text">Data inicial é obrigatória.</small>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="dataFinal">Data Final</label>
+          <input
+            type="date"
+            id="dataFinal"
+            formControlName="dataFinal"
+            [class.ng-invalid.ng-touched]="
+              (f['dataFinal'].invalid ||
+                cronogramaForm.hasError('datasInvalidas')) &&
+              f['dataFinal'].touched
+            "
+          />
+          @if(f['dataFinal'].hasError('required') && f['dataFinal'].touched) {
+          <small class="error-text">Data final é obrigatória.</small>
+          } @if(cronogramaForm.hasError('datasInvalidas') &&
+          (f['dataInicial'].touched || f['dataFinal'].touched)) {
+          <small class="error-text"
+            >Data final deve ser igual ou posterior à data inicial.</small
+          >
+          }
+        </div>
+        <div class="form-group full-width-group">
+          <label for="descricaoCronograma">Descrição do Cronograma</label>
+          <textarea
+            id="descricaoCronograma"
+            formControlName="descricao"
+            rows="3"
+            [class.ng-invalid.ng-touched]="
+              f['descricao'].invalid && f['descricao'].touched
+            "
+          ></textarea>
+          @if(f['descricao'].invalid && f['descricao'].touched) {
+          <small class="error-text">Descrição é obrigatória.</small>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h5><i class="fas fa-tasks"></i> Atividades do Cronograma</h5>
+      <div formArrayName="atividades" class="form-array-container">
+        @for(atividadeCtrl of atividades.controls; track atividadeCtrl; let i =
+        $index) {
+        <div [formGroupName]="i" class="form-array-item">
+          <div class="item-header">
+            <h6>Atividade {{ i + 1 }}</h6>
+            <button
+              type="button"
+              class="btn btn-danger btn-sm remove-item-btn"
+              (click)="removerAtividade(i)"
+            >
+              <i class="fas fa-trash-alt"></i> Remover
+            </button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="atividadeTipo{{ i }}">Tipo</label>
+              <select id="atividadeTipo{{ i }}" formControlName="tipo">
+                <option value="" disabled>Selecione</option>
+                <option value="R">Reunião</option>
+                <option value="L">Lazer</option>
+                <option value="A">Alimentação</option>
+                <option value="E">Espiritual</option>
+                <option value="O">Outro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="atividadeHorario{{ i }}">Período/Horário</label>
+              <select id="atividadeHorario{{ i }}" formControlName="horario">
+                <option value="" disabled>Selecione</option>
+                <option value="M">Manhã (08:00-12:00)</option>
+                <option value="T">Tarde (13:00-18:00)</option>
+                <option value="N">Noite (19:00-22:00)</option>
+                <option value="X">Dia Inteiro</option>
+              </select>
+            </div>
+            <div class="form-group full-width-group">
+              <label for="atividadeDescricao{{ i }}"
+                >Descrição da Atividade</label
+              >
+              <textarea
+                id="atividadeDescricao{{ i }}"
+                formControlName="descricao"
+                rows="2"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        }
+        <button
+          type="button"
+          class="btn btn-info btn-sm add-item-btn"
+          (click)="adicionarAtividade()"
+        >
+          <i class="fas fa-plus-circle"></i> Adicionar Atividade
+        </button>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h5><i class="fas fa-users-cog"></i> Equipes Envolvidas</h5>
+      <div formArrayName="equipes" class="form-array-container">
+        @for(equipeCtrl of equipes.controls; track equipeCtrl; let j = $index) {
+        <div [formGroupName]="j" class="form-array-item">
+          <div class="item-header">
+            <h6>
+              Equipe {{ j + 1 }}:
+              {{ equipeCtrl.get("nome")?.value || "Nova Equipe" }}
+            </h6>
+            <button
+              type="button"
+              class="btn btn-danger btn-sm remove-item-btn"
+              (click)="removerEquipe(j)"
+            >
+              <i class="fas fa-trash-alt"></i> Remover Equipe
+            </button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="equipeNome{{ j }}">Nome da Equipe</label>
+              <input
+                type="text"
+                id="equipeNome{{ j }}"
+                formControlName="nome"
+                placeholder="Ex: Equipe Cozinha"
+              />
+            </div>
+            <div class="form-group">
+              <label for="equipeTipo{{ j }}">Tipo de Equipe</label>
+              <select id="equipeTipo{{ j }}" formControlName="tipo">
+                <option value="" disabled>Selecione</option>
+                <option value="C">Cozinha</option>
+                <option value="A">Animação/Lazer</option>
+                <option value="S">Suporte/Logística</option>
+                <option value="E">Espiritualidade</option>
+                <option value="L">Limpeza</option>
+                <option value="O">Outro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="equipe-dias-container" formArrayName="diasDeFuncao">
+            <h6>
+              <i class="fas fa-calendar-day"></i> Funções Diárias para "{{
+                equipeCtrl.get("nome")?.value
+              }}"
+            </h6>
+            @if(getDiasDoCronograma(j).length === 0 && (f['dataInicial'].valid
+            && f['dataFinal'].valid)) {
+            <p class="text-muted small">
+              Defina as datas do cronograma para atribuir funções diárias.
+            </p>
+            } @for(diaFuncaoCtrl of getDiasDeFuncaoControls(j); track
+            diaFuncaoCtrl; let k = $index) {
+            <div [formGroupName]="k" class="dia-funcao-item">
+              <label for="equipe{{ j }}Dia{{ k }}Funcao">
+                Função para
+                {{ getDiasDoCronograma(j)[k] | date : "dd/MM/yyyy (EEEE)" }}:
+              </label>
+              <input
+                type="text"
+                id="equipe{{ j }}Dia{{ k }}Funcao"
+                formControlName="funcao"
+                placeholder="Descreva a principal função da equipe neste dia"
+              />
+            </div>
+            }
+          </div>
+        </div>
+        }
+        <button
+          type="button"
+          class="btn btn-primary btn-sm add-item-btn"
+          (click)="adicionarEquipe()"
+        >
+          <i class="fas fa-users"></i> Adicionar Equipe
+        </button>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="cronogramaForm.invalid || isSubmitting"
+      >
+        @if(isSubmitting) {
+        <span><i class="fas fa-spinner fa-spin"></i> Salvando...</span>
+        } @else {
+        <span><i class="fas fa-save"></i> Salvar Cronograma</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,92 @@
+@use "../../../../shared/styles/variables" as vars;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden; // Prevent double scrollbars if content overflows
+}
+
+.container-campistas {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto; // Scroll within this container
+  gap: 1rem;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0; // Header should not shrink
+  padding-bottom: 1rem;
+  border-bottom: 1px solid vars.$border-color-light;
+  margin-bottom: 1rem;
+}
+
+.card-title small {
+  font-size: 0.85em;
+  font-weight: normal;
+}
+
+.card-body {
+  flex-grow: 1;
+  overflow-y: auto; // In case table itself needs to scroll if not responsive enough
+  padding: 0; // Remove padding if table-responsive-wrapper handles it
+}
+
+.icon-sm {
+  margin-right: 0.3rem;
+  color: vars.$secondary-text;
+  font-size: 0.9em;
+}
+
+.loading-state,
+.empty-state,
+.select-camp-state {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: vars.$secondary-text;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-state {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: vars.$danger-color;
+  background-color: vars.$danger-background-light;
+  border: 1px solid vars.$danger-color;
+  border-radius: vars.$small-border-radius;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-footer {
+  padding-top: 1rem;
+  margin-top: auto; // Push footer to bottom
+  text-align: right;
+  border-top: 1px solid vars.$border-color-light;
+  flex-shrink: 0; // Footer should not shrink
+}
+
+.app-table {
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    li {
+      font-size: 0.85em;
+    }
+  }
+}

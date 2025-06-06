@@ -1,1 +1,76 @@
-<p>equipe-de-trabalho works!</p>
+<div class="container-equipe-trabalho card full-page-card">
+  <div class="card-header">
+    <h3 class="card-title">
+      <!-- Equipe de Trabalho @if (acampamento && acampamento.code) {
+      <small class="text-muted"
+        >- Acamp. {{ acampamento.tipo }} ({{ acampamento.code }})</small
+      >
+      } -->
+    </h3>
+  </div>
+
+  <div class="card-body">
+    @if (isLoading) {
+    <p class="loading-state">Carregando equipe...</p>
+    } @else if (error) {
+    <p class="error-state">{{ error }}</p>
+    } @else if (!acampamento) {
+    <p class="select-camp-state">
+      Nenhum acampamento selecionado ou encontrado para exibir a equipe.
+      <br />
+      @if(attemptedDefaultLoad) {
+      <span>Não foi possível carregar dados para um acampamento padrão.</span>
+      } @else {
+      <span>Por favor, selecione um acampamento para visualizar a equipe.</span>
+      }
+    </p>
+    } @else if (equipe.length > 0) {
+    <div class="table-responsive-wrapper">
+      <table class="app-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Função</th>
+            <th>Contato</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (membro of equipe; track membro.id) {
+          <tr>
+            <td>{{ membro.nome }}</td>
+            <td>{{ membro.funcao }}</td>
+            <td>
+              @if (membro.telefone) {
+              <div>
+                <i class="fas fa-phone icon-sm"></i> {{ membro.telefone }}
+              </div>
+              } @if (membro.email) {
+              <div>
+                <i class="fas fa-envelope icon-sm"></i> {{ membro.email }}
+              </div>
+              }
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    } @else if (acampamento) {
+    <p class="empty-state">
+      <!-- Nenhum membro da equipe encontrado para o acampamento "{{
+        acampamento.tema.descricao
+      }}" ({{ acampamento.code }}). -->
+    </p>
+    }
+  </div>
+
+  <div class="card-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      routerLink="/acampamentos/lista"
+    >
+      <i class="fas fa-arrow-left"></i> Voltar para Acampamentos
+    </button>
+  </div>
+</div>

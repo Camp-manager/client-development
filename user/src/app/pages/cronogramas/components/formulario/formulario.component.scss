@@ -1,0 +1,160 @@
+@use "../../../../shared/styles/variables" as vars;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%; // Ensure it takes full height if its container does
+
+  .form-container-responsive {
+    display: flex;
+    flex-direction: column; // Changed to column for main layout
+    gap: 1.5rem; // Increased gap between sections
+    padding: 1rem 1.5rem; // Consistent padding
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+  }
+}
+
+.form-section {
+  background-color: #f9f9f9; // Light background for sections
+  padding: 1.5rem;
+  border-radius: vars.$small-border-radius;
+  border: 1px solid #e0e0e0;
+
+  h5 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: vars.$primary-blue;
+    border-bottom: 1px solid vars.$border-color-light;
+    padding-bottom: 0.5rem;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem 1.5rem; // Row and column gap
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px; // Ensure inputs have a minimum width
+
+  label {
+    margin-bottom: 0.4rem; // Increased space
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  input[type="time"], // For HH:mm if used
+  select,
+  textarea {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 0.9rem; // Slightly larger padding
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 0.4rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+    background-color: white;
+
+    &:focus {
+      border-color: vars.$primary-blue;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
+    }
+    &.ng-invalid.ng-touched {
+      // For Angular reactive forms validation
+      border-color: vars.$danger-color;
+      &:focus {
+        box-shadow: 0 0 0 2px vars.$danger-focus-shadow-color;
+      }
+    }
+  }
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+}
+
+.full-width-group {
+  grid-column: 1 / -1; // Make group span full width of the grid
+}
+
+.form-array-container {
+  margin-top: 1rem;
+  padding-left: 1rem; // Indent FormArray content
+  border-left: 3px solid vars.$primary-blue;
+}
+
+.form-array-item {
+  background-color: #ffffff;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: vars.$small-border-radius;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative; // For remove button positioning
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    h6 {
+      margin: 0;
+      font-size: 1rem;
+      color: vars.$primary-text;
+    }
+  }
+}
+
+.remove-item-btn {
+  // position: absolute;
+  // top: 0.5rem;
+  // right: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+.add-item-btn {
+  margin-top: 0.5rem;
+  display: inline-flex; // To align icon and text
+  align-items: center;
+  gap: 0.5em;
+}
+
+.button-container {
+  margin-top: 2rem; // More space before buttons
+  padding-top: 1.5rem;
+  border-top: 1px solid vars.$border-color-light;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+// Styles for EquipeDiaFuncao (daily functions within a team)
+.equipe-dias-container {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #f0f4f8; // Slightly different background
+  border-radius: vars.$small-border-radius;
+}
+
+.dia-funcao-item {
+  margin-bottom: 0.75rem;
+  label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  input[type="text"] {
+    font-size: 0.9rem; // Smaller font for function inputs
+    padding: 0.5rem 0.7rem;
+  }
+}

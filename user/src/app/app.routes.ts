@@ -1,6 +1,8 @@
-// src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { acampamentosRoutes } from './pages/acampamentos/acampamentos.routes';
+import { equipeTrabalhoRoutes } from './pages/equipe-de-trabalho/equipeDeTrabalho.routes';
+import { campistasRoutes } from './pages/campistas/campista.routes';
+import { cronogramasRoutes } from './pages/cronogramas/cronogramas.routes';
 
 export const routes: Routes = [
   {
@@ -18,14 +20,15 @@ export const routes: Routes = [
       ),
   },
 
-  // Apenas espalha as rotas de acampamentos (que agora são aninhadas)
   ...acampamentosRoutes,
-
-  // ... (outras rotas como 'equipe-trabalho') ...
+  ...equipeTrabalhoRoutes,
+  ...campistasRoutes,
+  ...cronogramasRoutes,
 
   {
     path: '**',
     title: 'Página Não Encontrada',
+    data: { breadcrumb: 'Não Encontrado' }, // Optional: breadcrumb for not found
     loadComponent: () =>
       import('./components/not-found/not-found.component').then(
         (m) => m.NotFoundComponent

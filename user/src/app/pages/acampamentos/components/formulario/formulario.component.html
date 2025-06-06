@@ -77,7 +77,7 @@
       >
         <option value="" disabled selected>Selecione um tipo</option>
         @for (tipo of tipos; track tipo) {
-        <option [value]="tipo">{{ tipo }}</option>
+        <option [value]="tipo.id">{{ tipo.descricao }}</option>
         }
       </select>
     </div>

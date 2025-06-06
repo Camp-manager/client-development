@@ -2,28 +2,30 @@ import { CLIENT } from './../../../../../.enviroment';
 import {
   Component,
   OnInit,
-  HostBinding, // Para adicionar classes ao host
-  ElementRef, // Para referência ao elemento
-  ChangeDetectorRef, // Para forçar detecção de mudanças
-  AfterViewInit, // Para interagir com DOM após renderização
-  OnDestroy, // Para limpar o observer
-  inject, // Para injeção de dependências moderna
+  HostBinding,
+  ElementRef,
+  ChangeDetectorRef,
+  AfterViewInit,
+  OnDestroy,
+  inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import {
-  Acampamento,
-  Acampamentos,
-} from '../../shared/model/acampamento/acampamento';
-import { TipoAcampamento } from '../../../../shared/enum/TipoAcampamento';
-import { gerarCodigoAleatorio } from '../../../../shared/utils/code-generator';
+import { Acampamento, Acampamentos } from '../../shared/model/acampamento';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
+import { AcampamentoService } from '../../shared/service/acampamento.service';
 
 @Component({
   selector: 'app-listar',
   standalone: true,
-  imports: [CommonModule, RouterModule, DialogComponent, QRCodeComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    DialogComponent,
+    DatePipe,
+    QRCodeComponent,
+  ],
   templateUrl: './listar.component.html',
   styleUrls: ['./listar.component.scss'],
 })
@@ -34,7 +36,6 @@ export class AcampmanetoListarComponent
   acampamentoSelecionado: Acampamento | null = null;
   mostrarDialogoDetalhes = false;
 
-  // Propriedades para QRCode
   qrCodeData: string | null = null;
   mostrarDialogoQRCode = false;
   acampamentoParaQRCode: Acampamento | null = null;
@@ -45,60 +46,16 @@ export class AcampmanetoListarComponent
   private elementRef = inject(ElementRef<HTMLElement>);
   private cdr = inject(ChangeDetectorRef);
   private resizeObserver: ResizeObserver | null = null;
+  private acampamentoService = inject(AcampamentoService); // Inject service
 
   constructor() {}
 
   ngOnInit(): void {
-    this.acampamentos = [
-      {
-        id: '1',
-        code: 'ABC12',
-        dataInicio: '2025-01-15',
-        dataFim: '2025-01-19',
-        limiteCampistas: 100,
-        numeroAtualCampistas: 75,
-        limiteEquipeTrabalho: 30,
-        tema: {
-          descricao: 'Firmes na Fé, Servindo com Amor',
-          precoCamisa: 35.0,
-          precoInscricao: 150.0,
-        },
-        tipo: TipoAcampamento.SENIOR,
-      },
-      {
-        id: '2',
-        code: 'XYZ78',
-        dataInicio: '2025-03-10',
-        dataFim: '2025-03-14',
-        limiteCampistas: 80,
-        numeroAtualCampistas: 80,
-        limiteEquipeTrabalho: 25,
-        tema: {
-          descricao: 'Desperta, tu que dormes!',
-          precoCamisa: 30.0,
-          precoInscricao: 120.0,
-        },
-        tipo: TipoAcampamento.FAC,
-      },
-      {
-        id: '3',
-        code: gerarCodigoAleatorio(),
-        dataInicio: '2025-07-20',
-        dataFim: '2025-07-22',
-        limiteCampistas: 40,
-        numeroAtualCampistas: 32,
-        limiteEquipeTrabalho: 15,
-        tema: {
-          descricao: 'Unidos no Amor de Cristo',
-          precoCamisa: 40.0,
-          precoInscricao: 250.0,
-        },
-        tipo: TipoAcampamento.CASAIS,
-      },
-    ];
+    this.acampamentoService.getAcampamentos().subscribe((data) => {
+      this.acampamentos = data;
+    });
   }
 
-  // Lógica do ResizeObserver (mantida)
   ngAfterViewInit(): void {
     const elementoObservado = this.elementRef.nativeElement.parentElement;
     if (elementoObservado) {
@@ -123,11 +80,10 @@ export class AcampmanetoListarComponent
     if (this.containerPequeno !== ehPequeno) {
       this.containerPequeno = ehPequeno;
       this.containerPadrao = !ehPequeno;
-      this.cdr.detectChanges();
+      this.cdr.detectChanges(); // UsemarkForCheck for OnPush strategy
     }
   }
 
-  // Métodos do diálogo de detalhes
   abrirDialogoDetalhes(acamp: Acampamento): void {
     this.acampamentoSelecionado = acamp;
     this.mostrarDialogoDetalhes = true;
@@ -137,10 +93,9 @@ export class AcampmanetoListarComponent
     this.acampamentoSelecionado = null;
   }
 
-  // Métodos para o diálogo de QRCode
   abrirDialogoQRCode(acamp: Acampamento): void {
     this.acampamentoParaQRCode = acamp;
-    this.qrCodeData = `${CLIENT}/formulario?code=${acamp.code}`;
+    this.qrCodeData = `${CLIENT}/inscricao?acampamento\=${acamp.codigoRegistro}`;
     this.mostrarDialogoQRCode = true;
   }
 
@@ -150,8 +105,9 @@ export class AcampmanetoListarComponent
     this.qrCodeData = null;
   }
 
-  calcularOcupacao(acamp: Acampamento): number {
-    if (!acamp.limiteCampistas || acamp.limiteCampistas === 0) return 0;
-    return (acamp.numeroAtualCampistas / acamp.limiteCampistas) * 100;
-  }
+  // calcularOcupacao(acamp: Acampamento): number {
+  //   if (!acamp.limiteCampistas || acamp.limiteCampistas === 0) return 0;
+  //   const ocupacao = (acamp.numeroAtualCampistas / acamp.limiteCampistas) * 100;
+  //   return Math.min(ocupacao, 100); // Cap at 100% for display
+  // }
 }

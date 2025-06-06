@@ -1,21 +1,24 @@
-import { TipoAcampamento } from '../../../../../shared/enum/TipoAcampamento';
-
 export interface TemaAcampamento {
   descricao: string;
   precoCamisa: number;
   precoInscricao: number;
 }
 
+export interface TipoAcampamento {
+  id: number;
+  descricao: string;
+  categoriaDoAcampamento: string;
+}
+
 export interface Acampamento {
-  id: string;
-  code: string; // <--- NOVO CAMPO
+  idAcampamento: number;
+  nomeAcampamento: string;
   dataInicio: string;
   dataFim: string;
+  limiteFuncionarios: number;
   limiteCampistas: number;
-  numeroAtualCampistas: number;
-  limiteEquipeTrabalho: number;
-  tema: TemaAcampamento;
-  tipo: TipoAcampamento;
+  tipoAcampamento: TipoAcampamento;
+  codigoRegistro: string;
 }
 
 export type Acampamentos = Acampamento[];

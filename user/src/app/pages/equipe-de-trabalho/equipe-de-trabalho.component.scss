@@ -1,0 +1,85 @@
+// Import shared styles
+@use "../../shared/styles/variables" as vars;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.container-equipe-trabalho {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+  gap: 1rem; // Consider using a variable if defined, e.g., vars.$spacing-md
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0; // Header should not shrink
+  padding-bottom: 1rem;
+  border-bottom: 1px solid vars.$border-color-light;
+  margin-bottom: 1rem;
+}
+
+.card-title small {
+  font-size: 0.85em;
+  font-weight: normal;
+}
+
+.card-body {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.app-table {
+  // Assuming you have a global style for app-table from your project
+  width: 100%;
+  border-collapse: collapse;
+  th,
+  td {
+    padding: 0.75rem; // Consider vars.$table-cell-padding or similar
+    text-align: left;
+    border-bottom: 1px solid vars.$border-color-light; // Using variable
+  }
+  th {
+    background-color: vars.$table-stripe-bg; // Using variable
+    font-weight: 500; // Or vars.$font-weight-bold or similar
+    color: vars.$primary-text;
+  }
+  td {
+    color: vars.$secondary-text;
+  }
+}
+
+.icon-sm {
+  margin-right: 0.3rem; // Consider vars.$spacing-xs or similar
+  color: vars.$secondary-text; // Or a specific icon color variable
+}
+
+.loading-state,
+.empty-state {
+  padding: 2rem; // Consider vars.$spacing-lg or similar
+  text-align: center;
+  font-size: 1.1rem; // Consider vars.$font-size-lg or similar
+  color: vars.$secondary-text;
+}
+
+.error-state {
+  padding: 2rem; // Consider vars.$spacing-lg or similar
+  text-align: center;
+  font-size: 1.1rem; // Consider vars.$font-size-lg or similar
+  color: vars.$danger-color; // Using variable
+}
+
+.card-footer {
+  padding-top: 1rem; // Consider vars.$spacing-md
+  text-align: right;
+  border-top: 1px solid vars.$border-color-light; // Using variable
+  flex-shrink: 0;
+}
