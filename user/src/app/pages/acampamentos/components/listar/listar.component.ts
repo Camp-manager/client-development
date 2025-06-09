@@ -1,4 +1,3 @@
-import { CLIENT } from './../../../../../.enviroment';
 import {
   Component,
   OnInit,
@@ -15,6 +14,7 @@ import { Acampamento, Acampamentos } from '../../shared/model/acampamento';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { AcampamentoService } from '../../shared/service/acampamento.service';
+import { environment } from '../../../../../.enviroment';
 
 @Component({
   selector: 'app-listar',
@@ -95,7 +95,7 @@ export class AcampamentoListarComponent
 
   abrirDialogoQRCode(acamp: Acampamento): void {
     this.acampamentoParaQRCode = acamp;
-    this.qrCodeData = `${CLIENT}/inscricao?acampamento\=${acamp.codigoRegistro}`;
+    this.qrCodeData = `${environment.CLIENT}/inscricao?acampamento\=${acamp.codigoRegistro}`;
     this.mostrarDialogoQRCode = true;
   }
 

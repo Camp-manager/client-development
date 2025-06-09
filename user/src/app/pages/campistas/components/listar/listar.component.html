@@ -1,7 +1,7 @@
 <div class="container-campistas card full-page-card">
   <div class="card-header">
     <h3 class="card-title">
-      Lista de Campistas @if (acampamento && acampamento.codigoRegistro) {
+      Lista de Campistas @if (acampamento) {
       <small class="text-muted"
         >- {{ acampamento.tipoAcampamento.descricao }} ({{
           acampamento.codigoRegistro
@@ -16,19 +16,7 @@
     <p class="loading-state">Carregando campistas...</p>
     } @else if (error) {
     <p class="error-state">{{ error }}</p>
-    } @else if (!acampamento) {
-    <p class="select-camp-state">
-      Nenhum acampamento selecionado ou encontrado.
-      <br />
-      @if(attemptedDefaultLoad) {
-      <span>Não foi possível carregar dados para um acampamento padrão.</span>
-      } @else {
-      <span
-        >Por favor, selecione um acampamento para visualizar os campistas.</span
-      >
-      }
-    </p>
-    } @else if (campistas.length > 0) {
+    } @else if (campistas.length > 0 && acampamento) {
     <div class="table-responsive-wrapper">
       <table class="app-table">
         <thead>
@@ -90,9 +78,13 @@
     </div>
     } @else if (acampamento) {
     <p class="empty-state">
-      <!-- Nenhum campista encontrado para o acampamento "{{
-        acampamento.tema.descricao
-      }}" ({{ acampamento.code }}). -->
+      Nenhum campista encontrado para o acampamento "{{
+        acampamento.nomeAcampamento
+      }}" ({{ acampamento.codigoRegistro }}).
+    </p>
+    } @else {
+    <p class="select-camp-state">
+      Nenhum acampamento selecionado ou encontrado.
     </p>
     }
   </div>

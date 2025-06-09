@@ -1,17 +1,36 @@
-import { TemaRequest } from './../model/tema-request.form';
-import { Injectable } from '@angular/core';
-import { SERVER } from '../../../../../.enviroment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { TemaRequest } from '../model/tema-request.form';
+import { environment } from '../../../../../.enviroment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TemaService {
-  private API = `${SERVER}/tema`;
+  private http = inject(HttpClient);
+  private readonly baseUrl = `${environment.API}/tema`;
 
-  constructor(private http: HttpClient) {}
+  getTemas(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/buscar-todos`);
+  }
 
-  adicionarTema(request: TemaRequest) {
-    return this.http.post<number>(`${this.API}/adicionar`, request);
+  getTemaById(idTema: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/buscar/${idTema}`);
+  }
+
+  adicionarImagem(idTema: number, imagem: File): Observable<void> {
+    const formData = new FormData();
+    formData.append('imagem', imagem, imagem.name);
+    formData.append('idTema', idTema.toString());
+    return this.http.post<void>(`${this.baseUrl}/adicionar-imagem`, formData);
+  }
+
+  atualizarTema(temaRequest: TemaRequest): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/atualizar`, temaRequest);
+  }
+
+  deletarTema(idTema: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/deletar/${idTema}`);
   }
 }

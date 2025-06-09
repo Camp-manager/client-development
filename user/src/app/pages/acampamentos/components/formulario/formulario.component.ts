@@ -1,3 +1,5 @@
+import { TemaService } from './../../shared/service/tema.service';
+import { TemaAcampamento } from './../../shared/model/acampamento';
 import {
   Component,
   Input,
@@ -58,6 +60,7 @@ export class AcampamentoFormularioComponent
 
   formulario: FormGroup;
   tipos: TipoAcampamento[] = [];
+  temas: TemaAcampamento[] = [];
   isEditMode = false;
 
   @HostBinding('class.container-pequeno') containerPequeno = false;
@@ -66,6 +69,7 @@ export class AcampamentoFormularioComponent
   private fb = inject(FormBuilder);
   private service = inject(AcampamentoService);
   private tipoService = inject(TipoService);
+  private temaService = inject(TemaService);
   private elementRef = inject(ElementRef<HTMLElement>);
   private cdr = inject(ChangeDetectorRef);
   private resizeObserver: ResizeObserver | null = null;
@@ -93,7 +97,11 @@ export class AcampamentoFormularioComponent
       .buscarTodosTipo()
       .subscribe((success: TipoAcampamento[]) => {
         this.tipos = success;
-        console.log(this.tipos);
+      });
+    this.temaService
+      .buscarTodosTemas()
+      .subscribe((success: TemaAcampamento[]) => {
+        this.temas = success;
       });
   }
 
@@ -201,8 +209,14 @@ export class AcampamentoFormularioComponent
     const payload = { ...this.formulario.value };
 
     payload.tipo = +payload.tipo;
-
-    this.service.adicionarAcampamento(payload);
+    const tema: TemaAcampamento = this.temas.filter((tema) => {
+      tema.descricao == this.formulario.value.descricao;
+    })[0];
+    if (!tema) this.service.adicionarAcampamento(payload);
+    else {
+      payload.idTema = tema.id;
+      this.service.adicionarAcampamentoComTemaExistente(payload);
+    }
     this.formulario.reset();
   }
 

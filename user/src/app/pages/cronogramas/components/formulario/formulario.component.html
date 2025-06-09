@@ -194,25 +194,11 @@
                 equipeCtrl.get("nome")?.value
               }}"
             </h6>
-            @if(getDiasDoCronograma(j).length === 0 && (f['dataInicial'].valid
-            && f['dataFinal'].valid)) {
+            @if(getDiasDoCronograma().length === 0 && (f['dataInicial'].valid &&
+            f['dataFinal'].valid)) {
             <p class="text-muted small">
               Defina as datas do cronograma para atribuir funções diárias.
             </p>
-            } @for(diaFuncaoCtrl of getDiasDeFuncaoControls(j); track
-            diaFuncaoCtrl; let k = $index) {
-            <div [formGroupName]="k" class="dia-funcao-item">
-              <label for="equipe{{ j }}Dia{{ k }}Funcao">
-                Função para
-                {{ getDiasDoCronograma(j)[k] | date : "dd/MM/yyyy (EEEE)" }}:
-              </label>
-              <input
-                type="text"
-                id="equipe{{ j }}Dia{{ k }}Funcao"
-                formControlName="funcao"
-                placeholder="Descreva a principal função da equipe neste dia"
-              />
-            </div>
             }
           </div>
         </div>

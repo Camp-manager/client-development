@@ -27,9 +27,54 @@ export class CampistasListarComponent implements OnInit {
   error: string | null = null;
   attemptedDefaultLoad = false;
 
-  ngOnInit(): void {}
-
-  private loadDataForCode(code: string) {}
+  ngOnInit(): void {
+    this.route.paramMap
+      .pipe(
+        tap(() => {
+          this.isLoading = true;
+          this.error = null;
+          this.acampamento = null;
+          this.campistas = [];
+        }),
+        switchMap((params) => {
+          const acampamentoId =
+            params.get('acampamentoId') == null
+              ? 0
+              : Number.parseInt(params.get('acampamentoId')!);
+          if (acampamentoId == 0) {
+            this.isLoading = false;
+            this.error = 'Nenhum código de acampamento fornecido na rota.';
+            return of(null);
+          }
+          return this.acampamentoService
+            .getAcampamentoBasicoPorId(acampamentoId)
+            .pipe(
+              switchMap((acamp) => {
+                if (!acamp) {
+                  this.isLoading = false;
+                  this.error = `Acampamento com código "${acampamentoId}" não encontrado.`;
+                  return of(null);
+                }
+                this.acampamento = acamp;
+                return this.campistaService.getCampistasByAcampamentoCode(
+                  acamp.codigoRegistro
+                );
+              }),
+              catchError((err) => {
+                this.isLoading = false;
+                this.error = `Erro ao carregar dados: ${err.message}`;
+                return of(null);
+              })
+            );
+        })
+      )
+      .subscribe((campistasResult) => {
+        if (campistasResult) {
+          this.campistas = campistasResult;
+        }
+        this.isLoading = false;
+      });
+  }
 
   calcularIdade(dataNascimentoStr: string): number | string {
     if (!dataNascimentoStr) return '-';

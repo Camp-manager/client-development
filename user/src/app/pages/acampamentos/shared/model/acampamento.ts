@@ -1,4 +1,5 @@
 export interface TemaAcampamento {
+  id: number;
   descricao: string;
   precoCamisa: number;
   precoInscricao: number;

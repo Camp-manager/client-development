@@ -1,2 +1,5 @@
-export const SERVER = 'http://localhost:8080';
-export const CLIENT = 'http://192.168.3.13:4200';
+export const environment = {
+  production: false,
+  API: 'http://localhost:8080',
+  CLIENT: 'http://192.168.1.0:4200',
+};

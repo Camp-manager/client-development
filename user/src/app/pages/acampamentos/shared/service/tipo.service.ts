@@ -1,18 +1,33 @@
-import { Injectable } from '@angular/core';
-import { SERVER } from '../../../../../.enviroment';
 import { HttpClient } from '@angular/common/http';
-import { TipoAcampamento } from '../model/acampamento';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../../.enviroment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TipoService {
-  private API = `${SERVER}/tipo-acampamento`;
+  private http = inject(HttpClient);
+  private readonly baseUrl = `${environment.API}/tipo-acampamento`;
 
-  constructor(private http: HttpClient) {}
+  getTiposDeAcampamento(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/buscar-todos`);
+  }
 
-  buscarTodosTipo(): Observable<TipoAcampamento[]> {
-    return this.http.get<TipoAcampamento[]>(`${this.API}/buscar-todos`);
+  getCategorias(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/buscar-categorias`);
+  }
+
+  criarTipoAcampamento(request: any): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/criar-tipo-acampamento`,
+      request
+    );
+  }
+
+  deletarTipoAcampamento(id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.baseUrl}/deletar-tipo-acampamento/${id}`
+    );
   }
 }

@@ -88,8 +88,13 @@
         type="text"
         formControlName="descricao"
         placeholder="Eu decidi..."
+        list="temas"
         [class.invalid]="f['descricao'].invalid && f['descricao'].touched"
-      />
+      /><datalist id="temas">
+        @for (tema of temas; track tema) {
+        <option [value]="tema.descricao"></option>
+        }
+      </datalist>
     </div>
     <div class="form-group">
       <label for="precoCamisa">Preço da Camisa (R$)</label>

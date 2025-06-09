@@ -1,4 +1,4 @@
-export class CronogramaRequest {
+export class CronogramaRequestForm {
   dataInicial: string;
 
   dataFinal: string;

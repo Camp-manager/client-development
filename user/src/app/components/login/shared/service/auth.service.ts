@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { SERVER } from '../../../../../.enviroment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../../.enviroment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private API = `${SERVER}/users`;
+  private API = `${environment.API}/users`;
 
   constructor(private http: HttpClient) {}
 
