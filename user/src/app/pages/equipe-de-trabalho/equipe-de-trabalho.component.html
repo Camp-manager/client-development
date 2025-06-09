@@ -1,78 +1,176 @@
-<div class="container-equipe-trabalho card full-page-card">
+<div class="container-equipes card full-page-card">
   <div class="card-header">
-    <h3 class="card-title">
-      Equipe de Trabalho @if (acampamento && acampamento.codigoRegistro) {
-      <small class="text-muted"
-        >- {{ acampamento.tipoAcampamento }} ({{
-          acampamento.codigoRegistro
-        }})</small
-      >
-      }
-    </h3>
+    <h3 class="card-title">Gerenciamento de Equipes</h3>
   </div>
 
   <div class="card-body">
     @if (isLoading) {
-    <p class="loading-state">Carregando equipe...</p>
-    } @else if (error) {
-    <p class="error-state">{{ error }}</p>
-    } @else if (!acampamento) {
-    <p class="select-camp-state">
-      Nenhum acampamento selecionado ou encontrado para exibir a equipe.
-      <br />
-      @if(attemptedDefaultLoad) {
-      <span>Não foi possível carregar dados para um acampamento padrão.</span>
-      } @else {
-      <span>Por favor, selecione um acampamento para visualizar a equipe.</span>
-      }
-    </p>
-    } @else if (equipe.length > 0) {
+    <p class="loading-state">Carregando dados das equipes...</p>
+    } @else {
     <div class="table-responsive-wrapper">
-      <table class="app-table">
+      <h4>Equipes Formadas</h4>
+      <table class="app-table equipes-table">
         <thead>
           <tr>
-            <th>Nome</th>
-            <th>Função</th>
-            <th>Contato</th>
+            <th style="width: 50px"></th>
+            <th>Nome da Equipe</th>
+            <th>Tipo</th>
+            <th class="text-center">Nº de Membros</th>
           </tr>
         </thead>
         <tbody>
-          @for (membro of equipe; track membro.id) {
-          <tr>
-            <td>{{ membro.nome }}</td>
-            <td>{{ membro.funcao }}</td>
+          @for (equipe of equipes; track equipe.id) {
+          <tr
+            [class.bind]="equipe.expanded ? 'expanded' : ''"
+            class="equipe-row"
+            (click)="toggleExpand(equipe)"
+          >
             <td>
-              @if (membro.telefone) {
-              <div>
-                <i class="fas fa-phone icon-sm"></i> {{ membro.telefone }}
+              <i
+                class="fas"
+                [ngClass]="
+                  equipe.expanded ? 'fa-chevron-down' : 'fa-chevron-right'
+                "
+              ></i>
+            </td>
+            <td>{{ equipe.nome }}</td>
+            <td>{{ equipe.tipoEquipe }}</td>
+            <td class="text-center">{{ equipe.membros.length }}</td>
+          </tr>
+
+          @if (equipe.expanded) {
+          <tr class="membros-row">
+            <td colspan="4">
+              <div class="membros-container">
+                @if (equipe.membros.length > 0) {
+                <table class="app-table app-table-inner">
+                  <thead>
+                    <tr>
+                      <th>Nome do Membro</th>
+                      <th class="text-center" style="width: 200px">Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (membro of equipe.membros; track membro.id) {
+                    <tr>
+                      <td>{{ membro.nome }}</td>
+                      <td class="text-center">
+                        <button
+                          class="btn btn-sm btn-warning"
+                          (click)="
+                            removerMembroDaEquipe(equipe, [membro]);
+                            $event.stopPropagation()
+                          "
+                          title="Remover da equipe e mover para a lista de 'Sem Time'"
+                        >
+                          <i class="fas fa-arrow-down"></i> Remover da Equipe
+                        </button>
+                      </td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+                } @else {
+                <p class="empty-state-inner">Nenhum membro nesta equipe.</p>
+                }
               </div>
-              } @if (membro.email) {
-              <div>
-                <i class="fas fa-envelope icon-sm"></i> {{ membro.email }}
-              </div>
-              }
+            </td>
+          </tr>
+          } } @empty {
+          <tr>
+            <td colspan="4">
+              <p class="empty-state">
+                Nenhuma equipe de trabalho foi criada para este acampamento.
+              </p>
             </td>
           </tr>
           }
         </tbody>
       </table>
     </div>
-    } @else if (acampamento) {
-    <p class="empty-state">
-      <!-- Nenhum membro da equipe encontrado para o acampamento "{{
-        acampamento.tema.descricao
-      }}" ({{ acampamento.code }}). -->
-    </p>
-    }
-  </div>
 
-  <div class="card-footer">
-    <button
-      type="button"
-      class="btn btn-secondary"
-      routerLink="/acampamentos/lista"
-    >
-      <i class="fas fa-arrow-left"></i> Voltar para Acampamentos
-    </button>
+    <div class="unassigned-section">
+      <hr />
+      <h4>Pessoas Sem Equipe</h4>
+
+      <h5>Funcionários Disponíveis</h5>
+      @if (funcionariosSemTime.length > 0) {
+      <table class="app-table unassigned-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th style="width: 220px">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (func of funcionariosSemTime; track func.id) {
+          <tr>
+            <td>{{ func.nome }}</td>
+            <td class="actions">
+              <select
+                class="form-control form-control-sm"
+                #selectEquipeFunc
+                (change)="
+                  adicionarMembroAEquipe(func, +selectEquipeFunc.value);
+                  selectEquipeFunc.value = ''
+                "
+                title="Atribuir à equipe"
+              >
+                <option value="">Atribuir para a equipe...</option>
+                @for(e of equipes; track e.id) {
+                <option [value]="e.id">{{ e.nome }}</option>
+                }
+              </select>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p class="empty-state-inner">
+        Todos os funcionários já estão atribuídos a uma equipe.
+      </p>
+      }
+
+      <h5 class="mt-4">Campistas Disponíveis</h5>
+      @if (campistasSemTime.length > 0) {
+      <table class="app-table unassigned-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th style="width: 220px">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (camp of campistasSemTime; track camp.id) {
+          <tr>
+            <td>{{ camp.nomeCompleto }}</td>
+            <td class="actions">
+              <select
+                class="form-control form-control-sm"
+                #selectEquipeCamp
+                (change)="
+                  adicionarMembroAEquipe(camp, +selectEquipeCamp.value);
+                  selectEquipeCamp.value = ''
+                "
+                title="Atribuir à equipe"
+              >
+                <option value="">Atribuir para a equipe...</option>
+                @for(e of equipes; track e.id) {
+                <option [value]="e.id">{{ e.nome }}</option>
+                }
+              </select>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p class="empty-state-inner">
+        Todos os campistas já estão atribuídos a uma equipe.
+      </p>
+      }
+    </div>
+    }
   </div>
 </div>

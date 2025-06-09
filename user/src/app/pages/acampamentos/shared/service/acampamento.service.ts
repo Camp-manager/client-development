@@ -31,7 +31,7 @@ export class AcampamentoService {
   }
 
   adicionarAcampamento(request: any) {
-    this.SERVICE_TEMA.adicionarTema(
+    this.SERVICE_TEMA.cadastrarTema(
       new TemaRequest(
         request.descricao,
         request.precoCamisa,

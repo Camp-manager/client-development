@@ -6,31 +6,24 @@ export const acampamentosRoutes: Routes = [
     title: 'Acampamentos',
     data: { breadcrumb: 'Acampamentos' },
     loadComponent: () =>
-      import('./acampamentos.component') // Crie este
-        .then((m) => m.AcampamentosComponent),
+      import('./acampamentos.component').then((m) => m.AcampamentosComponent),
   },
   {
     path: 'acampamentos/lista',
     title: 'Lista de Acampamentos',
     data: { breadcrumb: 'Lista' },
     loadComponent: () =>
-      import('./components/listar/listar.component') // Crie este
-        .then((m) => m.AcampamentoListarComponent),
+      import('./components/listar/listar.component').then(
+        (m) => m.AcampamentoListarComponent
+      ),
   },
   {
-    path: 'acampamentos/formulario', // Para 'Novo'
+    path: 'acampamentos/formulario',
     title: 'Novo Acampamento',
     data: { breadcrumb: 'Formulário' },
     loadComponent: () =>
-      import('./components/formulario/formulario.component') // Crie este
-        .then((m) => m.AcampamentoFormularioComponent),
-  },
-  {
-    path: 'formulario/:id', // Para 'Editar'
-    title: 'Editar Acampamento',
-    data: { breadcrumb: 'Editar' }, // O breadcrumb pode ser dinâmico no componente
-    loadComponent: () =>
-      import('./components/formulario/formulario.component') // Reusa o form
-        .then((m) => m.AcampamentoFormularioComponent),
+      import('./components/formulario/formulario.component').then(
+        (m) => m.AcampamentoFormularioComponent
+      ),
   },
 ];

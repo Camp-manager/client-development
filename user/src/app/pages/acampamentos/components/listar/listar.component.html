@@ -79,13 +79,6 @@
               </button>
               <button
                 class="button-icon"
-                [routerLink]="['/acampamentos/formulario', acamp.idAcampamento]"
-                title="Editar"
-              >
-                <i class="fas fa-edit"></i>
-              </button>
-              <button
-                class="button-icon"
                 (click)="abrirDialogoQRCode(acamp)"
                 title="Gerar QRCode Inscrição"
               >
@@ -137,6 +130,18 @@
       <div class="detail-item">
         <strong>Limite Equipe:</strong>
         <span>{{ acampamentoSelecionado.limiteFuncionarios }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Preço Inscrição:</strong>
+        <span>{{
+          acampamentoSelecionado.tema.precoAcampamento | currency : "BRL"
+        }}</span>
+      </div>
+      <div class="detail-item">
+        <strong>Preço Camiseta:</strong>
+        <span>{{
+          acampamentoSelecionado.tema.precoCamiseta | currency : "BRL"
+        }}</span>
       </div>
     </div>
     } @else {

@@ -16,8 +16,8 @@ export const ROUTERS: RouterHelpers = [
     ],
   },
   {
-    nome: 'Equipe de Trabalho',
-    path: '/equipe-de-trabalho',
+    nome: 'Equipes',
+    path: '/equipe',
     icon: 'fa-users-cog',
   },
   {

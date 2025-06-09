@@ -1,18 +1,15 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Route } from '@angular/router';
 import { FormularioComponent } from './formulario.component';
 
-
-
-const routes: Routes = [
+export const FormularioRoutes: Route[] = [
   {
-    path: '',
+    path: 'formulario/:tipo/:idAcampamento/:codigoRegistro',
     component: FormularioComponent,
-  }
+    loadChildren: () =>
+      import('./formulario.module').then((m) => m.FormularioModule),
+  },
+  {
+    path: 'formulario',
+    component: FormularioComponent,
+  },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class FormularioRoutingModule { }

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { FormularioRoutes } from './pages/formulario/formulario.routing';
 
 export const routes: Routes = [
   {
@@ -9,13 +10,7 @@ export const routes: Routes = [
         (m) => m.LandingPageModule
       ),
   },
-  {
-    path: 'formulario',
-    loadChildren: () =>
-      import('./pages/formulario/formulario.module').then(
-        (m) => m.FormularioModule
-      ),
-  }
+  ...FormularioRoutes,
 ];
 
 @NgModule({

@@ -1,123 +1,247 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, Observable, of } from 'rxjs';
+import { InscricaoService } from './shared/service/inscricao.service';
+import { PessoaRequest } from './shared/model/pessoa.request';
+import { HttpErrorResponse } from '@angular/common/http';
+
+import { CamisetaService } from '../../services/camiseta.service';
+import { AcampamentoService } from '../../services/acampamento.service';
+import { Acampamento } from '../../shared/model/acampamento';
 
 @Component({
-  standalone: false,
   selector: 'app-formulario',
   templateUrl: './formulario.component.html',
-  styleUrl: './formulario.component.scss'
+  styleUrls: ['./formulario.component.scss'],
+  standalone: false,
 })
 export class FormularioComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private inscricaoService = inject(InscricaoService);
+  private acampamentoService = inject(AcampamentoService);
+  private camisetaService = inject(CamisetaService);
 
-  pagina: number = 1;
-  termos: boolean = false;
-  listaMedicacao: any[];
-  listaAlergias: any[];
-  listaAcampamentos: any[];
+  formState: 'loading' | 'lookup' | 'filling' | 'error' = 'loading';
+  acampamento: Acampamento | null = null;
+  form!: FormGroup;
+  tipoFormulario: 'campista' | 'funcionario' | null = null;
+  cpfLookupControl = new FormControl('', [
+    Validators.required,
+    Validators.minLength(14),
+  ]);
+  isSubmitting = false;
+  errorMessage: string | null = null;
+  tamanhosCamisa: string[] = [];
 
-  formularioPagina1!: FormGroup;
-  formularioPagina2!: FormGroup;
-  formularioPagina3!: FormGroup;
-  formularioCompleto!: FormGroup;
-  forms: FormGroup[] = [];
-
-
-  constructor(private router: Router, private fb: FormBuilder) {
-    this.listaMedicacao = [{ descricao: 'Paracetamol' }, { descricao: 'Ibuprofeno' }];
-    this.listaAlergias = [{ descricao: 'Dipirona' }, { descricao: 'Amoxicilina' }];
-    this.listaAcampamentos = [{ nome: 'Escoteiro' }, { nome: 'Aventura Jovem' }];
-
-
-    this.formularioPagina1 = this.fb.group({
-      nome: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ú\s]+$/)]],
-      telefone: ['', [Validators.required, Validators.pattern(/^\(?\d{2}\)?[\s.-]?\d{4,5}[\s.-]?\d{4}$/)]],
-      sexo: ['', Validators.required],
-      dataNascimento: ['', Validators.required],
-      idade: [''],
-      peso: ['', [Validators.required, Validators.pattern(/^\d{1,3}([.,]\d{1,2})?$/)]],
-      altura: ['', [Validators.required, Validators.pattern(/^\d{1,3}([.,]\d{1,2})?$/)]],
-      enderecoParticular: ['', Validators.required],
-      cidade: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ú\s]+$/)]],
-      pontoDeReferencia: [''],
-    });
-
-    this.formularioPagina2 = this.fb.group({
-      telefoneFamiliar: ['', [Validators.required, Validators.pattern(/^\(?\d{2}\)?[\s.-]?\d{4,5}[\s.-]?\d{4}$/)]],
-      enderecoFamiliar: ['', Validators.required],
-      cidadeFamiliar: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ú\s]+$/)]],
-      pontoDeReferenciaFamiliar: [''],
-    });
-
-    this.formularioPagina3 = this.fb.group({
-      medicacoes: [[]],
-      alergias: [[]],
-      acampamentos: [[]],
-      temBarraca: [false],
-      tamanhoCamisa: [null]
-    });
-
-  }
+  private codigoRegistro: string | null = null;
+  private idAcampamento: string | null = null;
 
   ngOnInit(): void {
-    const code = this.router.getCurrentNavigation()?.extras.state?.['code'];
-    console.log(code);
+    this.route.paramMap.subscribe((params) => {
+      const tipo = params.get('tipo');
+      this.idAcampamento = params.get('idAcampamento');
+      this.codigoRegistro = params.get('codigoRegistro');
+
+      if (!this.codigoRegistro || !tipo) {
+        this.formState = 'error';
+        this.errorMessage =
+          'URL de inscrição inválida. Verifique o link recebido.';
+        return;
+      }
+
+      if (tipo.toLowerCase() === 'cam') {
+        this.tipoFormulario = 'campista';
+      } else if (tipo.toLowerCase() === 'fun') {
+        this.tipoFormulario = 'funcionario';
+      } else {
+        this.formState = 'error';
+        this.errorMessage = `Tipo de inscrição "${tipo}" é desconhecido.`;
+        return;
+      }
+
+      this.buildForm();
+      this.carregarDadosIniciais(this.idAcampamento);
+      this.formState = 'lookup';
+    });
   }
 
-  calcularIdade(): void {
-    let data = this.formularioPagina1.get('dataNascimento')?.value;
-    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const match = data.match(regex);
-    if (!match) return;
+  carregarDadosIniciais(idAcampamento: any): void {
+    this.formState = 'loading';
 
-    const [_, diaStr, mesStr, anoStr] = match;
-    const dia = +diaStr;
-    const mes = +mesStr;
-    const ano = +anoStr;
-
-    const nascimento = new Date(ano, mes - 1, dia);
-    const hoje = new Date();
-
-    let idade = hoje.getFullYear() - nascimento.getFullYear();
-    if (
-      hoje.getMonth() < nascimento.getMonth() ||
-      (hoje.getMonth() === nascimento.getMonth() && hoje.getDate() < nascimento.getDate())
-    ) {
-      idade--;
-    }
-
-    this.formularioPagina1.get('idade')?.setValue(idade);
+    forkJoin({
+      acampamento:
+        this.acampamentoService.buscarAcampamentoBasico(idAcampamento),
+      tamanhos: this.camisetaService.getTamanhos(),
+    }).subscribe({
+      next: ({ acampamento, tamanhos }) => {
+        this.acampamento = acampamento;
+        this.tamanhosCamisa = tamanhos;
+        this.formState = 'lookup'; // Libera a tela de busca
+      },
+      error: (err) => {
+        this.formState = 'error';
+        this.errorMessage =
+          'Não foi possível carregar os dados do acampamento.';
+      },
+    });
   }
 
-  nextPage(): void {
-    this.forms = [this.formularioPagina1, this.formularioPagina2];
-    if (this.pagina < 3 && this.forms[this.pagina - 1].valid) {
-      this.pagina++;
-    } else if (this.pagina === 3 && this.formularioPagina3.valid) {
-      console.log(this.pagina)
-      this.juntarFormularios();
-    } else {
-      this.forms[this.pagina - 1].markAllAsTouched();
-    }
-  }
-
-  juntarFormularios(): void {
-    if(this.termos) {
-      this.formularioCompleto = this.fb.group({
-        ...this.formularioPagina1.value,
-        ...this.formularioPagina2.value,
-        ...this.formularioPagina3.value,
+  buildForm(): void {
+    if (this.tipoFormulario === 'campista') {
+      this.form = this.fb.group({
+        usaMedicamento: [false, Validators.required],
+        temAlergia: [false, Validators.required],
+        alergias: [''],
+        jaFezAcampamento: [false, Validators.required],
+        acampamentosFeitos: [''],
+        temBarraca: [false, Validators.required],
+        tamanhoCamisa: [''],
+        pessoa: this.fb.group({
+          nomeCompleto: ['', Validators.required],
+          cpf: ['', Validators.required],
+          dataNascimento: ['', Validators.required],
+          telefone: ['', Validators.required],
+          sexo: ['', Validators.required],
+          peso: [null, [Validators.required, Validators.min(1)]],
+          altura: [null, [Validators.required, Validators.min(0.5)]],
+          alimentoPredileto: [''],
+          foiBatizado: [false, Validators.required],
+          temPrimeiraComunhao: [false, Validators.required],
+          endereco: this.fb.group({
+            cep: ['', Validators.required],
+            rua: ['', Validators.required],
+            numero: ['', Validators.required],
+            bairro: ['', Validators.required],
+            cidade: ['', Validators.required],
+            pontoReferencia: [''],
+          }),
+          familiar: this.fb.group({
+            nome: ['', Validators.required],
+            parentesco: ['', Validators.required],
+            telefone: ['', Validators.required],
+            endereco: this.fb.group({
+              cep: ['', Validators.required],
+              rua: ['', Validators.required],
+              numero: ['', Validators.required],
+              bairro: ['', Validators.required],
+              cidade: ['', Validators.required],
+              pontoReferencia: [''],
+            }),
+          }),
+        }),
       });
-      console.log('Formulário final:', this.formularioCompleto.value);
+    } else if (this.tipoFormulario === 'funcionario') {
+      this.form = this.fb.group({
+        nome: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        cpf: ['', Validators.required],
+        telefone: ['', Validators.required],
+        habilidade: ['', Validators.required],
+        tamanhoCamisa: [''],
+      });
     }
   }
 
+  buscarDadosPorCPF(): void {
+    if (this.cpfLookupControl.invalid) return;
 
-  goBack() {
-    this.pagina = this.pagina - 1;
-    if (this.pagina < 1) {
-      this.router.navigate(['/']);
+    this.isSubmitting = true;
+    this.errorMessage = null;
+    const cpf = this.cpfLookupControl.value!;
+
+    this.inscricaoService.getDadosPessoaPorCPF(cpf).subscribe({
+      next: (dados: any) => {
+        if (this.tipoFormulario === 'campista') {
+          this.form.get('pessoa')?.patchValue(dados.pessoa);
+        } else {
+          this.form.patchValue(dados);
+        }
+        alert(
+          'Dados carregados com sucesso! Por favor, revise as informações.'
+        );
+        this.formState = 'filling';
+        this.isSubmitting = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 404) {
+          alert(
+            'CPF não encontrado. Por favor, preencha o formulário pela primeira vez.'
+          );
+          const cpfControlPath =
+            this.tipoFormulario === 'campista' ? 'pessoa.cpf' : 'cpf';
+          this.form.get(cpfControlPath)?.setValue(cpf);
+          this.formState = 'filling';
+        } else {
+          this.errorMessage =
+            'Ocorreu um erro ao buscar seus dados. Tente novamente.';
+        }
+        this.isSubmitting = false;
+      },
+    });
+  }
+
+  pularBuscaCPF(): void {
+    this.formState = 'filling';
+  }
+
+  copiarEndereco(event: any): void {
+    const enderecoCampista = this.form.get('pessoa.endereco')?.value;
+    const enderecoFamiliar = this.form.get('pessoa.familiar.endereco');
+
+    if (event.target.checked && enderecoCampista) {
+      enderecoFamiliar?.patchValue(enderecoCampista);
+    } else {
+      enderecoFamiliar?.reset();
     }
   }
 
+  onSubmit(): void {
+    // ... esta função permanece a mesma
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      alert('Por favor, preencha todos os campos obrigatórios em destaque.');
+      return;
+    }
+
+    this.isSubmitting = true;
+    const payload = this.form.value;
+    let submitRequest$: Observable<void>;
+
+    if (this.tipoFormulario === 'campista') {
+      payload.alergias = payload.alergias
+        ? payload.alergias.split(',').map((s: string) => s.trim())
+        : [];
+      payload.acampamentosFeitos = payload.acampamentosFeitos
+        ? payload.acampamentosFeitos.split(',').map((s: string) => s.trim())
+        : [];
+      submitRequest$ = this.inscricaoService.cadastrarCampista(
+        this.codigoRegistro!,
+        payload
+      );
+    } else {
+      submitRequest$ = this.inscricaoService.cadastrarFuncionario(
+        this.codigoRegistro!,
+        payload
+      );
+    }
+
+    submitRequest$.subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.router.navigate(['/sucesso']);
+      },
+      error: (err: any) => {
+        this.isSubmitting = false;
+        this.errorMessage = `Erro ao enviar inscrição: ${err.message}`;
+      },
+    });
+  }
 }

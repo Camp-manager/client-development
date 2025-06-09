@@ -8,6 +8,21 @@
   overflow: hidden;
 }
 
+.error-state {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: vars.$danger-color;
+  background-color: vars.$danger-background-light;
+  border: 1px solid vars.$danger-color;
+  border-radius: vars.$small-border-radius;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .container-equipe-trabalho {
   margin: 0;
   display: flex;

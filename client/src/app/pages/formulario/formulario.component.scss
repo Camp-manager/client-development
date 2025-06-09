@@ -1,242 +1,272 @@
-
-.container {
-  padding: 16px 0;
-  .scroll {
-    padding-bottom: 32px;
-    overflow: hidden;
-    header {
-      width: 100%;
-      height: auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      flex-direction: row;
-      gap: 3%;
-      img {
-        width: 32px;
-        height: 32px;
-        cursor: pointer;
-      }
-    }
-    .content {
-      padding: 32px 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: start;
-      align-items: center;
-      flex-direction: column;
-      .title {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-      }
-      .alert {
-        color: red;
-        text-align: center;
-      }
-      .termos {
-        width: 80%;
-        margin-top: 16px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 5px;
-        input {
-          width: 24px;
-          height: 24px;
-        }
-        p {
-          text-align: center;
-        }
-      }
-    }
-  }
-
+/* =================================================================
+   1. VARIÁVEIS DE TEMA E CORES
+   Cores consistentes para uma identidade visual unificada.
+================================================================= */
+:host {
+  --primary-color: #4a80c6;
+  --primary-color-dark: #3a66a0;
+  --primary-color-light: #e4eef9;
+  --text-color: #333;
+  --text-color-light: #6c757d;
+  --border-color: #dee2e6;
+  --background-color: #f8f9fa;
+  --card-background: #ffffff;
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --font-family: "Poppins", "Roboto", sans-serif; // Fonte moderna e legível
 }
-form {
-  width: 90%;
-  height: auto;
+
+/* =================================================================
+   2. ESTRUTURA PRINCIPAL
+================================================================= */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh; // Garante que o container ocupe a tela toda, mas possa crescer
+  padding: 20px 15px;
+  background-color: var(--background-color);
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+.form-header {
+  position: relative; // Necessário para o posicionamento do botão voltar
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 8px 45px;
-  .form-group {
-    width: 90%;
-    height: auto;
+
+  .back-button {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 50%;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .header-content {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
     flex-direction: column;
-    margin-top: 8px;
-    p {
-      text-transform: uppercase;
-      color: red;
-    }
-    .flex {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      flex-direction: row;
-      gap: 8px;
-      label {
-        width: 100%;
-        height: 44px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        gap: 8px;
-        input[type='radio'] {
-          width: 22px;
-          height: 22px;
-        }
-        input[type=checkbox] {
-          width: 24px;
-          height: 24px;
-        }
-      }
-    }
-    label {
-      width: 100%;
-      text-align: start;
-      font-size: 16px;
-      margin-bottom: 6px;
-    }
-    input {
-      width: 100%;
-      height: 44px;
-      padding: 0 16px;
-      font-size: 16px;
-      background-color: #EFEFEF;
-      border: 2px solid #DCDCDC;
-      border-radius: 8px;
-    }
-    .valid {
-      border: 2px solid #a7e0a4;
-      background-color:rgb(226, 255, 224)
-    }
-    .invalid {
-      border: 2px solid #e0a4a4;
-      background-color:rgb(255, 224, 224)
-    }
-    .ng-select.custom {
-      width: 100%;
-    }
+    align-items: center;
   }
-  .half {
-    width: 40%;
-    label {
-      width: 118%;
-    }
-    input {
-      width: 95%;
-    }
-  }
-}
-button {
-  width: 75%;
-  height: 44px;
-  background-color: #4A80C6;
-  color: #ffffff;
-  border-radius: 50px;
-  border: none;
-  margin-top: 32px;
-  transition: all 0.5s;
-  cursor: pointer;
-  &:active {
-    background-color: #2a4d7a;
-  }
-}
-button.invalid {
-  background-color: #e0a4a4;
-  color: #ffffff;
-  border-radius: 50px;
-  border: none;
-  margin-top: 32px;
-  transition: all 0.5s;
-  cursor: not-allowed;
-}
-@media (min-width: 768px) {
-  #medicacoes {
-    margin-bottom: 9px;
-  }
-  form {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-    .form-group {
-      width: 30%;
-      padding: 0 16px;
-      height: auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      flex-direction: column;
-      .flex {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        flex-direction: row;
-        gap: 4px;
-        label {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          gap: 8px;
-        }
-      }
-      label {
-        width: 100%;
-        margin-right: 30px;
-        text-align: start;
-        font-size: 16px;
-        margin-bottom: 6px;
-      }
-      input {
-        width: 100%;
-        height: 44px;
-        padding: 0 16px;
-        font-size: 16px;
-        background-color: #EFEFEF;
-        border: 2px solid #DCDCDC;
-        border-radius: 8px;
-      }
-      .valid {
-        border: 2px solid #a7e0a4;
-        background-color:rgb(226, 255, 224)
-      }
-      .invalid {
-        border: 2px solid #e0a4a4;
-        background-color:rgb(255, 224, 224)
-      }
-    }
-    .half {
-      width: 13.5%;
-      label {
-        width: 100%;
-      }
-      input[type='text'] {
-        width: 100%;
-      }
-    }
-  }
-  button {
-    width: 25%;
+
+  .nome-acampamento {
+    font-weight: bold;
+    color: var(--primary-color-dark);
   }
 }
 
+.price-info {
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  font-family: var(--font-family);
+
+  .price-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+      color: var(--text-color-light);
+      font-size: 0.9rem;
+    }
+
+    span {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+  }
+}
+
+.form-card {
+  width: 100%;
+  max-width: 700px;
+  background: var(--card-background);
+  border-radius: 16px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.07);
+  overflow: hidden; // Evita que elementos internos "vazem"
+}
+
+.form-header {
+  text-align: center;
+  padding: 24px;
+  background-color: var(--primary-color-light);
+
+  .logo {
+    width: 60px;
+    height: auto;
+    margin-bottom: 16px;
+  }
+  h2 {
+    margin: 0;
+    color: var(--primary-color);
+  }
+}
+
+/* =================================================================
+   3. ESTILOS DO FORMULÁRIO (FOCO EM MOBILE UI/UX)
+================================================================= */
+.lookup-container,
+form {
+  padding: 24px;
+  display: flex;
+  flex-direction: column; // Layout de uma coluna para mobile
+  gap: 16px; // Espaçamento entre os elementos
+}
+
+.form-section {
+  h3,
+  h4 {
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+    text-align: left;
+  }
+
+  .form-control {
+    height: 48px;
+    padding: 0 16px;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px var(--primary-color-light);
+    }
+  }
+
+  // Validação visual clara e sutil
+  .ng-invalid.ng-touched:not(:focus) {
+    border-color: var(--error-color);
+  }
+}
+
+// Melhorias para Radio e Checkbox
+.radio-group,
+.form-check {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--background-color);
+
+  label {
+    margin-bottom: 0;
+  }
+
+  mat-radio-group,
+  .checkbox-container {
+    display: flex;
+    gap: 24px;
+    padding-top: 8px;
+  }
+}
+
+.form-check {
+  flex-direction: row;
+  align-items: center;
+  .form-check-input {
+    width: 20px;
+    height: 20px;
+  }
+  .form-check-label {
+    font-weight: 400;
+    color: var(--text-color-light);
+  }
+}
+
+/* =================================================================
+   4. BOTÃO PRINCIPAL (CALL-TO-ACTION)
+================================================================= */
+.form-footer,
+.lookup-container {
+  .btn-submit,
+  .btn-secondary {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-submit {
+    background-color: var(--primary-color);
+    color: white;
+    &:hover:not(:disabled) {
+      background-color: var(--primary-color-dark);
+    }
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn-secondary {
+    background-color: #e9ecef;
+    color: #495057;
+  }
+}
+
+/* =================================================================
+   5. AJUSTES PARA TELAS MAIORES (TABLET/DESKTOP)
+================================================================= */
+@media (min-width: 768px) {
+  .form-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr; // Duas colunas
+    gap: 16px 24px; // Espaçamento entre linha e coluna
+
+    h3,
+    h4,
+    .full-width {
+      grid-column: 1 / -1; // Faz o elemento ocupar as duas colunas
+    }
+  }
+}

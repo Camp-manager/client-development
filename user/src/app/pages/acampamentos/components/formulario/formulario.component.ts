@@ -5,8 +5,6 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnChanges,
-  SimpleChanges,
   inject,
   HostBinding,
   ElementRef,
@@ -52,7 +50,7 @@ export function customDateValidator(): ValidatorFn {
   styleUrls: ['./formulario.component.scss'],
 })
 export class AcampamentoFormularioComponent
-  implements OnChanges, AfterViewInit, OnDestroy, OnInit
+  implements AfterViewInit, OnDestroy, OnInit
 {
   @Input() acampamentoId: number | null = null;
   @Output() formCancel = new EventEmitter<void>();
@@ -92,19 +90,6 @@ export class AcampamentoFormularioComponent
     );
   }
 
-  ngOnInit(): void {
-    this.tipoService
-      .buscarTodosTipo()
-      .subscribe((success: TipoAcampamento[]) => {
-        this.tipos = success;
-      });
-    this.temaService
-      .buscarTodosTemas()
-      .subscribe((success: TemaAcampamento[]) => {
-        this.temas = success;
-      });
-  }
-
   ngAfterViewInit(): void {
     const elementoObservado = this.elementRef.nativeElement.parentElement;
 
@@ -138,28 +123,15 @@ export class AcampamentoFormularioComponent
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['acampamentoId']) {
-      this.isEditMode = !!this.acampamentoId;
-      if (this.isEditMode) {
-        this.service
-          .getAcampamentoBasicoPorId(this.acampamentoId!)
-          .subscribe((success) => {
-            this.formulario.reset({
-              dataInicio: [success.dataInicio],
-              dataFim: [success.dataFim],
-              limiteCampistas: [success.limiteCampistas],
-              limiteEquipe: [success.limiteFuncionarios],
-              descricao: [success.nomeAcampamento],
-              precoCamisa: [success.tema.precoCamisa],
-              precoInscricao: [success.tema.precoInscricao],
-              tipo: [success.tipoAcampamento.id],
-            });
-          });
-      } else {
-        this.formulario.reset();
-      }
-    }
+  ngOnInit(): void {
+    this.carregarDadosDeApoio();
+  }
+
+  private carregarDadosDeApoio(): void {
+    this.tipoService
+      .getTiposDeAcampamento()
+      .subscribe((tipos) => (this.tipos = tipos));
+    this.temaService.getTemas().subscribe((temas) => (this.temas = temas));
   }
 
   get f() {
@@ -209,14 +181,15 @@ export class AcampamentoFormularioComponent
     const payload = { ...this.formulario.value };
 
     payload.tipo = +payload.tipo;
-    const tema: TemaAcampamento = this.temas.filter((tema) => {
-      tema.descricao == this.formulario.value.descricao;
+    const tema = this.temas.filter((tema) => {
+      return tema.descricao == this.formulario.value.descricao;
     })[0];
     if (!tema) this.service.adicionarAcampamento(payload);
     else {
       payload.idTema = tema.id;
       this.service.adicionarAcampamentoComTemaExistente(payload);
     }
+
     this.formulario.reset();
   }
 

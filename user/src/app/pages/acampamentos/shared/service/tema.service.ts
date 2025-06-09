@@ -1,7 +1,7 @@
+import { TemaRequest } from './../model/tema-request.form';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TemaRequest } from '../model/tema-request.form';
 import { environment } from '../../../../../.enviroment';
 
 @Injectable({
@@ -17,6 +17,10 @@ export class TemaService {
 
   getTemaById(idTema: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/buscar/${idTema}`);
+  }
+
+  cadastrarTema(request: TemaRequest): Observable<number> {
+    return this.http.post<number>(`${this.baseUrl}/adicionar`, request);
   }
 
   adicionarImagem(idTema: number, imagem: File): Observable<void> {

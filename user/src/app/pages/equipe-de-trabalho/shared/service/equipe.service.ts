@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MembroEquipe } from '../model/membro-equipe';
 import { environment } from '../../../../../.enviroment';
+import { CampistaDTO } from '../model/campista.dto';
+import { FuncionarioDTO } from '../model/funcionario.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,13 @@ export class EquipeService {
   adicionarMembros(idEquipe: number, idsPessoas: number[]): Observable<void> {
     return this.http.post<void>(
       `${this.baseUrl}/adicionar-pessoas/${idEquipe}`,
+      idsPessoas
+    );
+  }
+
+  removerMembros(idEquipe: number, idsPessoas: number[]): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/remover-pessoas/${idEquipe}`,
       idsPessoas
     );
   }
@@ -43,29 +51,23 @@ export class CampistaService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.API}/pessoa`;
 
-  // getCampistasByAcampamentoId(idAcampamento: number): Observable<Campistas> {
-  //   return this.http.get<Campistas>(
-  //     `${this.baseUrl}/buscar/campistas/${idAcampamento}`
-  //   );
-  // }
-
-  cadastrarCampista(
-    codigoRegistro: string,
-    campistaRequest: any
-  ): Observable<void> {
-    return this.http.post<void>(
-      `${this.baseUrl}/cadastrar/campista/${codigoRegistro}`,
-      campistaRequest
+  getTodosCampistas(idAcampamento: number): Observable<CampistaDTO[]> {
+    return this.http.get<CampistaDTO[]>(
+      `${this.baseUrl}/buscar-todos/campistas/${idAcampamento}`
     );
   }
+}
 
-  cadastrarFuncionario(
-    codigoRegistro: string,
-    funcionarioRequest: any
-  ): Observable<void> {
-    return this.http.post<void>(
-      `${this.baseUrl}/cadastrar/funcionario/${codigoRegistro}`,
-      funcionarioRequest
+@Injectable({
+  providedIn: 'root',
+})
+export class FuncionarioService {
+  private http = inject(HttpClient);
+  private readonly baseUrl = `${environment.API}/pessoa`;
+
+  getTodosFuncionarios(idAcampamento: number): Observable<FuncionarioDTO[]> {
+    return this.http.get<FuncionarioDTO[]>(
+      `${this.baseUrl}/buscar-todos/funcionarios/${idAcampamento}`
     );
   }
 

@@ -1,215 +1,495 @@
-<div class="container">
-  <div class="scroll">
-    <header>
-      <img src="arrow_left.png" (click)="goBack()" alt="Voltar" class="back-button" />
-      <h3>Ficha de Inscrição <br>Acampamento Senior 2026</h3>
-    </header>
-    <div class="content" *ngIf="pagina === 1">
-      <h5 class="title">Informações Pessoais</h5>
-      <p class="alert">
-        <strong>VALOR DA INSCRIÇÃO</strong> É DE <strong>R$180.00</strong>,
-        <strong>INCLUSO</strong> TODAS AS <strong>REFEIÇÕES</strong> E
-        <strong>MATERIAIS</strong> UTILIZADOS,
-        <strong>PAGAMENTO</strong> NO FINAL DA INSCRIÇÃO!
+<div class="form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <a [routerLink]="'/'" class="back-button" title="Voltar à página inicial">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+
+      <div class="header-content">
+        <h2>Ficha de Inscrição</h2>
+      </div>
+    </div>
+
+    @if(acampamento && acampamento.tema) {
+    <div class="price-info">
+      <div class="price-item">
+        <strong>Valor da Inscrição:</strong>
+        <span>{{ acampamento.tema.precoAcampamento | currency : "BRL" }}</span>
+      </div>
+      <div class="price-item">
+        <strong>Camiseta (Opcional):</strong>
+        <span>{{ acampamento.tema.precoCamiseta | currency : "BRL" }}</span>
+      </div>
+    </div>
+    } @if(formState === 'loading' || formState === 'error') {
+    <div class="status-container">
+      <p class="error-text">
+        {{ errorMessage ? errorMessage : "Carregando..." }}
       </p>
-
-      <form [formGroup]="formularioPagina1" novalidate>
-        <div class="form-group">
-          <label for="nome">Nome Completo:</label>
-          <input id="nome" type="text" formControlName="nome"
-                 [class.invalid]="formularioPagina1.get('nome')?.invalid && formularioPagina1.get('nome')?.touched"
-                 [class.valid]="formularioPagina1.get('nome')?.valid && formularioPagina1.get('nome')?.touched">
-        </div>
-
-        <div class="form-group">
-          <label for="telefone">Número de Telefone:</label>
-          <input id="telefone" type="tel" formControlName="telefone" mask="(00) 00000-0000"
-                 [class.invalid]="formularioPagina1.get('telefone')?.invalid && formularioPagina1.get('telefone')?.touched"
-                 [class.valid]="formularioPagina1.get('telefone')?.valid && formularioPagina1.get('telefone')?.touched">
-        </div>
-
-        <div class="form-group">
-          <label>Sexo:</label>
-          <div class="flex">
-            <label>
-              <input type="radio" value="masculino" formControlName="sexo"> Masculino
-            </label>
-            <label>
-              <input type="radio" value="feminino" formControlName="sexo"> Feminino
-            </label>
-          </div>
-        </div>
-
-        <div class="form-group half">
-          <label for="dataNascimento">Data de Nascimento:</label>
-          <input id="dataNascimento" type="text" formControlName="dataNascimento" mask="d0/M0/0000"
-                 (change)="calcularIdade()" placeholder="dd/mm/aaaa"
-                 [class.invalid]="formularioPagina1.get('dataNascimento')?.invalid && formularioPagina1.get('dataNascimento')?.touched"
-                 [class.valid]="formularioPagina1.get('dataNascimento')?.valid && formularioPagina1.get('dataNascimento')?.touched">
-        </div>
-
-        <div class="form-group half">
-          <label for="idade">Idade:</label>
-          <input id="idade" type="number" formControlName="idade" readonly
-          [class.invalid]="formularioPagina1.get('dataNascimento')?.invalid && formularioPagina1.get('dataNascimento')?.touched"
-                 [class.valid]="formularioPagina1.get('dataNascimento')?.valid && formularioPagina1.get('dataNascimento')?.touched">
-        </div>
-
-        <div class="form-group half">
-          <label for="peso">Peso (kg):</label>
-          <input id="peso" type="text" formControlName="peso"
-                 [class.invalid]="formularioPagina1.get('peso')?.invalid && formularioPagina1.get('peso')?.touched"
-                 [class.valid]="formularioPagina1.get('peso')?.valid && formularioPagina1.get('peso')?.touched">
-        </div>
-
-        <div class="form-group half">
-          <label for="altura">Altura:</label>
-          <input id="altura" type="text" formControlName="altura"
-                 [class.invalid]="formularioPagina1.get('altura')?.invalid && formularioPagina1.get('altura')?.touched"
-                 [class.valid]="formularioPagina1.get('altura')?.valid && formularioPagina1.get('altura')?.touched">
-        </div>
-
-        <div class="form-group">
-          <label for="enderecoParticular">Endereço Particular:</label>
-          <input id="enderecoParticular" type="text" formControlName="enderecoParticular"
-                 [class.invalid]="formularioPagina1.get('enderecoParticular')?.invalid && formularioPagina1.get('enderecoParticular')?.touched"
-                 [class.valid]="formularioPagina1.get('enderecoParticular')?.valid && formularioPagina1.get('enderecoParticular')?.touched">
-        </div>
-
-        <div class="form-group">
-          <label for="cidade">Cidade:</label>
-          <input id="cidade" type="text" formControlName="cidade"
-                 [class.invalid]="formularioPagina1.get('cidade')?.invalid && formularioPagina1.get('cidade')?.touched"
-                 [class.valid]="formularioPagina1.get('cidade')?.valid && formularioPagina1.get('cidade')?.touched">
-        </div>
-
-        <div class="form-group">
-          <label for="pontoDeReferencia">Ponto De Referência:</label>
-          <input id="pontoDeReferencia" type="text" formControlName="pontoDeReferencia"
-                 [class.invalid]="formularioPagina1.get('pontoDeReferencia')?.invalid && formularioPagina1.get('pontoDeReferencia')?.touched"
-                 [class.valid]="formularioPagina1.get('pontoDeReferencia')?.valid && formularioPagina1.get('pontoDeReferencia')?.touched">
-        </div>
-      </form>
-      <button (click)="nextPage()">Proximos passos</button>
     </div>
-    <div class="content" *ngIf="pagina === 2">
-      <h5 class="title">
-        Contato de um Familiar ou de um Conhecido que não estará fazendo o acampamento
-      </h5>
-
-      <form [formGroup]="formularioPagina2" novalidate>
-        <div class="form-group">
-          <label for="telefoneFamiliar">Telefone do Familiar:</label>
-          <input id="telefoneFamiliar" type="tel" formControlName="telefoneFamiliar" mask="(00) 00000-0000"
-            [class.invalid]="formularioPagina2.get('telefoneFamiliar')?.invalid && formularioPagina2.get('telefoneFamiliar')?.touched"
-            [class.valid]="formularioPagina2.get('telefoneFamiliar')?.valid && formularioPagina2.get('telefoneFamiliar')?.touched">
-        </div>
-
-        <div class="form-group">
-          <label for="enderecoFamiliar">Endereço do Familiar:</label>
-          <input id="enderecoFamiliar" type="text" formControlName="enderecoFamiliar"
-            [class.invalid]="formularioPagina2.get('enderecoFamiliar')?.invalid && formularioPagina2.get('enderecoFamiliar')?.touched"
-            [class.valid]="formularioPagina2.get('enderecoFamiliar')?.valid && formularioPagina2.get('enderecoFamiliar')?.touched">
-        </div>
-
-        <div class="form-group">
-          <label for="cidadeFamiliar">Cidade:</label>
-          <input id="cidadeFamiliar" type="text" formControlName="cidadeFamiliar"
-            [class.invalid]="formularioPagina2.get('cidadeFamiliar')?.invalid && formularioPagina2.get('cidadeFamiliar')?.touched"
-            [class.valid]="formularioPagina2.get('cidadeFamiliar')?.valid && formularioPagina2.get('cidadeFamiliar')?.touched">
-        </div>
-
-        <div class="form-group">
-          <label for="pontoDeReferenciaFamiliar">Ponto de Referência:</label>
-          <input id="pontoDeReferenciaFamiliar" type="text" formControlName="pontoDeReferenciaFamiliar"
-            [class.invalid]="formularioPagina2.get('pontoDeReferenciaFamiliar')?.invalid && formularioPagina2.get('pontoDeReferenciaFamiliar')?.touched"
-            [class.valid]="formularioPagina2.get('pontoDeReferenciaFamiliar')?.valid && formularioPagina2.get('pontoDeReferenciaFamiliar')?.touched">
-        </div>
-      </form>
-      <button (click)="nextPage()">Proximos passos</button>
+    } @if(formState === 'lookup') {
+    <div class="lookup-container">
+      <h3>
+        Bem-vindo, @if(tipoFormulario === 'campista') {Campista} @else {Equipe
+        de Trabalho}!
+      </h3>
+      <p>
+        Para agilizar sua inscrição, digite seu CPF para buscarmos seus dados já
+        cadastrados.
+      </p>
+      <div class="form-group">
+        <label for="cpf-lookup">Seu CPF</label>
+        <input
+          id="cpf-lookup"
+          type="tel"
+          [formControl]="cpfLookupControl"
+          class="form-control"
+          mask="000.000.000-00"
+          placeholder="000.000.000-00"
+          autocomplete="off"
+        />
+        @if(cpfLookupControl.invalid && cpfLookupControl.touched) {
+        <small class="text-danger">CPF inválido.</small>
+        }
+      </div>
+      <button
+        type="button"
+        class="btn btn-primary btn-submit"
+        (click)="buscarDadosPorCPF()"
+        [disabled]="isSubmitting || cpfLookupControl.invalid"
+      >
+        @if(isSubmitting) { <span>Buscando...</span> } @else {
+        <span><i class="fas fa-search"></i> Buscar Meus Dados</span> }
+      </button>
+      @if(errorMessage) {
+      <p class="error-text mt-3">{{ errorMessage }}</p>
+      }
+      <a
+        href="javascript:void(0)"
+        (click)="pularBuscaCPF()"
+        class="skip-lookup"
+      >
+        É minha primeira vez ou prefiro preencher do zero.
+      </a>
     </div>
-    <div class="content" *ngIf="pagina === 3">
-      <h5 class="title">
-        Informações Importantes
-      </h5>
-
-      <form [formGroup]="formularioPagina3" novalidate>
-
-        <div class="form-group" id="medicacoes" style="margin-bottom: 19px;">
-          <label for="medicacoes">Faz uso de medicação? Se <strong>Sim</strong>, qual?</label>
-          <ng-select
-            class="custom"
-            [items]="listaMedicacao"
-            bindLabel="descricao"
-            formControlName="medicacoes"
-            [multiple]="true"
-            placeholder="Selecione ou digite as medicações"
-          >
-          </ng-select>
-          <p>RESPONDA APENAS SE FAZER USO DE MEDICAÇÃO</p>
-        </div>
-
+    } @if(formState === 'filling' && form) {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      @if(tipoFormulario === 'funcionario') {
+      <div class="form-section">
+        <h3>Inscrição de Equipe de Trabalho</h3>
         <div class="form-group">
-          <label for="alergias">É alérgico a alguma medicação? Qual?</label>
-          <ng-select
-            class="custom"
-            [items]="listaAlergias"
-            bindLabel="descricao"
-            formControlName="alergias"
-            [multiple]="true"
-            placeholder="Selecione ou digite alergias"
-          >
-          </ng-select>
-          <p>RESPONDA APENAS SE FOR ALÉRGICO A ALGUMA MEDICAÇÃO</p>
+          <label for="nome">Nome Completo</label>
+          <input
+            id="nome"
+            type="text"
+            formControlName="nome"
+            class="form-control"
+          />
         </div>
-
         <div class="form-group">
-          <label for="acampamentos">Já fez algum acampamento? Qual?</label>
-          <ng-select
-            class="custom"
-            [items]="listaAcampamentos"
-            bindLabel="nome"
-            formControlName="acampamentos"
-            [multiple]="true"
-            placeholder="Selecione ou digite acampamentos"
-          >
-          </ng-select>
-          <p>RESPONDA APENAS SE JÁ FEZ ALGUM ACAMPAMENTO</p>
+          <label for="email-func">Email</label>
+          <input
+            id="email-func"
+            type="email"
+            formControlName="email"
+            class="form-control"
+          />
         </div>
-
         <div class="form-group">
-          <div class="flex">
-            <label for="temBarraca">
-              <input id="temBarraca" type="checkbox" formControlName="temBarraca">
-              Tem barraca?
-            </label>
-          </div>
-          <p>SENÃO POSSUIR O ACAMPAMENTO PROVIDENCIARÁ</p>
+          <label for="cpf-func">CPF</label>
+          <input
+            id="cpf-func"
+            type="tel"
+            formControlName="cpf"
+            class="form-control"
+            mask="000.000.000-00"
+          />
         </div>
-
         <div class="form-group">
-          <label for="tamanhoCamisa">Optar com camiseta, qual o tamanho?</label>
-          <ng-select
-            class="custom"
-            [items]="['PP', 'P', 'M', 'G', 'GG', 'XG']"
+          <label for="tel-func">Telefone / WhatsApp</label>
+          <input
+            id="tel-func"
+            type="tel"
+            formControlName="telefone"
+            class="form-control"
+            mask="(00) 00000-0000"
+          />
+        </div>
+        <div class="form-group">
+          <label for="habilidade">Principal Habilidade/Função</label>
+          <input
+            id="habilidade"
+            type="text"
+            formControlName="habilidade"
+            class="form-control"
+            placeholder="Ex: Cozinha, Louvor, Elétrica"
+          />
+        </div>
+        <div class="form-group">
+          <label for="camisa-func">Tamanho da Camiseta</label>
+          <select
+            id="camisa-func"
             formControlName="tamanhoCamisa"
-            placeholder="Selecione o tamanho"
+            class="form-control"
           >
-          </ng-select>
-          <p>SE OPTAR COM A CAMISETA O VALOR <strong>ADICIONAL</strong> É DE <strong>R$45,00</strong>, ELA É OPCIONAL</p>
+            <option value="">Não desejo</option>
+            @for(t of tamanhosCamisa; track t){
+            <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      } @if(tipoFormulario === 'campista') {
+      <div formGroupName="pessoa">
+        <div class="form-section">
+          <h3>1. Dados Pessoais</h3>
+          <div class="form-group">
+            <label for="nomeCompleto">Nome Completo</label
+            ><input
+              id="nomeCompleto"
+              type="text"
+              formControlName="nomeCompleto"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="cpf">CPF</label
+            ><input
+              id="cpf"
+              type="tel"
+              formControlName="cpf"
+              class="form-control"
+              mask="000.000.000-00"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dataNascimento">Data de Nascimento</label
+            ><input
+              id="dataNascimento"
+              type="tel"
+              formControlName="dataNascimento"
+              class="form-control"
+              mask="00/00/0000"
+            />
+          </div>
+          <div class="form-group">
+            <label for="telefone">Telefone / WhatsApp</label
+            ><input
+              id="telefone"
+              type="tel"
+              formControlName="telefone"
+              class="form-control"
+              mask="(00) 00000-0000"
+            />
+          </div>
+          <div class="form-group">
+            <label>Sexo</label
+            ><select formControlName="sexo" class="form-control">
+              <option value="" disabled>Selecione...</option>
+              <option value="M">Masculino</option>
+              <option value="F">Feminino</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="peso">Peso (kg)</label
+            ><input
+              id="peso"
+              type="number"
+              formControlName="peso"
+              class="form-control"
+              placeholder="Ex: 65.5"
+            />
+          </div>
+          <div class="form-group">
+            <label for="altura">Altura (m)</label
+            ><input
+              id="altura"
+              type="number"
+              formControlName="altura"
+              class="form-control"
+              placeholder="Ex: 1.75"
+            />
+          </div>
+          <div class="form-group">
+            <label for="alimentoPredileto">Alimento Predileto</label
+            ><input
+              id="alimentoPredileto"
+              type="text"
+              formControlName="alimentoPredileto"
+              class="form-control"
+            />
+          </div>
         </div>
 
-      </form>
-
-      <label class="termos" for="termos">
-        <div>
-          <input id="termos" type="checkbox" [(ngModel)]="termos">
+        <div class="form-section" formGroupName="endereco">
+          <h4>Endereço do Campista</h4>
+          <div class="form-group">
+            <label for="cep-campista">CEP</label
+            ><input
+              id="cep-campista"
+              type="tel"
+              formControlName="cep"
+              class="form-control"
+              mask="00000-000"
+            />
+          </div>
+          <div class="form-group">
+            <label for="rua-campista">Rua</label
+            ><input
+              id="rua-campista"
+              type="text"
+              formControlName="rua"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="num-campista">Número</label
+            ><input
+              id="num-campista"
+              type="text"
+              formControlName="numero"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="bairro-campista">Bairro</label
+            ><input
+              id="bairro-campista"
+              type="text"
+              formControlName="bairro"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="cid-campista">Cidade</label
+            ><input
+              id="cid-campista"
+              type="text"
+              formControlName="cidade"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="ref-campista">Ponto de Referência</label
+            ><input
+              id="ref-campista"
+              type="text"
+              formControlName="pontoReferencia"
+              class="form-control"
+            />
+          </div>
         </div>
-        <p>Leia e aceite os <a href="">termos de uso de dados</a> antes de continuar.</p>
-      </label>
-      <button (click)="nextPage()">Métodos de pagamento</button>
-    </div>
+
+        <div class="form-section" formGroupName="familiar">
+          <h3>2. Dados do Familiar Responsável</h3>
+          <div class="form-group">
+            <label for="nome-familiar">Nome do Responsável</label
+            ><input
+              id="nome-familiar"
+              type="text"
+              formControlName="nome"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="parentesco-familiar">Parentesco</label
+            ><input
+              id="parentesco-familiar"
+              type="text"
+              formControlName="parentesco"
+              class="form-control"
+              placeholder="Ex: Mãe, Pai, Tio"
+            />
+          </div>
+          <div class="form-group">
+            <label for="tel-familiar">Telefone do Responsável</label
+            ><input
+              id="tel-familiar"
+              type="tel"
+              formControlName="telefone"
+              class="form-control"
+              mask="(00) 00000-0000"
+            />
+          </div>
+
+          <div formGroupName="endereco">
+            <h4>Endereço do Responsável</h4>
+            <div class="form-check">
+              <input
+                id="copiar-endereco"
+                type="checkbox"
+                class="form-check-input"
+                (change)="copiarEndereco($event)"
+              /><label for="copiar-endereco" class="form-check-label"
+                >O endereço é o mesmo do campista.</label
+              >
+            </div>
+            <div class="form-group">
+              <label for="cep-familiar">CEP</label
+              ><input
+                id="cep-familiar"
+                type="tel"
+                formControlName="cep"
+                class="form-control"
+                mask="00000-000"
+              />
+            </div>
+            <div class="form-group">
+              <label for="rua-familiar">Rua</label
+              ><input
+                id="rua-familiar"
+                type="text"
+                formControlName="rua"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label for="num-familiar">Número</label
+              ><input
+                id="num-familiar"
+                type="text"
+                formControlName="numero"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label for="bairro-familiar">Bairro</label
+              ><input
+                id="bairro-familiar"
+                type="text"
+                formControlName="bairro"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label for="cid-familiar">Cidade</label
+              ><input
+                id="cid-familiar"
+                type="text"
+                formControlName="cidade"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label for="ref-familiar">Ponto de Referência</label
+              ><input
+                id="ref-familiar"
+                type="text"
+                formControlName="pontoReferencia"
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>3. Informações Adicionais</h3>
+        <div class="form-group radio-group" formGroupName="pessoa">
+          <label>Já foi batizado(a)?</label
+          ><mat-radio-group formControlName="foiBatizado"
+            ><mat-radio-button [value]="true">Sim</mat-radio-button
+            ><mat-radio-button [value]="false"
+              >Não</mat-radio-button
+            ></mat-radio-group
+          >
+        </div>
+        <div class="form-group radio-group" formGroupName="pessoa">
+          <label>Já fez a Primeira Comunhão/Eucaristia?</label
+          ><mat-radio-group formControlName="temPrimeiraComunhao"
+            ><mat-radio-button [value]="true">Sim</mat-radio-button
+            ><mat-radio-button [value]="false"
+              >Não</mat-radio-button
+            ></mat-radio-group
+          >
+        </div>
+        <div class="form-group radio-group">
+          <label>Usa algum medicamento?</label
+          ><mat-radio-group formControlName="usaMedicamento"
+            ><mat-radio-button [value]="true">Sim</mat-radio-button
+            ><mat-radio-button [value]="false"
+              >Não</mat-radio-button
+            ></mat-radio-group
+          >
+        </div>
+        <div class="form-group radio-group">
+          <label>Possui alguma alergia?</label
+          ><mat-radio-group formControlName="temAlergia"
+            ><mat-radio-button [value]="true">Sim</mat-radio-button
+            ><mat-radio-button [value]="false"
+              >Não</mat-radio-button
+            ></mat-radio-group
+          >
+        </div>
+        @if(form.get('temAlergia')?.value === true) {
+        <div class="form-group">
+          <label for="alergias">Quais alergias? (separe por vírgula)</label
+          ><input
+            id="alergias"
+            type="text"
+            formControlName="alergias"
+            class="form-control"
+          />
+        </div>
+        }
+        <div class="form-group radio-group">
+          <label>Já participou de acampamentos?</label
+          ><mat-radio-group formControlName="jaFezAcampamento"
+            ><mat-radio-button [value]="true">Sim</mat-radio-button
+            ><mat-radio-button [value]="false"
+              >Não</mat-radio-button
+            ></mat-radio-group
+          >
+        </div>
+        @if(form.get('jaFezAcampamento')?.value === true) {
+        <div class="form-group">
+          <label for="acampamentosFeitos">Quais? (separe por vírgula)</label
+          ><input
+            id="acampamentosFeitos"
+            type="text"
+            formControlName="acampamentosFeitos"
+            class="form-control"
+          />
+        </div>
+        }
+        <div class="form-group radio-group">
+          <label>Possui barraca?</label
+          ><mat-radio-group formControlName="temBarraca"
+            ><mat-radio-button [value]="true">Sim</mat-radio-button
+            ><mat-radio-button [value]="false"
+              >Não</mat-radio-button
+            ></mat-radio-group
+          >
+        </div>
+        <div class="form-group">
+          <label for="tamanhoCamisa">Tamanho da Camiseta (Opcional)</label
+          ><select
+            id="tamanhoCamisa"
+            formControlName="tamanhoCamisa"
+            class="form-control"
+          >
+            <option value="">Não desejo</option>
+            @for(t of tamanhosCamisa; track t){
+            <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      } @if(errorMessage) {
+      <p class="error-text text-center">{{ errorMessage }}</p>
+      }
+
+      <div class="form-footer">
+        <button
+          type="submit"
+          class="btn btn-primary btn-submit"
+          [disabled]="isSubmitting || form.invalid"
+        >
+          @if(isSubmitting) { <span>Enviando...</span> } @else {
+          <span>Finalizar Inscrição</span> }
+        </button>
+      </div>
+    </form>
+    }
   </div>
-
 </div>
-
