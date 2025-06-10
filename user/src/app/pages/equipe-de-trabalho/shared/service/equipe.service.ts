@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../.enviroment';
 import { CampistaDTO } from '../model/campista.dto';
 import { FuncionarioDTO } from '../model/funcionario.dto';
+import { EquipeRequest } from '../model/equipe.request';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,16 @@ import { FuncionarioDTO } from '../model/funcionario.dto';
 export class EquipeService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.API}/equipe`;
+
+  cadastrarEquipes(
+    idAcampamento: number,
+    equipes: EquipeRequest[]
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/cadastrar/${idAcampamento}`,
+      equipes
+    );
+  }
 
   getEquipes(idAcampamento: number): Observable<any[]> {
     return this.http.get<any[]>(

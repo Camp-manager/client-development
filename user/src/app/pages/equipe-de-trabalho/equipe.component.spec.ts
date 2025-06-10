@@ -4,11 +4,11 @@ import { of } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { EquipeDeTrabalhoComponent } from './equipe-de-trabalho.component';
+import { EquipeComponent } from './equipe.component';
 
 describe('PaginaEquipeTrabalhoComponent', () => {
-  let component: EquipeDeTrabalhoComponent;
-  let fixture: ComponentFixture<EquipeDeTrabalhoComponent>;
+  let component: EquipeComponent;
+  let fixture: ComponentFixture<EquipeComponent>;
 
   const mockActivatedRoute = {
     snapshot: {
@@ -25,24 +25,16 @@ describe('PaginaEquipeTrabalhoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        EquipeDeTrabalhoComponent,
-        CommonModule,
-        RouterModule.forRoot([]),
-      ], // Ensure RouterModule is imported
+      imports: [EquipeComponent, CommonModule, RouterModule.forRoot([])], // Ensure RouterModule is imported
       providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EquipeDeTrabalhoComponent);
+    fixture = TestBed.createComponent(EquipeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should load acampamentoCode from route params', () => {
-    expect(component.acampamentoCode).toBe('TESTCODE123');
   });
 });

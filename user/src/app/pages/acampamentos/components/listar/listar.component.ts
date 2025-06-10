@@ -95,7 +95,7 @@ export class AcampamentoListarComponent
 
   abrirDialogoQRCode(acamp: Acampamento): void {
     this.acampamentoParaQRCode = acamp;
-    this.qrCodeData = `${environment.CLIENT}/inscricao?acampamento\=${acamp.codigoRegistro}`;
+    this.qrCodeData = `${environment.CLIENT}/formulario/fun/${acamp.idAcampamento}/${acamp.codigoRegistro}`;
     this.mostrarDialogoQRCode = true;
   }
 

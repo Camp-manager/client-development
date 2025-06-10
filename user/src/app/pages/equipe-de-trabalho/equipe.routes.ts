@@ -6,9 +6,7 @@ export const equipeTrabalhoRoutes: Routes = [
     title: 'Equipe',
     data: { breadcrumb: 'Equipes de Trabalho' }, // General breadcrumb
     loadComponent: () =>
-      import('./equipe-de-trabalho.component').then(
-        (m) => m.EquipeDeTrabalhoComponent
-      ),
+      import('./equipe.component').then((m) => m.EquipeComponent),
   },
   {
     path: 'equipe/:idAcampamento', // Specific camp
@@ -16,8 +14,6 @@ export const equipeTrabalhoRoutes: Routes = [
     // Breadcrumb could be dynamically set in the component based on acampamento name/code
     data: { breadcrumb: 'Equipes do Acampamento' },
     loadComponent: () =>
-      import('./equipe-de-trabalho.component').then(
-        (m) => m.EquipeDeTrabalhoComponent
-      ),
+      import('./equipe.component').then((m) => m.EquipeComponent),
   },
 ];

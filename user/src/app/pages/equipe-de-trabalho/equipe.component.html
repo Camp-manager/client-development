@@ -1,0 +1,209 @@
+<div class="container-equipes card full-page-card">
+  <div class="card-header">
+    <h3 class="card-title">Gerenciamento de Equipes</h3>
+    <button class="btn btn-primary" (click)="abrirDialogoNovasEquipes()">
+      <i class="fas fa-plus"></i> Cadastrar Equipes
+    </button>
+  </div>
+
+  <div class="card-body">
+    @if (isLoading) {
+    <p class="loading-state">Carregando dados das equipes...</p>
+    } @else {
+    <div class="unassigned-section">
+      <hr />
+      <h4>Pessoas Sem Equipe</h4>
+      @if (funcionariosSemTime.length > 0) {
+      <table class="app-table unassigned-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Habilidades Principais</th>
+            <th>Número</th>
+            <th style="width: 220px">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (func of funcionariosSemTime; track func.id) {
+          <tr>
+            <td>{{ func.nome }}</td>
+            <td>{{ func.habilidade }}</td>
+            <td>{{ func.telefone }}</td>
+            <td class="actions">
+              <select
+                class="form-control form-control-sm"
+                #selectEquipeFunc
+                (change)="
+                  adicionarMembroAEquipe(func, +selectEquipeFunc.value);
+                  selectEquipeFunc.value = ''
+                "
+                title="Atribuir à equipe"
+              >
+                <option value="">Atribuir para a equipe...</option>
+                @for(e of equipes; track e.id) {
+                <option [value]="e.id">{{ e.nome }}</option>
+                }
+              </select>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p class="empty-state-inner">
+        Todos os funcionários já estão atribuídos a uma equipe.
+      </p>
+      }
+    </div>
+    <div class="table-responsive-wrapper">
+      <h4>Equipes</h4>
+      <table class="app-table equipes-table">
+        <thead>
+          <tr>
+            <th style="width: 50px"></th>
+            <th>Equipe</th>
+            <th class="text-center">Nº de Membros</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (equipe of equipes; track equipe.id) {
+          <tr
+            [class.bind]="equipe.expanded ? 'expanded' : ''"
+            class="equipe-row"
+            (click)="toggleExpand(equipe)"
+          >
+            <td>
+              <i
+                class="fas"
+                [ngClass]="
+                  equipe.expanded ? 'fa-chevron-down' : 'fa-chevron-right'
+                "
+              ></i>
+            </td>
+            <td>{{ equipe.nome }}</td>
+            <td class="text-center">{{ equipe.membros.length }}</td>
+          </tr>
+
+          @if (equipe.expanded) {
+          <tr class="membros-row">
+            <td colspan="4">
+              <div class="membros-container">
+                @if (equipe.membros.length > 0) {
+                <table class="app-table app-table-inner">
+                  <thead>
+                    <tr>
+                      <th>Nome do Membro</th>
+                      <th class="text-center" style="width: 200px">Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (membro of equipe.membros; track membro.id) {
+                    <tr>
+                      <td>{{ membro.nome }}</td>
+                      <td class="text-center">
+                        <button
+                          class="btn btn-sm btn-warning"
+                          (click)="removerMembroDaEquipe(equipe, membro)"
+                          title="Remover da equipe e mover para a lista de 'Sem Time'"
+                        >
+                          <i class="fas fa-arrow-down"></i> Remover da Equipe
+                        </button>
+                      </td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+                } @else {
+                <p class="empty-state-inner">Nenhum membro nesta equipe.</p>
+                }
+              </div>
+            </td>
+          </tr>
+          } } @empty {
+          <tr>
+            <td colspan="4">
+              <p class="empty-state">
+                Nenhuma equipe de trabalho foi criada para este acampamento.
+              </p>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    }
+  </div>
+</div>
+
+@if (mostrarDialogoNovasEquipes) {
+<dialog
+  [isOpen]="mostrarDialogoNovasEquipes"
+  (close)="fecharDialogoNovasEquipes()"
+  [dialogTitle]="'Cadastrar Novas Equipes de Trabalho'"
+>
+  <ng-container dialog-body>
+    <form
+      [formGroup]="formNovasEquipes"
+      (ngSubmit)="salvarNovasEquipes()"
+      id="form-novas-equipes"
+    >
+      <div formArrayName="equipes">
+        @for (equipeControl of equipesArray.controls; track $index) {
+        <div class="equipe-form-row" [formGroupName]="$index">
+          <div class="form-group">
+            <label for="nome-equipe-{{ $index }}">Nome da Equipe</label>
+            <input
+              id="nome-equipe-{{ $index }}"
+              type="text"
+              class="form-control"
+              formControlName="nome"
+            />
+          </div>
+          <div class="form-group">
+            <label for="tipo-equipe-{{ $index }}">Tipo</label>
+            <select
+              id="tipo-equipe-{{ $index }}"
+              class="form-control"
+              formControlName="tipoEquipe"
+            >
+              <option [ngValue]="null" disabled>Selecione...</option>
+              <option value="Campista">Campista</option>
+              <option value="Trabalho">Equipe de Trabalho</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="btn-remove"
+            (click)="removerEquipeDoForm($index)"
+            title="Remover esta equipe"
+          >
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+        }
+      </div>
+      <button
+        type="button"
+        class="btn btn-secondary btn-sm btn-add-more"
+        (click)="adicionarEquipeAoForm()"
+      >
+        <i class="fas fa-plus"></i> Adicionar outra equipe
+      </button>
+    </form>
+  </ng-container>
+  <ng-container dialog-footer>
+    <button class="btn btn-secondary" (click)="fecharDialogoNovasEquipes()">
+      Cancelar
+    </button>
+    <button
+      class="btn btn-primary"
+      type="submit"
+      form="form-novas-equipes"
+      [disabled]="formNovasEquipes.invalid"
+    >
+      Salvar Equipes
+    </button>
+  </ng-container>
+</dialog>
+}

@@ -159,10 +159,7 @@
     </button>
     <button
       class="btn btn-info"
-      [routerLink]="[
-        '/equipe-de-trabalho',
-        acampamentoSelecionado.idAcampamento
-      ]"
+      [routerLink]="['/equipe', acampamentoSelecionado.idAcampamento]"
       (click)="fecharDialogoDetalhes()"
     >
       <i class="fas fa-users-cog"></i> Ver Equipe

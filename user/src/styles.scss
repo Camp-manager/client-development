@@ -402,7 +402,7 @@ $theme-colors: (
   "danger": vars.$danger-color,
   "warning": vars.$warning-color,
   "info": vars.$info-color
-    // Adicione "light" e "dark" se desejar outlines para eles,,
+    // Adicione "light" e "dark" se desejar outlines para eles,,,,,
 );
 
 @each $name, $color in $theme-colors {
@@ -457,4 +457,97 @@ $theme-colors: (
 .btn-block {
   display: block;
   width: 100%;
+}
+
+// =================================================================
+// ESTILOS GLOBAIS PARA FORMULÁRIOS (INDEPENDENTE DO MATERIAL)
+// =================================================================
+
+.form-section {
+  h3,
+  h4 {
+    // Usando uma cor diretamente, em vez de buscar na paleta do tema
+    color: #3f51b5; // Um azul padrão, similar ao Indigo do Material
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 8px;
+    margin-top: 24px;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+// Container para um label + input
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+
+  label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #343a40;
+    text-align: left;
+  }
+}
+
+// Classe universal para inputs, selects e textareas
+.form-control {
+  display: block;
+  width: 100%;
+  height: 44px;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  // Efeito de foco com cores padrão
+  &:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #86b7fe; // Um azul claro
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+
+  // Estilo para campos desabilitados
+  &:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+  }
+}
+
+select.form-control {
+  height: 44px;
+}
+
+// =================================================================
+// ESTADOS DE VALIDAÇÃO (INDEPENDENTE DO MATERIAL)
+// =================================================================
+.ng-touched.ng-invalid {
+  .form-control {
+    // Borda vermelha padrão para erro
+    border-color: #dc3545;
+
+    &:focus {
+      box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+  }
+}
+
+.ng-touched.ng-valid {
+  .form-control {
+    // Borda verde padrão para sucesso
+    border-color: #198754;
+  }
 }
