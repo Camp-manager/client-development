@@ -38,9 +38,6 @@ hr {
   margin: 2rem 0;
 }
 
-// =================================================================
-// TABELA DE PESSOAS SEM EQUIPE
-// =================================================================
 .unassigned-table {
   .actions {
     // Alinha o select no centro da célula
@@ -53,9 +50,6 @@ hr {
   }
 }
 
-// =================================================================
-// TABELA DE EQUIPES EXPANSÍVEL
-// =================================================================
 .equipes-table {
   .equipe-row {
     cursor: pointer;
@@ -66,17 +60,15 @@ hr {
     }
 
     &.expanded {
-      // Estilo para a linha quando os detalhes estão abertos
       background-color: var(--primary-color-light, #e4eef9);
       border-bottom: 2px solid var(--primary-color, #4a80c6);
+      i.fa-chevron-right {
+        transform: rotate(90deg);
+      }
     }
 
     i.fas {
       transition: transform 0.3s ease;
-    }
-    i.fa-chevron-down {
-      // Gira o ícone quando expandido
-      transform: rotate(90deg);
     }
   }
 

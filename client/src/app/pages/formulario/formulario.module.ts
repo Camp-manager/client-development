@@ -1,3 +1,4 @@
+import { QRCodeComponent } from 'angularx-qrcode';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormularioComponent } from './formulario.component';
@@ -6,6 +7,7 @@ import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule } from '@angular/router';
+import { DialogComponent } from '../../components/dialog/dialog.component';
 
 @NgModule({
   declarations: [FormularioComponent],
@@ -18,6 +20,8 @@ import { RouterModule } from '@angular/router';
     NgSelectModule,
     MatRadioModule,
     RouterModule,
+    QRCodeComponent,
+    DialogComponent,
   ],
 })
 export class FormularioModule {}

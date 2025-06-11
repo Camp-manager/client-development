@@ -123,19 +123,19 @@
               <i
                 class="fas"
                 [ngClass]="
-                  equipe.expanded ? 'fa-chevron-down' : 'fa-chevron-right'
+                  equipe.expanded ? 'fa-chevron-right' : 'fa-chevron-right'
                 "
               ></i>
             </td>
             <td>{{ equipe.nome }}</td>
-            <td class="text-center">{{ equipe.membros.length }}</td>
+            <td class="text-center">{{ equipe }}</td>
             <td class="text-center">{{ equipe.tipoEquipe }}</td>
           </tr>
           @if (equipe.expanded) {
           <tr class="membros-row">
             <td colspan="4">
               <div class="membros-container">
-                @if (equipe.membros.length > 0) {
+                <!-- @if (equipe.membros.length > 0) {
                 <table class="app-table app-table-inner">
                   <thead>
                     <tr>
@@ -162,9 +162,9 @@
                     }
                   </tbody>
                 </table>
-                } @else {
+                } @else { -->
                 <p class="empty-state-inner">Nenhum membro nesta equipe.</p>
-                }
+                <!-- } -->
               </div>
             </td>
           </tr>

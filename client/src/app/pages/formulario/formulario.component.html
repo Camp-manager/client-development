@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    @if(acampamento && acampamento.tema) {
+    @if(acampamento && acampamento.tema && tipoFormulario === 'campista' ) {
     <div class="price-info">
       <div class="price-item">
         <strong>Valor da Inscrição:</strong>
@@ -122,7 +122,7 @@
             type="text"
             formControlName="habilidade"
             class="form-control"
-            placeholder="Ex: Cozinha, Louvor, Elétrica"
+            placeholder="Ex: Cozinha, Teatro, Manutenção"
           />
         </div>
         <div class="form-group">
@@ -186,8 +186,8 @@
             <label>Sexo</label
             ><select formControlName="sexo" class="form-control">
               <option value="" disabled>Selecione...</option>
-              <option value="M">Masculino</option>
-              <option value="F">Feminino</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
             </select>
           </div>
           <div class="form-group">
@@ -475,10 +475,7 @@
           </select>
         </div>
       </div>
-      } @if(errorMessage) {
-      <p class="error-text text-center">{{ errorMessage }}</p>
       }
-
       <div class="form-footer">
         <button
           type="submit"
@@ -493,3 +490,55 @@
     }
   </div>
 </div>
+
+@if(acampamento) {
+<dialog
+  [isOpen]="mostrarDialogoQRCode"
+  (close)="fecharDialogoQRCode()"
+  [dialogTitle]="
+    'QR Code para Inscrição do Campista: ' +
+    acampamento.tipoAcampamento.descricao +
+    ' - ' +
+    acampamento.nomeAcampamento
+  "
+>
+  <ng-container dialog-body>
+    <div class="qrcode-container">
+      @if(qrCodeData) {
+      <qrcode
+        [qrdata]="qrCodeData"
+        [width]="256"
+        [errorCorrectionLevel]="'M'"
+        [elementType]="'canvas'"
+        [cssClass]="'qrcode-canvas'"
+        (qrCodeURL)="onQRCodeURL($event)"
+      >
+      </qrcode>
+      <p class="qrcode-link-info">
+        Escaneie para acessar:
+        <span class="math-inline"
+          ><a [href]="qrCodeData" target="_blank">{{ qrCodeData }}</a></span
+        >
+      </p>
+      } @else {
+      <p>Erro ao gerar dados do QRCode.</p>
+      }
+    </div>
+  </ng-container>
+  <ng-container dialog-footer>
+    <a
+      class="btn btn-primary"
+      [class.disabled]="!qrCodeImageURL"
+      [href]="qrCodeImageURL"
+      [download]="
+        'qrcode-' + (acampamento!.nomeAcampamento || 'acampamento') + '.png'
+      "
+    >
+      <i class="fas fa-download"></i> Baixar QR Code
+    </a>
+    <button class="btn btn-secondary" (click)="fecharDialogoQRCode()">
+      Fechar
+    </button>
+  </ng-container>
+</dialog>
+}

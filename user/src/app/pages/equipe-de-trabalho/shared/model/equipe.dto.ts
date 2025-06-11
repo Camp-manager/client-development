@@ -9,6 +9,5 @@ export interface EquipeDTO {
   nome: string;
   tipoEquipe: string;
   cronogramas: CronogramaDTO[];
-  membros: MembroEquipe[];
   expanded?: boolean;
 }

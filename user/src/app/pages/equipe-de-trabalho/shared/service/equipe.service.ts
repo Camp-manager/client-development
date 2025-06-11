@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../../.enviroment';
 import { CampistaDTO } from '../model/campista.dto';
 import { FuncionarioDTO } from '../model/funcionario.dto';
 import { EquipeRequest } from '../model/equipe.request';
+import { environment } from '../../../../../../../.enviroment';
 
 @Injectable({
   providedIn: 'root',

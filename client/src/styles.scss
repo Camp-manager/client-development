@@ -1,3 +1,5 @@
+@use "sass:color";
+@use "./app/shared/styles/variables" as vars;
 @use "@angular/material" as mat;
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 
@@ -82,11 +84,77 @@ p {
   border-radius: 8px;
 }
 
-html,
-body {
-  height: 100%;
+.btn {
+  display: inline-block;
+  font-weight: 500; // Peso da fonte padrão
+  line-height: 1.5;
+  color: vars.$primary-text; // Cor de texto padrão para botões não coloridos (ex: outline)
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none; // Impede seleção de texto ao clicar
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.6rem 1.2rem; // Padding padrão (ajuste conforme seu design)
+  font-size: 1rem; // Tamanho de fonte padrão
+  border-radius: vars.$small-border-radius; // Usa o raio de borda menor
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  // Estado de Foco
+  &:focus {
+    outline: 0;
+    // Sombra de foco sutil, usando a cor primária por padrão
+    box-shadow: 0 0 0 0.2rem color.change(vars.$primary-blue, $alpha: 0.25);
+  }
+
+  // Estado Desabilitado
+  &:disabled,
+  &.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    pointer-events: none; // Impede eventos de mouse
+  }
+
+  // Para links <a> estilizados como botões que não devem ter borda dupla
+  &.no-border {
+    border-color: transparent !important;
+  }
+
+  // Para botões com ícones
+  i,
+  .fas,
+  .far,
+  .fab {
+    // Classes comuns do Font Awesome
+    margin-right: 0.5em; // Espaço entre ícone e texto
+    &:only-child {
+      // Se o botão só tiver um ícone
+      margin-right: 0;
+    }
+  }
 }
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+
+// --- Modificadores de Cor ---
+
+// Botão Primário
+.btn-primary {
+  color: vars.$sidebar-text; // Texto branco
+  background-color: vars.$primary-blue;
+  border-color: vars.$primary-blue;
+
+  &:hover {
+    color: vars.$sidebar-text;
+    background-color: color.adjust(vars.$primary-blue, $lightness: -8%);
+    border-color: color.adjust(vars.$primary-blue, $lightness: -10%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem color.change(vars.$primary-blue, $alpha: 0.5);
+  }
+  &:active,
+  &.active {
+    background-color: color.adjust(vars.$primary-blue, $lightness: -10%);
+    border-color: color.adjust(vars.$primary-blue, $lightness: -12%);
+  }
 }

@@ -1,7 +1,7 @@
 import { Injectable, inject, Type, ViewContainerRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { environment } from '../../../.enviroment';
+import { environment } from '../../../../../.enviroment';
 
 @Injectable({
   providedIn: 'root',

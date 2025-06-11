@@ -1,0 +1,95 @@
+@use "../../shared/styles/variables" as vars; // Ajuste o caminho para suas variáveis globais
+
+:host {
+  display: contents; // Faz com que o componente não adicione um elemento extra no DOM
+}
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0; // Equivalente a top:0, right:0, bottom:0, left:0
+  background-color: rgba(0, 0, 0, 0.65); // Fundo escuro semi-transparente
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; // Alto z-index para ficar por cima
+  padding: 1rem; // Espaçamento para não colar nas bordas da tela
+  box-sizing: border-box;
+}
+
+.dialog-card {
+  background-color: vars.$background-card;
+  border-radius: vars.$border-radius;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px; // Largura padrão, pode ser ajustada via CSS no componente pai
+  max-height: 90vh; // Altura máxima
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // Para border-radius funcionar com conteúdo de scroll
+  animation: dialog-appear 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  // Se você quer que o .card global seja aplicado, mas com modificações
+  &.card {
+    padding: 0; // Remove o padding padrão do .card global se houver
+  }
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid vars.$border-color-light;
+  flex-shrink: 0;
+
+  .dialog-title-default {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: vars.$primary-text;
+    margin: 0;
+  }
+}
+
+.dialog-close-button {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  font-weight: 300;
+  color: vars.$secondary-text;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+  margin-left: auto;
+
+  &:hover {
+    color: vars.$danger-color;
+  }
+}
+
+.dialog-body {
+  padding: 1.5rem;
+  overflow-y: auto; // Scroll se o conteúdo for maior que o espaço
+  flex-grow: 1; // Faz o corpo ocupar o espaço restante
+  color: vars.$secondary-text;
+}
+
+.dialog-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid vars.$border-color-light;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  background-color: #f9f9f9;
+  flex-shrink: 0;
+}
+
+@keyframes dialog-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

@@ -57,7 +57,6 @@ export class EquipeComponent implements OnInit {
 
     this.route.paramMap.subscribe((params) => {
       if (params.has('idAcampamento')) {
-        // Cenário 1: O ID está na URL, carrega os dados diretamente.
         const id = Number(params.get('idAcampamento'));
         this.carregarDadosDoAcampamento(id);
       } else {
@@ -98,14 +97,28 @@ export class EquipeComponent implements OnInit {
     campistas: CampistaDTO[]
   ): void {
     const todosMembrosIds = new Set<number>();
-    equipes.forEach((equipe) =>
-      equipe.membros.forEach((membro) => todosMembrosIds.add(membro.id))
+
+    if (equipes && Array.isArray(equipes)) {
+      equipes.forEach((equipe) => {
+        // if (equipe && equipe.membros && Array.isArray(equipe.membros)) {
+        //   equipe.membros.forEach((membro) => {
+        //     if (membro && membro.id) {
+        //       todosMembrosIds.add(membro.id);
+        //     }
+        //   });
+        // }
+      });
+    }
+
+    this.funcionariosSemTime = (funcionarios || []).filter(
+      (f) => f && !todosMembrosIds.has(f.id)
     );
-    this.funcionariosSemTime = funcionarios.filter(
-      (f) => !todosMembrosIds.has(f.id)
+    this.campistasSemTime = (campistas || []).filter(
+      (c) => c && !todosMembrosIds.has(c.id)
     );
-    this.campistasSemTime = campistas.filter((c) => !todosMembrosIds.has(c.id));
-    this.equipes = equipes;
+
+    // Garante que equipes seja sempre um array.
+    this.equipes = equipes || [];
   }
 
   inicializarFormularioEquipes(): void {
@@ -169,7 +182,7 @@ export class EquipeComponent implements OnInit {
     this.equipeService.adicionarMembros(equipeId, [membro.id]).subscribe(() => {
       const equipeAlvo = this.equipes.find((e) => e.id === equipeId);
       if (equipeAlvo) {
-        equipeAlvo.membros = [...equipeAlvo.membros, membro];
+        // equipeAlvo.membros = [...equipeAlvo.membros, membro];
       }
       this.funcionariosSemTime = this.funcionariosSemTime.filter(
         (f) => f.id !== membro.id
@@ -189,9 +202,9 @@ export class EquipeComponent implements OnInit {
     this.equipeService
       .removerMembros(equipe.id, [membroParaRemover.id])
       .subscribe(() => {
-        equipe.membros = equipe.membros.filter(
-          (m) => m.id !== membroParaRemover.id
-        );
+        // equipe.membros = equipe.membros.filter(
+        //   (m) => m.id !== membroParaRemover.id
+        // );
 
         if ('habilidade' in membroParaRemover) {
           this.funcionariosSemTime = [

@@ -1,3 +1,4 @@
+import { AuthService } from './../../../../../user/src/app/components/login/shared/service/auth.service';
 import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
@@ -10,11 +11,11 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { InscricaoService } from './shared/service/inscricao.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { CamisetaService } from '../../services/camiseta.service';
-import { AcampamentoService } from '../../services/acampamento.service';
 import { Acampamento } from '../../shared/model/acampamento';
-import { environment } from '../../../../../user/src/.enviroment';
 import { SafeUrl } from '@angular/platform-browser';
+import { AcampamentoService } from '../../shared/services/acampamento.service';
+import { CamisetaService } from '../../shared/services/camiseta.service';
+import { environment } from '../../../../../.enviroment';
 
 @Component({
   selector: 'app-formulario',
@@ -29,6 +30,7 @@ export class FormularioComponent implements OnInit {
   private inscricaoService = inject(InscricaoService);
   private acampamentoService = inject(AcampamentoService);
   private camisetaService = inject(CamisetaService);
+  private authService = inject(AuthService);
 
   formState: 'loading' | 'lookup' | 'filling' | 'error' = 'loading';
   acampamento: Acampamento | null = null;
@@ -245,7 +247,16 @@ export class FormularioComponent implements OnInit {
     submitRequest$.subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.router.navigate(['/cadastro-concluido']);
+        if (this.tipoFormulario === 'funcionario')
+          this.authService
+            .login({
+              login: payload.email,
+              password: payload.cpf.substring(0, 6),
+            })
+            .subscribe((success) => {
+              localStorage.setItem('token', success.token);
+            });
+        this.openDialog();
       },
       error: (err: any) => {
         this.isSubmitting = false;
@@ -254,12 +265,18 @@ export class FormularioComponent implements OnInit {
     });
   }
 
-  dialogVisible: boolean = false;
-  qrCodeImageURL?: SafeUrl;
+  mostrarDialogoQRCode: boolean = false;
+  qrCodeData?: string;
+  qrCodeImageURL: SafeUrl | null = null;
 
   openDialog() {
-    this.dialogVisible = true;
-    this.qrCodeImageURL = `${environment.CLIENT}/formulario/cam/${this.idAcampamento}/${this.codigoRegistro}`;
+    this.mostrarDialogoQRCode = true;
+    this.qrCodeData = `${environment.CLIENT}/formulario/cam/${this.idAcampamento}/${this.codigoRegistro}`;
+  }
+
+  fecharDialogoQRCode() {
+    this.mostrarDialogoQRCode = false;
+    this.qrCodeImageURL = null;
   }
 
   onQRCodeURL(url: SafeUrl): void {

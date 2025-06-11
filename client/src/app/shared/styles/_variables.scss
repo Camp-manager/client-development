@@ -1,0 +1,61 @@
+@use "sass:color";
+
+// --- Cores de Fundo ---
+$background: #dbe0e6;
+$background-card: #ffffff;
+$login-page-background: #f0f2f5;
+
+// --- Cores de Texto ---
+$primary-text: #333333;
+$secondary-text: #666666;
+$sidebar-text: #ffffff;
+
+$secondary-text-hover: color.adjust($secondary-text, $lightness: -10%);
+
+// --- Cores Primárias e de Destaque ---
+$primary-blue: #007bff;
+
+// --- Cores de Feedback/Alerta ---
+$danger-color: #dc3545;
+$danger-hover: #a71d2a;
+$danger-background-light: color.change($danger-color, $alpha: 0.18);
+
+// --- Cores da Sidebar ---
+$sidebar-hover-bg: #22303f;
+$sidebar-active-text: #66b2ff;
+
+// --- Estilos de Bordas e Sombras ---
+$border-radius: 1rem;
+$small-border-radius: 0.5rem;
+$box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+$border-color-light: #ccc;
+
+// --- Cores de Foco (para inputs) ---
+$focus-shadow-color: color.change($primary-blue, $alpha: 0.25);
+$danger-focus-shadow-color: color.change($danger-color, $alpha: 0.25);
+
+// --- Cores de Botão ---
+$button-hover-bg: color.adjust($primary-blue, $lightness: -10%);
+$button-disabled-bg: color.adjust($primary-blue, $lightness: 30%);
+
+// --- Layout ---
+$header-height: 60px;
+
+// --- Outras Cores ---
+$separator-color: #aaaaaa;
+
+// --- Variáveis para Tabelas ---
+$table-header-bg: #e9ecef; // Fundo do cabeçalho da tabela
+$table-header-text: $primary-text; // Cor do texto do cabeçalho
+$table-border-color: #dee2e6; // Cor principal da borda da tabela
+$table-row-border-color: #e9ecef; // Cor da borda das linhas (mais suave)
+$table-stripe-bg: #f8f9fa; // Cor de fundo para linhas zebradas
+$table-hover-bg: #f1f1f1; // Cor de fundo para linha em hover
+$table-footer-bg: $table-header-bg; // Fundo do rodapé da tabela (opcional)
+
+$success-color: #28a745;
+$warning-color: #ffc107;
+$info-color: #17a2b8; // Um azul mais claro/ciano
+
+$light-gray-btn-bg: #f8f9fa; // Para botões claros
+$dark-gray-btn-bg: #343a40; // Para botões escuros

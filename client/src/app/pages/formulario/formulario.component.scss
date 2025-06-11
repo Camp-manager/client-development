@@ -1,7 +1,5 @@
-/* =================================================================
-   1. VARIÁVEIS DE TEMA E CORES
-   Cores consistentes para uma identidade visual unificada.
-================================================================= */
+@use "../../shared/styles/variables" as vars;
+
 :host {
   --primary-color: #4a80c6;
   --primary-color-dark: #3a66a0;
@@ -16,9 +14,6 @@
   --font-family: "Poppins", "Roboto", sans-serif; // Fonte moderna e legível
 }
 
-/* =================================================================
-   2. ESTRUTURA PRINCIPAL
-================================================================= */
 .form-container {
   display: flex;
   flex-direction: column;
@@ -267,6 +262,25 @@ form {
     h4,
     .full-width {
       grid-column: 1 / -1; // Faz o elemento ocupar as duas colunas
+    }
+  }
+}
+
+.qrcode-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .qrcode-canvas {
+    border: 1px solid vars.$border-color-light; // Borda sutil
+  }
+
+  .qrcode-link-info {
+    font-size: 0.9rem;
+    color: vars.$secondary-text;
+    word-break: break-all; // Para URLs longas
+    a {
+      color: vars.$primary-blue;
     }
   }
 }

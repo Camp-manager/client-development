@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { PessoaRequest } from '../model/pessoa.request';
 import { CriarCampistaRequest } from '../model/criar-campista.request';
 import { CriarFuncionarioRequest } from '../model/criar-funcionario.request';
-import { environment } from '../../../../../../../user/src/.enviroment';
+import { environment } from '../../../../../../../.enviroment';
 
 @Injectable({
   providedIn: 'root',
