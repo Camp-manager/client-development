@@ -8,12 +8,13 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
 import { InscricaoService } from './shared/service/inscricao.service';
-import { PessoaRequest } from './shared/model/pessoa.request';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { CamisetaService } from '../../services/camiseta.service';
 import { AcampamentoService } from '../../services/acampamento.service';
 import { Acampamento } from '../../shared/model/acampamento';
+import { environment } from '../../../../../user/src/.enviroment';
+import { SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-formulario',
@@ -84,7 +85,7 @@ export class FormularioComponent implements OnInit {
       next: ({ acampamento, tamanhos }) => {
         this.acampamento = acampamento;
         this.tamanhosCamisa = tamanhos;
-        this.formState = 'lookup'; // Libera a tela de busca
+        this.formState = 'lookup';
       },
       error: (err) => {
         this.formState = 'error';
@@ -157,35 +158,44 @@ export class FormularioComponent implements OnInit {
     this.errorMessage = null;
     const cpf = this.cpfLookupControl.value!;
 
-    this.inscricaoService.getDadosPessoaPorCPF(cpf).subscribe({
-      next: (dados: any) => {
-        if (this.tipoFormulario === 'campista') {
-          this.form.get('pessoa')?.patchValue(dados.pessoa);
-        } else {
-          this.form.patchValue(dados);
-        }
-        alert(
-          'Dados carregados com sucesso! Por favor, revise as informações.'
-        );
-        this.formState = 'filling';
-        this.isSubmitting = false;
-      },
-      error: (err: HttpErrorResponse) => {
-        if (err.status === 404) {
+    this.inscricaoService
+      .getDadosPessoaPorCPF(cpf, this.idAcampamento!)
+      .subscribe({
+        next: (dados: any) => {
+          if (this.tipoFormulario === 'campista') {
+            this.form.get('pessoa')?.patchValue(dados);
+          } else if (this.tipoFormulario === 'funcionario') {
+            const dadosFuncionario = {
+              nome: dados.nomeCompleto, // 'nome' no form recebe 'nomeCompleto' dos dados
+              email: dados.email,
+              cpf: dados.cpf,
+              telefone: dados.telefone,
+              habilidade: dados.habilidade || '', // Garante um valor padrão
+            };
+            this.form.patchValue(dadosFuncionario);
+          }
           alert(
-            'CPF não encontrado. Por favor, preencha o formulário pela primeira vez.'
+            'Dados carregados com sucesso! Por favor, revise as informações.'
           );
-          const cpfControlPath =
-            this.tipoFormulario === 'campista' ? 'pessoa.cpf' : 'cpf';
-          this.form.get(cpfControlPath)?.setValue(cpf);
           this.formState = 'filling';
-        } else {
-          this.errorMessage =
-            'Ocorreu um erro ao buscar seus dados. Tente novamente.';
-        }
-        this.isSubmitting = false;
-      },
-    });
+          this.isSubmitting = false;
+        },
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 404) {
+            alert(
+              'CPF não encontrado. Por favor, preencha o formulário pela primeira vez.'
+            );
+            const cpfControlPath =
+              this.tipoFormulario === 'campista' ? 'pessoa.cpf' : 'cpf';
+            this.form.get(cpfControlPath)?.setValue(cpf);
+            this.formState = 'filling';
+          } else {
+            this.errorMessage =
+              'Ocorreu um erro ao buscar seus dados. Tente novamente.';
+          }
+          this.isSubmitting = false;
+        },
+      });
   }
 
   pularBuscaCPF(): void {
@@ -204,7 +214,6 @@ export class FormularioComponent implements OnInit {
   }
 
   onSubmit(): void {
-    // ... esta função permanece a mesma
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       alert('Por favor, preencha todos os campos obrigatórios em destaque.');
@@ -236,12 +245,33 @@ export class FormularioComponent implements OnInit {
     submitRequest$.subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.router.navigate(['/sucesso']);
+        this.router.navigate(['/cadastro-concluido']);
       },
       error: (err: any) => {
         this.isSubmitting = false;
         this.errorMessage = `Erro ao enviar inscrição: ${err.message}`;
       },
     });
+  }
+
+  dialogVisible: boolean = false;
+  qrCodeImageURL?: SafeUrl;
+
+  openDialog() {
+    this.dialogVisible = true;
+    this.qrCodeImageURL = `${environment.CLIENT}/formulario/cam/${this.idAcampamento}/${this.codigoRegistro}`;
+  }
+
+  onQRCodeURL(url: SafeUrl): void {
+    this.qrCodeImageURL = url;
+  }
+
+  downloadQRCode(): void {
+    if (!this.qrCodeImageURL || !this.acampamento) return;
+
+    const link = document.createElement('a');
+    link.href = this.qrCodeImageURL.toString();
+    link.download = `qrcode-${this.acampamento.nomeAcampamento}.png`;
+    link.click();
   }
 }

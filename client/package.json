@@ -22,6 +22,7 @@
     "@angular/router": "^19.2.0",
     "@ng-select/ng-select": "^14.8.0",
     "ngx-mask": "^19.0.7",
+    "ngx-qrcode": "^0.1.0-rc.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

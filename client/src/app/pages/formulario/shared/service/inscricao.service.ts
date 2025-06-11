@@ -14,10 +14,9 @@ export class InscricaoService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.API}/pessoa`;
 
-  getDadosPessoaPorCPF(cpf: string): Observable<any> {
-    const cpfNumeros = cpf.replace(/\D/g, '');
+  getDadosPessoaPorCPF(cpf: string, idAcampamento: string): Observable<any> {
     return this.http
-      .get<any>(`${this.baseUrl}/buscar-pessoa-por-cpf/${cpfNumeros}`)
+      .get<any>(`${this.baseUrl}/buscar-pessoa-por-cpf/${cpf}/${idAcampamento}`)
       .pipe(catchError((error: HttpErrorResponse) => throwError(() => error)));
   }
 
