@@ -10,16 +10,18 @@
     @if (isLoading) {
     <p class="loading-state">Carregando dados das equipes...</p>
     } @else {
+
     <div class="unassigned-section">
-      <hr />
       <h4>Pessoas Sem Equipe</h4>
+
+      <h5>Equipe de Trabalho Disponível</h5>
       @if (funcionariosSemTime.length > 0) {
       <table class="app-table unassigned-table">
         <thead>
           <tr>
             <th>Nome</th>
             <th>Habilidades Principais</th>
-            <th>Número</th>
+            <th>Telefone</th>
             <th style="width: 220px">Ação</th>
           </tr>
         </thead>
@@ -27,8 +29,8 @@
           @for (func of funcionariosSemTime; track func.id) {
           <tr>
             <td>{{ func.nome }}</td>
-            <td>{{ func.habilidade }}</td>
-            <td>{{ func.telefone }}</td>
+            <td>{{ func.habilidade || "Não informado" }}</td>
+            <td>{{ func.telefone || "Não informado" }}</td>
             <td class="actions">
               <select
                 class="form-control form-control-sm"
@@ -51,25 +53,70 @@
       </table>
       } @else {
       <p class="empty-state-inner">
-        Todos os funcionários já estão atribuídos a uma equipe.
+        Todos os funcionários já estão em uma equipe.
+      </p>
+      }
+
+      <h5 class="mt-4">Campistas Disponíveis</h5>
+      @if (campistasSemTime.length > 0) {
+      <table class="app-table unassigned-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th style="width: 220px">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (campista of campistasSemTime; track campista.id) {
+          <tr>
+            <td>{{ campista.nome }}</td>
+            <td>{{ campista.telefone || "Não informado" }}</td>
+            <td class="actions">
+              <select
+                class="form-control form-control-sm"
+                #selectEquipeCampista
+                (change)="
+                  adicionarMembroAEquipe(campista, +selectEquipeCampista.value);
+                  selectEquipeCampista.value = ''
+                "
+                title="Atribuir à equipe"
+              >
+                <option value="">Atribuir para a equipe...</option>
+                @for(e of equipes; track e.id) {
+                <option [value]="e.id">{{ e.nome }}</option>
+                }
+              </select>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p class="empty-state-inner">
+        Todos os campistas já estão em uma equipe.
       </p>
       }
     </div>
+
+    <hr />
+
     <div class="table-responsive-wrapper">
-      <h4>Equipes</h4>
+      <h4>Equipes Formadas</h4>
       <table class="app-table equipes-table">
         <thead>
           <tr>
             <th style="width: 50px"></th>
-            <th>Equipe</th>
+            <th>Nome da Equipe</th>
             <th class="text-center">Nº de Membros</th>
+            <th class="text-center">Tipo</th>
           </tr>
         </thead>
         <tbody>
           @for (equipe of equipes; track equipe.id) {
           <tr
-            [class.bind]="equipe.expanded ? 'expanded' : ''"
             class="equipe-row"
+            [class.expanded]="equipe.expanded"
             (click)="toggleExpand(equipe)"
           >
             <td>
@@ -82,8 +129,8 @@
             </td>
             <td>{{ equipe.nome }}</td>
             <td class="text-center">{{ equipe.membros.length }}</td>
+            <td class="text-center">{{ equipe.tipoEquipe }}</td>
           </tr>
-
           @if (equipe.expanded) {
           <tr class="membros-row">
             <td colspan="4">
@@ -103,8 +150,10 @@
                       <td class="text-center">
                         <button
                           class="btn btn-sm btn-warning"
-                          (click)="removerMembroDaEquipe(equipe, membro)"
-                          title="Remover da equipe e mover para a lista de 'Sem Time'"
+                          (click)="
+                            removerMembroDaEquipe(equipe, membro);
+                            $event.stopPropagation()
+                          "
                         >
                           <i class="fas fa-arrow-down"></i> Remover da Equipe
                         </button>
@@ -122,16 +171,13 @@
           } } @empty {
           <tr>
             <td colspan="4">
-              <p class="empty-state">
-                Nenhuma equipe de trabalho foi criada para este acampamento.
-              </p>
+              <p class="empty-state">Nenhuma equipe de trabalho foi criada.</p>
             </td>
           </tr>
           }
         </tbody>
       </table>
     </div>
-
     }
   </div>
 </div>
@@ -141,6 +187,7 @@
   [isOpen]="mostrarDialogoNovasEquipes"
   (close)="fecharDialogoNovasEquipes()"
   [dialogTitle]="'Cadastrar Novas Equipes de Trabalho'"
+  dialogWidth="600px"
 >
   <ng-container dialog-body>
     <form
@@ -168,8 +215,8 @@
               formControlName="tipoEquipe"
             >
               <option [ngValue]="null" disabled>Selecione...</option>
+              <option value="Trabalho">Equipe de trabalho</option>
               <option value="Campista">Campista</option>
-              <option value="Trabalho">Equipe de Trabalho</option>
             </select>
           </div>
           <button

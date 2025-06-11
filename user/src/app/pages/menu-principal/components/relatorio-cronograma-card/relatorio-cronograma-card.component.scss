@@ -1,0 +1,22 @@
+.report-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.report-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.form-control {
+  flex-grow: 1;
+  height: 40px;
+  // Adicione outros estilos se necessário
+}

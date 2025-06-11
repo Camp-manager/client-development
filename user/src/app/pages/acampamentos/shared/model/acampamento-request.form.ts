@@ -1,7 +1,7 @@
-import { CronogramaRequestForm } from '../../../cronogramas/shared/model/cronograma-request.form';
+import { CriarCronogramaRequest } from '../../../cronogramas/shared/model/cronograma.request';
 
 export class AcampamentoRequest {
-  cronogramaRequest: CronogramaRequestForm;
+  cronogramaRequest: CriarCronogramaRequest;
 
   nomeDoAcampamento: string;
 
@@ -14,11 +14,11 @@ export class AcampamentoRequest {
   idTipoAcampamento: number;
 
   constructor(form: any, idTema: number) {
-    this.cronogramaRequest = new CronogramaRequestForm(
-      form.dataInicio,
-      form.dataFim,
-      'Data do Acampamento'
-    );
+    this.cronogramaRequest = {
+      dataInicial: form.dataInicio,
+      dataFinal: form.dataFim,
+      descricao: 'Data do Acampamento',
+    };
     this.nomeDoAcampamento = form.descricao;
     this.limiteCampistas = form.limiteCampistas;
     this.limiteFuncionario = form.limiteEquipe;

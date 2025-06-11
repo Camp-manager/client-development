@@ -2,15 +2,19 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { CardConfig } from '../../shared/model/CardConfig';
+import { DynamicContentDirective } from '../../shared/directives/dynamic-content.directive';
+import { RelatorioCronogramaCardComponent } from './components/relatorio-cronograma-card/relatorio-cronograma-card.component';
 
 @Component({
   selector: 'app-menu-principal',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, DynamicContentDirective],
   templateUrl: './menu-principal.component.html',
   styleUrl: './menu-principal.component.scss',
 })
 export class MenuPrincipalComponent {
+  private router = inject(Router);
+
   cards: CardConfig[] = [
     {
       id: 'card1',
@@ -21,12 +25,12 @@ export class MenuPrincipalComponent {
       routerLink: '/alguma-rota',
     },
     {
-      id: 'card2',
-      title: 'Opção 2',
+      id: 'cardRelatorioCronograma',
+      title: 'Relatório de Cronograma',
       type: 'default',
-      columnSpanClass: 'col-1',
-      content: 'Descrição mais detalhada para a opção 2.',
-      icon: 'fas fa-star',
+      columnSpanClass: 'col-2',
+      icon: 'fas fa-calendar-alt',
+      component: RelatorioCronogramaCardComponent,
     },
     {
       id: 'card4',
@@ -39,7 +43,7 @@ export class MenuPrincipalComponent {
       id: 'card5',
       title: 'Justificado',
       type: 'justify',
-      columnSpanClass: 'col-1',
+      columnSpanClass: 'full-w',
       content: 'Item com alinhamento justificado.',
     },
     {
@@ -66,12 +70,19 @@ export class MenuPrincipalComponent {
     },
   ];
 
-  private router = inject(Router);
   navigateTo(link: string | any[]): void {
     if (typeof link === 'string') {
       this.router.navigate([link]);
     } else {
       this.router.navigate(link);
+    }
+  }
+
+  handleCardClick(card: CardConfig): void {
+    if (card.action) {
+      card.action();
+    } else if (card.routerLink) {
+      this.navigateTo(card.routerLink);
     }
   }
 

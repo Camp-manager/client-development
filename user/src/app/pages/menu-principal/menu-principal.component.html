@@ -1,9 +1,10 @@
 <div class="grid-container">
   @for (card of cards; track card.id) {
+
   <div
     class="card {{ card.type }} {{ card.columnSpanClass }}"
-    [class.has-link]="!!card.routerLink"
-    (click)="card.routerLink && navigateTo(card.routerLink)"
+    [class.clickable]="card.routerLink || card.action"
+    (click)="handleCardClick(card)"
   >
     @if (card.customHeader) {
     <header>
@@ -13,15 +14,19 @@
     } @else if (card.title) {
     <header>
       @if (card.icon) { <i class="{{ card.icon }} icon-header"></i> }
-      {{ card.title }}
+      <h4>{{ card.title }}</h4>
     </header>
-    } @if (card.content) {
-    <div class="card-content">
-      <p>{{ card.content }}</p>
-    </div>
-    } @if (card.routerLink && !card.embedComponent) {
-    <a [routerLink]="card.routerLink" class="card-action-link">Ver mais</a>
     }
+
+    <div class="card-content">
+      @if (card.content) {
+      <p>{{ card.content }}</p>
+      } @if (card.component) {
+      <ng-container [appDynamicContent]="card.component"></ng-container>
+      }
+    </div>
   </div>
   }
 </div>
+
+<ng-template #pdfContainer></ng-template>

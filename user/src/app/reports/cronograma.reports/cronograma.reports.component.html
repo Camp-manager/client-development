@@ -1,0 +1,107 @@
+<div class="report-container">
+  <header>
+    <h1>Relatório de Cronograma</h1>
+    <p>
+      {{ nomeAcampamento }} - Gerado em: {{ dataAtual | date : "dd/MM/yyyy" }}
+    </p>
+  </header>
+
+  @if (dadosCronograma) {
+
+  <div class="section">
+    <h2 class="section-title">Cronograma das Equipes de Trabalho</h2>
+
+    @for (equipe of dadosCronograma.cronogramasEquipeTrabalho; track
+    equipe.nomeEquipe) {
+    <div class="cut-here-container">
+      <i class="fas fa-ruler-horizontal icon"></i>
+
+      <div class="cut-line"></div>
+
+      <i class="fas fa-cut icon"></i>
+    </div>
+    <div class="team-block">
+      <h3 class="team-name">{{ equipe.nomeEquipe }}</h3>
+
+      @if (equipe.cronogramas.length > 0) {
+      <table>
+        <thead>
+          <tr>
+            <th>Função / Tarefa</th>
+            <th style="width: 20%">Data de Início</th>
+            <th style="width: 20%">Data de Fim</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of equipe.cronogramas; track item.id) {
+          <tr>
+            <td>{{ item.descricao }}</td>
+            <td>{{ item.dataInicio | date : "dd/MM/yyyy" }}</td>
+            <td>{{ item.dataFinal | date : "dd/MM/yyyy" }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p class="empty-state">
+        Nenhuma tarefa específica agendada para esta equipe.
+      </p>
+      }
+    </div>
+    } @empty {
+    <p class="empty-state">
+      Nenhum cronograma encontrado para equipes de trabalho.
+    </p>
+    }
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Cronograma das Equipes de Campistas</h2>
+
+    @for (equipe of dadosCronograma.cronogramasEquipeCampistas; track
+    equipe.nomeEquipe) {
+    <div class="cut-here-container">
+      <i class="fas fa-ruler-horizontal icon"></i>
+
+      <div class="cut-line"></div>
+
+      <i class="fas fa-cut icon"></i>
+    </div>
+    <div class="team-block">
+      <h3 class="team-name">{{ equipe.nomeEquipe }}</h3>
+      @if (equipe.cronogramas.length > 0) {
+      <table>
+        <thead>
+          <tr>
+            <th>Função / Tarefa</th>
+            <th>Data de Início</th>
+            <th>Data de Fim</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of equipe.cronogramas; track item.id) {
+          <tr>
+            <td>{{ item.descricao }}</td>
+            <td>{{ item.dataInicio | date : "dd/MM/yyyy" }}</td>
+            <td>{{ item.dataFinal | date : "dd/MM/yyyy" }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p class="empty-state">
+        Nenhuma tarefa específica agendada para esta equipe.
+      </p>
+      }
+    </div>
+    } @empty {
+    <p class="empty-state">
+      Nenhum cronograma encontrado para equipes de campistas.
+    </p>
+    }
+  </div>
+
+  } @else {
+  <p class="empty-state">Nenhum dado de cronograma para exibir.</p>
+  }
+</div>

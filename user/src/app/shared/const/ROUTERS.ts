@@ -21,17 +21,16 @@ export const ROUTERS: RouterHelpers = [
     icon: 'fa-users-cog',
   },
   {
-    nome: 'Campistas',
-    path: '/campistas',
-    icon: 'fa-users',
-  },
-  {
     nome: 'Cronogramas',
     path: '/cronogramas',
     icon: 'fa-solid fa-clipboard-list',
     children: [
       { nome: 'Novo Cronograma', path: '/cronogramas/novo', icon: 'fa-plus' },
-      // { nome: 'Listar Cronogramas', path: '/cronogramas/lista', icon: 'fa-list' } // For when list component is ready
+      {
+        nome: 'Listar Cronogramas',
+        path: '/cronogramas/buscar-todos',
+        icon: 'fa-list',
+      },
     ],
   },
 ];

@@ -65,14 +65,12 @@ export class EquipeComponent implements OnInit {
         // this.acampamentoService.get().subscribe({
         //   next: (proximoAcampamento) => {
         //     if (proximoAcampamento) {
-        //       // Redireciona para a URL com o ID e deixa o `carregarDadosDoAcampamento` ser chamado novamente pelo subscribe acima.
         //       this.router.navigate(
-        //         ['/equipe-de-trabalho', proximoAcampamento.idAcampamento],
+        //         ['/equipe', proximoAcampamento.idAcampamento],
         //         { replaceUrl: true }
         //       );
         //     } else {
         //       this.isLoading = false;
-        //       // Aqui você pode mostrar uma mensagem de "Nenhum acampamento futuro encontrado".
         //     }
         //   },
         //   error: () => (this.isLoading = false),

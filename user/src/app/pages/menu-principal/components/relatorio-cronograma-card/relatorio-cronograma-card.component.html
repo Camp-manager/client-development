@@ -1,0 +1,26 @@
+<div class="report-card-content">
+  <p>Selecione um acampamento para gerar o relatório de cronograma.</p>
+
+  <div class="report-controls">
+    <select [(ngModel)]="idAcampamentoSelecionado" class="form-control">
+      <option [ngValue]="null" disabled>Selecione um acampamento...</option>
+      @for(acamp of acampamentos; track acamp.idAcampamento) {
+      <option [value]="acamp.idAcampamento">{{ acamp.nomeAcampamento }}</option>
+      }
+    </select>
+
+    <button
+      class="btn btn-secondary"
+      (click)="exportarRelatorioCronograma()"
+      [disabled]="!idAcampamentoSelecionado || isGeneratingReport"
+    >
+      @if(isGeneratingReport) {
+      <span>Gerando...</span>
+      } @else {
+      <span>Gerar Relatório</span>
+      }
+    </button>
+  </div>
+</div>
+
+<ng-template #pdfContainer></ng-template>

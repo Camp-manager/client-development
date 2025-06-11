@@ -152,13 +152,6 @@
   <ng-container dialog-footer>
     <button
       class="btn btn-info"
-      [routerLink]="['/campistas', acampamentoSelecionado.idAcampamento]"
-      (click)="fecharDialogoDetalhes()"
-    >
-      <i class="fas fa-users"></i> Ver Campistas
-    </button>
-    <button
-      class="btn btn-info"
       [routerLink]="['/equipe', acampamentoSelecionado.idAcampamento]"
       (click)="fecharDialogoDetalhes()"
     >
@@ -189,6 +182,7 @@
         [errorCorrectionLevel]="'M'"
         [elementType]="'canvas'"
         [cssClass]="'qrcode-canvas'"
+        (qrCodeURL)="onQRCodeURL($event)"
       >
       </qrcode>
       <p class="qrcode-link-info">
@@ -203,6 +197,18 @@
     </div>
   </ng-container>
   <ng-container dialog-footer>
+    <a
+      class="btn btn-primary"
+      [class.disabled]="!qrCodeImageURL"
+      [href]="qrCodeImageURL"
+      [download]="
+        'qrcode-' +
+        (acampamentoParaQRCode!.nomeAcampamento || 'acampamento') +
+        '.png'
+      "
+    >
+      <i class="fas fa-download"></i> Baixar QR Code
+    </a>
     <button class="btn btn-secondary" (click)="fecharDialogoQRCode()">
       Fechar
     </button>

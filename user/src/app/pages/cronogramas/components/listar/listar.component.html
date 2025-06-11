@@ -1,0 +1,90 @@
+<div class="container-cronograma card full-page-card">
+  <div class="card-header">
+    <h3 class="card-title">Cronograma do Acampamento</h3>
+    <button class="btn btn-primary">
+      <i class="fas fa-plus"></i> Novo Agendamento
+    </button>
+  </div>
+
+  <div class="card-body">
+    @if(isLoading) {
+    <p class="loading-state">Carregando cronogramas...</p>
+    } @else if (error) {
+    <p class="error-state">{{ error }}</p>
+    } @else if (dadosCronograma) {
+
+    <div class="section">
+      <h4 class="section-title">Equipes de Trabalho</h4>
+      @for(equipe of dadosCronograma.cronogramasEquipeTrabalho; track
+      equipe.nomeEquipe) {
+      <div class="team-block">
+        <h5 class="team-name">{{ equipe.nomeEquipe }}</h5>
+        <table class="app-table">
+          <thead>
+            <tr>
+              <th>Tarefa / Descrição</th>
+              <th>Início</th>
+              <th>Fim</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(item of equipe.cronogramas; track item.id) {
+            <tr>
+              <td>{{ item.descricao }}</td>
+              <td>{{ item.dataInicio | date : "dd/MM/yyyy" }}</td>
+              <td>{{ item.dataFinal | date : "dd/MM/yyyy" }}</td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="3" class="text-center">Nenhuma tarefa agendada.</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      } @empty {
+      <p class="empty-state-inner">
+        Nenhum cronograma para equipes de trabalho.
+      </p>
+      }
+    </div>
+
+    <div class="section">
+      <h4 class="section-title">Equipes de Campistas</h4>
+      @for(equipe of dadosCronograma.cronogramasEquipeCampistas; track
+      equipe.nomeEquipe) {
+      <div class="team-block">
+        <h5 class="team-name">{{ equipe.nomeEquipe }}</h5>
+        <table class="app-table">
+          <thead>
+            <tr>
+              <th>Tarefa / Descrição</th>
+              <th>Início</th>
+              <th>Fim</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(item of equipe.cronogramas; track item.id) {
+            <tr>
+              <td>{{ item.descricao }}</td>
+              <td>{{ item.dataInicio | date : "dd/MM/yyyy" }}</td>
+              <td>{{ item.dataFinal | date : "dd/MM/yyyy" }}</td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="3" class="text-center">Nenhuma tarefa agendada.</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      } @empty {
+      <p class="empty-state-inner">
+        Nenhum cronograma para equipes de campistas.
+      </p>
+      }
+    </div>
+
+    }
+  </div>
+</div>

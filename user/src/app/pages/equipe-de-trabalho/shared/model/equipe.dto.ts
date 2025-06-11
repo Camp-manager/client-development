@@ -1,4 +1,4 @@
-import { Cronograma } from '../../../cronogramas/shared/model/cronograma';
+import { CronogramaDTO } from '../../../cronogramas/shared/model/cronograma.dto';
 import { CampistaDTO } from './campista.dto';
 import { FuncionarioDTO } from './funcionario.dto';
 
@@ -8,7 +8,7 @@ export interface EquipeDTO {
   id: number;
   nome: string;
   tipoEquipe: string;
-  cronogramas: Cronograma[];
+  cronogramas: CronogramaDTO[];
   membros: MembroEquipe[];
   expanded?: boolean;
 }

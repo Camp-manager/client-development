@@ -15,6 +15,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 import { AcampamentoService } from '../../shared/service/acampamento.service';
 import { environment } from '../../../../../.enviroment';
+import { SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-listar',
@@ -93,9 +94,12 @@ export class AcampamentoListarComponent
     this.acampamentoSelecionado = null;
   }
 
+  qrCodeImageURL: SafeUrl | null = null;
+
   abrirDialogoQRCode(acamp: Acampamento): void {
     this.acampamentoParaQRCode = acamp;
-    this.qrCodeData = `${environment.CLIENT}/formulario/fun/${acamp.idAcampamento}/${acamp.codigoRegistro}`;
+    const baseUrl = environment.CLIENT;
+    this.qrCodeData = `${baseUrl}/formulario/cam/${acamp.idAcampamento}/${acamp.codigoRegistro}`;
     this.mostrarDialogoQRCode = true;
   }
 
@@ -103,5 +107,18 @@ export class AcampamentoListarComponent
     this.mostrarDialogoQRCode = false;
     this.acampamentoParaQRCode = null;
     this.qrCodeData = null;
+    this.qrCodeImageURL = null;
+  }
+  onQRCodeURL(url: SafeUrl): void {
+    this.qrCodeImageURL = url;
+  }
+
+  downloadQRCode(): void {
+    if (!this.qrCodeImageURL || !this.acampamentoParaQRCode) return;
+
+    const link = document.createElement('a');
+    link.href = this.qrCodeImageURL.toString();
+    link.download = `qrcode-${this.acampamentoParaQRCode.nomeAcampamento}.png`;
+    link.click();
   }
 }

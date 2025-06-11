@@ -11,6 +11,15 @@ export const cronogramasRoutes: Routes = [
       ),
   },
   {
+    path: 'cronogramas/buscar-todos/:idAcampamento',
+    title: 'Todos Cronogramas',
+    data: { breadcrumb: 'Todos Cronogramas' },
+    loadComponent: () =>
+      import('./components/listar/listar.component').then(
+        (m) => m.ListarCronogramasComponent
+      ),
+  },
+  {
     path: 'cronogramas',
     redirectTo: 'cronogramas/novo',
     pathMatch: 'full',
