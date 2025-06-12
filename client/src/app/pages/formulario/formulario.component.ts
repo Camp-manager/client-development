@@ -165,14 +165,21 @@ export class FormularioComponent implements OnInit {
       .subscribe({
         next: (dados: any) => {
           if (this.tipoFormulario === 'campista') {
-            this.form.get('pessoa')?.patchValue(dados);
+            const dadosMapeados = {
+              nomeCompleto: dados.nome,
+              cpf: cpf,
+              telefone: dados.telefone,
+              ...dados,
+            };
+
+            this.form.get('pessoa')?.patchValue(dadosMapeados);
           } else if (this.tipoFormulario === 'funcionario') {
             const dadosFuncionario = {
-              nome: dados.nomeCompleto, // 'nome' no form recebe 'nomeCompleto' dos dados
+              nome: dados.nome,
               email: dados.email,
-              cpf: dados.cpf,
+              cpf: cpf,
               telefone: dados.telefone,
-              habilidade: dados.habilidade || '', // Garante um valor padrão
+              habilidade: dados.habilidade || '',
             };
             this.form.patchValue(dadosFuncionario);
           }

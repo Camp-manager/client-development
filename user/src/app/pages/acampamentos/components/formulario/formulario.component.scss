@@ -124,3 +124,56 @@
   justify-content: flex-end;
   gap: 1rem;
 }
+
+.form-container-responsive {
+  display: grid;
+  grid-template-columns: 1fr; // Uma coluna em mobile
+  gap: 0 1.5rem; // Espaçamento entre colunas
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr; // Duas colunas em telas maiores
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 1fr 1fr 1fr 1fr; // Quatro colunas em telas grandes
+  }
+}
+
+.form-section,
+.full-w {
+  grid-column: 1 / -1; // Faz o elemento ocupar todas as colunas
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.form-group.com-botao {
+  .input-com-botao {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .form-control {
+      flex-grow: 1;
+    }
+  }
+}
+
+.toggle-preco-container {
+  grid-column: 1 / -1;
+  text-align: right;
+  margin-top: -0.5rem;
+
+  .btn-link {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+}

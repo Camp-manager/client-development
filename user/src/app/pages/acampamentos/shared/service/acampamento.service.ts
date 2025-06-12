@@ -49,12 +49,21 @@ export class AcampamentoService {
   }
 
   adicionarAcampamentoComTemaExistente(request: any) {
-    request = new AcampamentoRequest(request, request.idTema);
-    this.http.post<any>(`${this.baseUrl}/adicionar`, request).subscribe(
-      (success) => {
-        window.location.reload();
-      },
-      (error) => console.log(error)
-    );
+    this.SERVICE_TEMA.atualizarTema(
+      new TemaRequest(
+        request.descricao,
+        request.precoCamisa,
+        request.precoInscricao,
+        request.idTema
+      )
+    ).subscribe((success) => {
+      request = new AcampamentoRequest(request, request.idTema);
+      this.http.post<any>(`${this.baseUrl}/adicionar`, request).subscribe(
+        (success) => {
+          window.location.reload();
+        },
+        (error) => console.log(error)
+      );
+    });
   }
 }

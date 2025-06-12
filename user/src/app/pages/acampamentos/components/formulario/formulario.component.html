@@ -5,7 +5,12 @@
     novalidate
     class="form-container-responsive"
   >
+    <div class="form-header">
+      <h4>{{ isEditMode ? "Editar Acampamento" : "Novo Acampamento" }}</h4>
+    </div>
+
     <div class="form-section full-w"><h5>Dados Gerais</h5></div>
+
     <div class="form-group">
       <label for="dataInicio">Data Início</label>
       <input
@@ -14,13 +19,8 @@
         placeholder="dd/mm/aaaa"
         formControlName="dataInicio"
         mask="d0/m0/0000"
-        [class.invalid]="f['dataInicio'].invalid && f['dataInicio'].touched"
+        class="form-control"
       />
-      @if(f['dataInicio'].hasError('required') && f['dataInicio'].touched) {
-      <small class="error-text">Data Início é obrigatória.</small>
-      } @if(f['dataInicio'].hasError('invalidDate') && f['dataInicio'].touched)
-      { <small class="error-text">Data de Início inválida.</small>
-      }
     </div>
 
     <div class="form-group">
@@ -31,16 +31,8 @@
         placeholder="dd/mm/aaaa"
         formControlName="dataFim"
         mask="d0/m0/0000"
-        [class.invalid]="f['dataFim'].invalid && f['dataFim'].touched"
+        class="form-control"
       />
-      @if(f['dataFim'].hasError('required') && f['dataFim'].touched) {
-      <small class="error-text">Data Fim é obrigatória.</small>
-      } @if(f['dataFim'].hasError('invalidDate') && f['dataFim'].touched) {
-      <small class="error-text">Data de Fim inválida.</small>
-      } @if(formulario.hasError('dataInvalida') && (f['dataFim'].touched ||
-      f['dataInicio'].touched)) {
-      <small class="error-text">Data Fim deve ser maior que Data Início.</small>
-      }
     </div>
 
     <div class="form-group">
@@ -49,10 +41,7 @@
         id="limiteCampistas"
         type="number"
         formControlName="limiteCampistas"
-        min="1"
-        [class.invalid]="
-          f['limiteCampistas'].invalid && f['limiteCampistas'].touched
-        "
+        class="form-control"
       />
     </div>
 
@@ -62,78 +51,143 @@
         id="limiteEquipe"
         type="number"
         formControlName="limiteEquipe"
-        min="1"
-        [class.invalid]="f['limiteEquipe'].invalid && f['limiteEquipe'].touched"
+        class="form-control"
       />
     </div>
 
-    <div class="form-section full-w"><h5>Tema e Valores</h5></div>
     <div class="form-group">
-      <label for="tipo">Tipo</label>
-      <select
-        id="tipo"
-        formControlName="tipo"
-        [class.invalid]="f['tipo'].invalid && f['tipo'].touched"
-      >
-        <option value="" disabled selected>Selecione um tipo</option>
-        @for (tipo of tipos; track tipo) {
+      <label for="tipo">Tipo de Acampamento</label>
+      <select id="tipo" formControlName="tipo" class="form-control">
+        <option [ngValue]="null" disabled>Selecione um tipo...</option>
+        @for (tipo of tipos; track tipo.id) {
         <option [value]="tipo.id">{{ tipo.descricao }}</option>
         }
       </select>
     </div>
-    <div class="form-group">
-      <label for="descricao">Descrição / Tema</label>
-      <input
-        id="descricao"
-        type="text"
-        formControlName="descricao"
-        placeholder="Eu decidi..."
-        list="temas"
-        [class.invalid]="f['descricao'].invalid && f['descricao'].touched"
-      /><datalist id="temas">
-        @for (tema of temas; track tema) {
-        <option [value]="tema.descricao"></option>
-        }
-      </datalist>
+
+    <div class="form-section full-w"><h5>Tema e Valores</h5></div>
+
+    <div class="form-group com-botao">
+      <label for="idTema">Tema</label>
+      <div class="input-com-botao">
+        <select id="idTema" formControlName="idTema" class="form-control">
+          <option [ngValue]="null" disabled>
+            Selecione um tema existente...
+          </option>
+          @for (tema of temas; track tema.id) {
+          <option [value]="tema.id">{{ tema.descricao }}</option>
+          }
+        </select>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="abrirDialogoNovoTema()"
+          title="Criar Novo Tema"
+        >
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="precoCamisa">Preço da Camisa (R$)</label>
-      <input
-        id="precoCamisa"
-        type="number"
-        formControlName="precoCamisa"
-        step="0.01"
-        min="0"
-        placeholder="0.00"
-        [class.invalid]="f['precoCamisa'].invalid && f['precoCamisa'].touched"
-      />
-    </div>
+
     <div class="form-group">
       <label for="precoInscricao">Preço da Inscrição (R$)</label>
       <input
         id="precoInscricao"
         type="number"
         formControlName="precoInscricao"
-        step="0.01"
-        min="0"
-        placeholder="0.00"
-        [class.invalid]="
-          f['precoInscricao'].invalid && f['precoInscricao'].touched
-        "
+        class="form-control"
       />
     </div>
 
-    <div class="full-w button-container">
-      <button type="button" class="btn btn-secondary" (click)="cancelar()">
-        Cancelar
+    <div class="form-group">
+      <label for="precoCamisa">Preço da Camisa (R$)</label>
+      <input
+        id="precoCamisa"
+        type="number"
+        formControlName="precoCamisa"
+        class="form-control"
+      />
+    </div>
+
+    <div class="full-w toggle-preco-container">
+      <button type="button" class="btn-link" (click)="toggleEdicaoPrecos()">
+        {{
+          formulario.controls["precoInscricao"].disabled
+            ? "Editar preços"
+            : "Usar preços do tema"
+        }}
       </button>
+    </div>
+
+    <div class="full-w button-container">
       <button
         class="btn btn-primary"
         type="submit"
         [disabled]="formulario.invalid"
       >
-        {{ isEditMode ? "Salvar" : "Cadastrar" }}
+        {{ isEditMode ? "Salvar Alterações" : "Cadastrar Acampamento" }}
       </button>
     </div>
   </form>
 </div>
+
+@if (mostrarDialogoNovoTema) {
+<dialog
+  [isOpen]="mostrarDialogoNovoTema"
+  (close)="fecharDialogoNovoTema()"
+  dialogTitle="Criar Novo Tema"
+>
+  <ng-container dialog-body>
+    <form
+      [formGroup]="formNovoTema"
+      (ngSubmit)="salvarNovoTema()"
+      id="form-novo-tema"
+    >
+      <div class="form-group">
+        <label for="novo-tema-desc">Descrição / Nome do Tema</label>
+        <input
+          id="novo-tema-desc"
+          type="text"
+          formControlName="descricao"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="novo-tema-preco-insc">Preço da Inscrição (R$)</label>
+        <input
+          id="novo-tema-preco-insc"
+          type="number"
+          formControlName="precoAcampamento"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="novo-tema-preco-camisa">Preço da Camiseta (R$)</label>
+        <input
+          id="novo-tema-preco-camisa"
+          type="number"
+          formControlName="precoCamiseta"
+          class="form-control"
+        />
+      </div>
+    </form>
+  </ng-container>
+  <ng-container dialog-footer>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="fecharDialogoNovoTema()"
+    >
+      Cancelar
+    </button>
+    <button
+      class="btn btn-primary"
+      type="submit"
+      form="form-novo-tema"
+      [disabled]="formNovoTema.invalid"
+    >
+      Salvar Tema
+    </button>
+  </ng-container>
+</dialog>
+}
