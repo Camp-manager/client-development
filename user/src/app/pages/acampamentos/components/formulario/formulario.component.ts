@@ -7,18 +7,21 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { concatMap, of, Subscription } from 'rxjs';
 
 import { NgxMaskDirective } from 'ngx-mask';
 import { DialogComponent } from '../../../../components/dialog/dialog.component';
 
 import {
+  Acampamento,
   TemaAcampamento,
   TipoAcampamento,
 } from '../../shared/model/acampamento';
 import { AcampamentoService } from '../../shared/service/acampamento.service';
 import { TipoService } from '../../shared/service/tipo.service';
 import { TemaService } from '../../shared/service/tema.service';
+import { TemaRequest } from '../../shared/model/tema-request.form';
+import { AcampamentoRequest } from '../../shared/model/acampamento-request.form';
 
 @Component({
   selector: 'app-formulario',
@@ -79,6 +82,7 @@ export class AcampamentoFormularioComponent implements OnInit, OnDestroy {
         { value: 0, disabled: true },
         [Validators.required, Validators.min(0)],
       ],
+      descricao: [''],
     });
 
     this.formNovoTema = this.fb.group({
@@ -89,14 +93,14 @@ export class AcampamentoFormularioComponent implements OnInit, OnDestroy {
   }
 
   verificarModoDeEdicao(): void {
-    const sub = this.route.paramMap.subscribe((params) => {
+    const sub = this.route.paramMap.subscribe((params: any) => {
       const id = params.get('id');
       if (id) {
         this.isEditMode = true;
         const acampamentoId = +id;
         this.acampamentoService
           .getAcampamentoBasicoPorId(acampamentoId)
-          .subscribe((acamp) => {
+          .subscribe((acamp: Acampamento) => {
             this.formulario.patchValue({
               ...acamp,
               idTema: acamp.tema.id,
@@ -113,27 +117,29 @@ export class AcampamentoFormularioComponent implements OnInit, OnDestroy {
   carregarDadosDeApoio(): void {
     const sub = this.tipoService
       .getTiposDeAcampamento()
-      .subscribe((tipos) => (this.tipos = tipos));
+      .subscribe((tipos: TipoAcampamento[]) => (this.tipos = tipos));
     this.subscriptions.add(sub);
     this.carregarTemas();
   }
 
   carregarTemas(): void {
-    const subTemas = this.temaService.getTemas().subscribe((temas) => {
-      this.temas = temas;
-      this.escutarMudancasDeTema();
+    const subTemas = this.temaService
+      .getTemas()
+      .subscribe((temas: TemaAcampamento[]) => {
+        this.temas = temas;
+        this.escutarMudancasDeTema();
 
-      if (this.isEditMode) {
-        this.atualizarPrecosPeloTema(this.formulario.get('idTema')?.value);
-      }
-    });
+        if (this.isEditMode) {
+          this.atualizarPrecosPeloTema(this.formulario.get('idTema')?.value);
+        }
+      });
     this.subscriptions.add(subTemas);
   }
 
   escutarMudancasDeTema(): void {
     const subMudancas = this.formulario
       .get('idTema')
-      ?.valueChanges.subscribe((temaId) => {
+      ?.valueChanges.subscribe((temaId: any) => {
         this.atualizarPrecosPeloTema(temaId);
       });
     this.subscriptions.add(subMudancas);
@@ -199,6 +205,48 @@ export class AcampamentoFormularioComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log(this.formulario.getRawValue());
+    const formValue = this.formulario.getRawValue();
+    const temaOriginal = this.temas.find((t) => {
+      return t.id === +formValue.idTema;
+    });
+    formValue.descricao = temaOriginal?.descricao;
+    if (!temaOriginal) {
+      return;
+    }
+
+    const temaFoiEditado =
+      temaOriginal.precoAcampamento !== formValue.precoInscricao ||
+      temaOriginal.precoCamiseta !== formValue.precoCamisa;
+
+    let acaoInicial$: any = of(null);
+
+    if (temaFoiEditado) {
+      const temaUpdateRequest = new TemaRequest(
+        temaOriginal.descricao,
+        formValue.precoCamisa,
+        formValue.precoInscricao,
+        formValue.idTema
+      );
+      acaoInicial$ = this.temaService.atualizarTema(temaUpdateRequest);
+    }
+
+    acaoInicial$
+      .pipe(
+        concatMap(() => {
+          const acampamentoRequest = new AcampamentoRequest(formValue);
+          return this.acampamentoService.adicionarAcampamento(
+            acampamentoRequest
+          );
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/acampamentos']);
+          window.location.reload();
+        },
+        error: (err: any) => {
+          alert('Ocorreu um erro ao salvar.');
+        },
+      });
   }
 }

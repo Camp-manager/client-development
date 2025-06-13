@@ -1,78 +1,94 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   FormArray,
   Validators,
-  AbstractControl,
   FormControl,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { CommonModule, DatePipe } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule, DatePipe, formatDate } from '@angular/common';
 import { Router } from '@angular/router';
-import {
-  addDays,
-  differenceInCalendarDays,
-  format,
-  parse,
-  isValid as isValidDate,
-} from 'date-fns';
+import { Observable, Subscription, combineLatest } from 'rxjs';
+import { startWith } from 'rxjs/operators';
+import { addDays, isValid as isValidDate, parseISO } from 'date-fns';
+
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { CronogramaService } from '../../shared/service/cronograma.service';
 import { AcampamentoService } from '../../../acampamentos/shared/service/acampamento.service';
-import { Acampamentos } from '../../../acampamentos/shared/model/acampamento';
+import { EquipeService } from '../../../equipe-de-trabalho/shared/service/equipe.service';
+import {
+  Acampamentos,
+  Acampamento,
+} from '../../../acampamentos/shared/model/acampamento';
+import { EquipeDTO } from '../../../equipe-de-trabalho/shared/model/equipe.dto';
 
 @Component({
   selector: 'app-formulario-cronograma',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe],
+  imports: [CommonModule, ReactiveFormsModule, DatePipe, NgSelectModule],
   templateUrl: './formulario.component.html',
   styleUrls: ['./formulario.component.scss'],
 })
-export class FormularioCronogramaComponent implements OnInit {
+export class FormularioCronogramaComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private cronogramaService = inject(CronogramaService);
   private acampamentoService = inject(AcampamentoService);
+  private equipeService = inject(EquipeService);
+  private subscriptions = new Subscription();
 
-  cronogramaForm!: FormGroup;
+  tipoCronogramaControl = new FormControl('', Validators.required);
+  formAtividades!: FormGroup;
+  formFuncoes!: FormGroup;
+
   acampamentosDisponiveis: Acampamentos = [];
+  equipesDisponiveis: EquipeDTO[] = [];
   isSubmitting = false;
 
-  constructor() {
-    this.cronogramaForm = this.fb.group({
-      idAcampamento: ['', Validators.required],
+  ngOnInit(): void {
+    this.acampamentoService
+      .getAcampamentos()
+      .subscribe((data) => (this.acampamentosDisponiveis = data));
+    this.escutarMudancasTipoCronograma();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  escutarMudancasTipoCronograma(): void {
+    const sub = this.tipoCronogramaControl.valueChanges.subscribe((tipo) => {
+      this.equipesDisponiveis = [];
+      if (tipo === 'atividades') {
+        this.inicializarFormAtividades();
+      } else if (tipo === 'funcoes') {
+        this.inicializarFormFuncoes();
+      }
+    });
+    this.subscriptions.add(sub);
+  }
+
+  inicializarFormAtividades(): void {
+    this.formAtividades = this.fb.group({
+      idAcampamento: [null, Validators.required],
       dataInicial: ['', Validators.required],
       dataFinal: ['', Validators.required],
       descricao: ['', Validators.required],
-      atividades: this.fb.array([]),
-      equipes: this.fb.array([]),
+      idsEquipes: [[], Validators.required],
+      atividades: this.fb.array([this.novaAtividade()]),
     });
+    const sub = this.formAtividades
+      .get('idAcampamento')!
+      .valueChanges.subscribe((idAcamp) => {
+        this.carregarEquipes(idAcamp, 'Trabalho');
+      });
+    this.subscriptions.add(sub);
   }
-
-  ngOnInit(): void {
-    this.acampamentoService.getAcampamentos().subscribe((data) => {
-      this.acampamentosDisponiveis = data;
-    });
-
-    this.cronogramaForm
-      .get('dataInicial')
-      ?.valueChanges.subscribe(() => this.onDateChange());
-    this.cronogramaForm
-      .get('dataFinal')
-      ?.valueChanges.subscribe(() => this.onDateChange());
+  atividades(form: FormGroup): FormArray {
+    return form.get('atividades') as FormArray;
   }
-
-  get f() {
-    return this.cronogramaForm.controls;
-  }
-  get atividades(): FormArray {
-    return this.cronogramaForm.get('atividades') as FormArray;
-  }
-  get equipes(): FormArray {
-    return this.cronogramaForm.get('equipes') as FormArray;
-  }
-
   novaAtividade(): FormGroup {
     return this.fb.group({
       tipo: ['', Validators.required],
@@ -81,114 +97,136 @@ export class FormularioCronogramaComponent implements OnInit {
     });
   }
   adicionarAtividade(): void {
-    this.atividades.push(this.novaAtividade());
+    this.atividades(this.formAtividades).push(this.novaAtividade());
   }
   removerAtividade(index: number): void {
-    this.atividades.removeAt(index);
+    this.atividades(this.formAtividades).removeAt(index);
   }
 
-  novaEquipe(): FormGroup {
-    return this.fb.group({
-      nome: ['', Validators.required],
-      tipo: ['', Validators.required],
-      diasDeFuncao: this.fb.array([]),
-    });
-  }
-  adicionarEquipe(): void {
-    const equipeGroup = this.novaEquipe();
-    this.equipes.push(equipeGroup);
-    this.atualizarDiasDeFuncaoParaEquipe(equipeGroup);
-  }
-  removerEquipe(index: number): void {
-    this.equipes.removeAt(index);
-  }
-
-  getDiasDeFuncaoControls(equipeCtrl: AbstractControl): AbstractControl[] {
-    const equipeFormGroup = equipeCtrl as FormGroup;
-    return (equipeFormGroup.get('diasDeFuncao') as FormArray).controls;
-  }
-
-  private onDateChange(): void {
-    if (
-      this.f['dataInicial'].valid &&
-      this.f['dataFinal'].valid &&
-      this.cronogramaForm.valid
-    ) {
-      this.equipes.controls.forEach((equipe) =>
-        this.atualizarDiasDeFuncaoParaEquipe(equipe as FormGroup)
+  // Função centralizada para carregar equipes
+  carregarEquipes(idAcampamento: number | null, type: string): void {
+    if (idAcampamento) {
+      this.equipeService.getEquipes(idAcampamento).subscribe(
+        (equipes) =>
+          (this.equipesDisponiveis = equipes.filter((e) => {
+            return e.tipoEquipe == type;
+          }))
       );
     }
   }
 
-  private atualizarDiasDeFuncaoParaEquipe(equipeFormGroup: FormGroup): void {
-    const diasDeFuncaoArray = equipeFormGroup.get('diasDeFuncao') as FormArray;
-    const diasDoCronograma = this.getDiasDoCronograma();
-
-    // Mantenha os valores existentes para os dias que ainda existem
-    const funcoesExistentes = new Map<string, string>();
-    diasDeFuncaoArray.controls.forEach((control) => {
-      funcoesExistentes.set(
-        control.get('data')?.value,
-        control.get('funcao')?.value
-      );
+  inicializarFormFuncoes(): void {
+    this.formFuncoes = this.fb.group({
+      idAcampamento: [null, Validators.required],
+      funcoesDiarias: this.fb.array([]),
     });
 
-    diasDeFuncaoArray.clear();
-
-    diasDoCronograma.forEach((diaStr) => {
-      diasDeFuncaoArray.push(
-        this.fb.group({
-          data: [diaStr, Validators.required],
-          funcao: [funcoesExistentes.get(diaStr) || '', Validators.required],
-        })
-      );
-    });
-  }
-
-  getDiasDoCronograma(): string[] {
-    const dataInicialStr = this.f['dataInicial'].value;
-    const dataFinalStr = this.f['dataFinal'].value;
-    const dias: string[] = [];
-
-    if (dataInicialStr && dataFinalStr) {
-      const dataInicial = parse(dataInicialStr, 'yyyy-MM-dd', new Date());
-      const dataFinal = parse(dataFinalStr, 'yyyy-MM-dd', new Date());
-
-      if (
-        isValidDate(dataInicial) &&
-        isValidDate(dataFinal) &&
-        dataFinal >= dataInicial
-      ) {
-        let currentDate = dataInicial;
-        while (currentDate <= dataFinal) {
-          dias.push(format(currentDate, 'yyyy-MM-dd'));
-          currentDate = addDays(currentDate, 1);
+    const subAcampamento = this.formFuncoes
+      .get('idAcampamento')!
+      .valueChanges.subscribe((idAcamp: any) => {
+        const acampamento = this.acampamentosDisponiveis.find(
+          (a) => a.idAcampamento === idAcamp
+        );
+        if (acampamento) {
+          this.carregarEquipes(idAcamp, 'Campista');
+          this.gerarLinhasDeFuncaoDiaria(acampamento);
         }
+      });
+    this.subscriptions.add(subAcampamento);
+  }
+  funcoesDiarias(form: FormGroup): FormArray {
+    return form.get('funcoesDiarias') as FormArray;
+  }
+  gerarLinhasDeFuncaoDiaria(acampamento: Acampamento): void {
+    const funcoesArray = this.funcoesDiarias(this.formFuncoes);
+    funcoesArray.clear();
+    const dataInicio = acampamento.dataInicio;
+    const dataFim = acampamento.dataFim;
+
+    if (isValidDate(dataInicio) && isValidDate(dataFim)) {
+      let diaAtual = dataInicio;
+      while (diaAtual <= dataFim) {
+        funcoesArray.push(
+          this.fb.group({
+            data: [
+              {
+                value: formatDate(diaAtual, 'yyyy-MM-dd', 'en-US'),
+                disabled: true,
+              },
+              Validators.required,
+            ],
+            idEquipe: [null, Validators.required],
+            descricaoFuncao: ['', Validators.required],
+          })
+        );
+        diaAtual = addDays(diaAtual, 1);
       }
     }
-    return dias;
   }
 
+  get todosOsIdsDeEquipes(): number[] {
+    return this.equipesDisponiveis.map((e) => e.id);
+  }
+
+  get todosSelecionados(): boolean {
+    const idsSelecionados = this.formAtividades?.get('idsEquipes')?.value;
+    if (!idsSelecionados || idsSelecionados.length === 0) {
+      return false;
+    }
+    return idsSelecionados.length === this.equipesDisponiveis.length;
+  }
+
+  toggleSelecionarTodos(): void {
+    const controleEquipes = this.formAtividades?.get('idsEquipes');
+    if (!controleEquipes) return;
+
+    if (this.todosSelecionados) {
+      controleEquipes.patchValue([]); // Limpa a seleção
+    } else {
+      controleEquipes.patchValue(this.todosOsIdsDeEquipes); // Seleciona todos
+    }
+  }
+
+  // --- Lógica de Submissão ---
   onSubmit(): void {
-    if (this.cronogramaForm.invalid) {
-      this.cronogramaForm.markAllAsTouched();
+    let formAtual: FormGroup;
+    let servico$: Observable<any>;
+    let payload: any;
+
+    if (this.tipoCronogramaControl.value === 'atividades') {
+      formAtual = this.formAtividades;
+      payload = { ...formAtual.getRawValue() };
+
+      // servico$ = this.cronogramaService.salvarCronogramaAtividades(payload);
+    } else if (this.tipoCronogramaControl.value === 'funcoes') {
+      formAtual = this.formFuncoes;
+      payload = { ...formAtual.getRawValue() };
+
+      // servico$ = this.cronogramaService.salvarCronogramaFuncoes(payload);
+    } else {
       return;
     }
-    this.isSubmitting = true;
-    const cronogramaData = this.cronogramaForm.value;
 
-    this.cronogramaService.salvarCronograma(cronogramaData).subscribe({
-      next: () => {
-        this.isSubmitting = false;
-        this.router.navigate(['/cronogramas', 'lista']); // Supondo que haverá uma lista
-      },
-      error: (err) => {
-        this.isSubmitting = false;
-      },
-    });
+    if (formAtual.invalid) {
+      formAtual.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting = true;
+    // servico$.subscribe({
+    //   next: () => {
+    //     alert('Cronograma salvo com sucesso!');
+    //     this.router.navigate(['/acampamentos/lista']); // Ou outra rota de sucesso
+    //   },
+    //   error: (err: any) => {
+    //     alert('Erro ao salvar o cronograma.');
+    //     console.error(err);
+    //   },
+    //   complete: () => (this.isSubmitting = false),
+    // });
   }
 
   cancelar(): void {
-    this.router.navigate(['/menu-principal']);
+    this.router.navigate(['/acampamentos']);
   }
 }

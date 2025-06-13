@@ -16,5 +16,6 @@ export class TemaRequest {
     this.precoCamiseta = precoCamisa;
     this.precoAcampamento = precoAcampamento;
     if (id) this.id = id;
+    console.log(this);
   }
 }

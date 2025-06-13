@@ -13,7 +13,7 @@ export class AcampamentoRequest {
 
   idTipoAcampamento: number;
 
-  constructor(form: any, idTema: number) {
+  constructor(form: any) {
     this.cronogramaRequest = {
       dataInicial: form.dataInicio,
       dataFinal: form.dataFim,
@@ -23,6 +23,6 @@ export class AcampamentoRequest {
     this.limiteCampistas = form.limiteCampistas;
     this.limiteFuncionario = form.limiteEquipe;
     this.idTipoAcampamento = form.tipo;
-    this.idTema = idTema;
+    this.idTema = form.idTema;
   }
 }

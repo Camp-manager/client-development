@@ -1,15 +1,18 @@
+// Importa as variáveis globais, tornando-as disponíveis com o prefixo 'vars'.
 @use "../../../../shared/styles/variables" as vars;
+// Importa o módulo de cores do SASS para manipular cores dinamicamente.
+@use "sass:color";
 
 :host {
   display: block;
   width: 100%;
-  height: 100%; // Ensure it takes full height if its container does
+  height: 100%;
 
   .form-container-responsive {
     display: flex;
-    flex-direction: column; // Changed to column for main layout
-    gap: 1.5rem; // Increased gap between sections
-    padding: 1rem 1.5rem; // Consistent padding
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
     width: 100%;
     height: 100%;
     overflow-y: auto;
@@ -17,17 +20,17 @@
 }
 
 .form-section {
-  background-color: #f9f9f9; // Light background for sections
+  background-color: vars.$background; // Usando variável de fundo claro
   padding: 1.5rem;
-  border-radius: vars.$small-border-radius;
-  border: 1px solid #e0e0e0;
+  border-radius: vars.$small-border-radius; // Usando variável de borda
+  border: 1px solid vars.$border-color-light; // Usando variável de cor de borda
 
   h5 {
     margin-top: 0;
     margin-bottom: 1rem;
     font-size: 1.2rem;
-    color: vars.$primary-blue;
-    border-bottom: 1px solid vars.$border-color-light;
+    color: vars.$primary-blue; // Usando variável de cor primária
+    border-bottom: 1px solid vars.$border-color-light; // Usando variável
     padding-bottom: 0.5rem;
   }
 }
@@ -35,48 +38,51 @@
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem 1.5rem; // Row and column gap
+  gap: 1rem 1.5rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  min-width: 180px; // Ensure inputs have a minimum width
+  min-width: 180px;
 
   label {
-    margin-bottom: 0.4rem; // Increased space
+    margin-bottom: 0.4rem;
     font-weight: 500;
     font-size: 0.9rem;
   }
 
+  // Estilo base para todos os campos do formulário
   input[type="text"],
   input[type="date"],
-  input[type="time"], // For HH:mm if used
+  input[type="time"],
   select,
   textarea {
     display: block;
     width: 100%;
-    padding: 0.75rem 0.9rem; // Slightly larger padding
+    padding: 0.75rem 0.9rem;
     font-size: 0.95rem;
-    border: 1px solid #ccc;
-    border-radius: 0.4rem;
+    border: 1px solid vars.$border-color-light; // Usando variável
+    border-radius: vars.$small-border-radius; // Usando variável
     transition: border-color 0.3s, box-shadow 0.3s;
     box-sizing: border-box;
-    background-color: white;
+    background-color: vars.$background-card; // Usando variável
 
     &:focus {
-      border-color: vars.$primary-blue;
+      border-color: vars.$primary-blue; // Usando variável
       outline: none;
-      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
+      box-shadow: 0 0 0 2px vars.$focus-shadow-color; // Usando variável
     }
+
+    // Validação com variáveis
     &.ng-invalid.ng-touched {
-      // For Angular reactive forms validation
       border-color: vars.$danger-color;
       &:focus {
         box-shadow: 0 0 0 2px vars.$danger-focus-shadow-color;
       }
     }
   }
+
   textarea {
     min-height: 80px;
     resize: vertical;
@@ -84,22 +90,22 @@
 }
 
 .full-width-group {
-  grid-column: 1 / -1; // Make group span full width of the grid
+  grid-column: 1 / -1;
 }
 
 .form-array-container {
   margin-top: 1rem;
-  padding-left: 1rem; // Indent FormArray content
-  border-left: 3px solid vars.$primary-blue;
+  padding-left: 1rem;
+  border-left: 3px solid vars.$primary-blue; // Usando variável
 }
 
 .form-array-item {
-  background-color: #ffffff;
+  background-color: vars.$background-card; // Usando variável
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: vars.$small-border-radius;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  position: relative; // For remove button positioning
+  box-shadow: vars.$box-shadow; // Usando variável
+  position: relative;
 
   .item-header {
     display: flex;
@@ -115,34 +121,31 @@
 }
 
 .remove-item-btn {
-  // position: absolute;
-  // top: 0.5rem;
-  // right: 0.5rem;
   padding: 0.3rem 0.6rem;
   font-size: 0.8rem;
 }
 
 .add-item-btn {
   margin-top: 0.5rem;
-  display: inline-flex; // To align icon and text
+  display: inline-flex;
   align-items: center;
   gap: 0.5em;
 }
 
 .button-container {
-  margin-top: 2rem; // More space before buttons
+  margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid vars.$border-color-light;
+  border-top: 1px solid vars.$border-color-light; // Usando variável
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
 }
 
-// Styles for EquipeDiaFuncao (daily functions within a team)
 .equipe-dias-container {
   margin-top: 1rem;
   padding: 0.5rem;
-  background-color: #f0f4f8; // Slightly different background
+  // Criando uma cor de fundo clara a partir da cor primária
+  background-color: color.change(vars.$primary-blue, $alpha: 0.05);
   border-radius: vars.$small-border-radius;
 }
 
@@ -154,7 +157,24 @@
     margin-bottom: 0.25rem;
   }
   input[type="text"] {
-    font-size: 0.9rem; // Smaller font for function inputs
+    font-size: 0.9rem;
     padding: 0.5rem 0.7rem;
+  }
+}
+.ng-select-header {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+
+  .select-all-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
   }
 }

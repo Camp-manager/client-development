@@ -52,7 +52,6 @@ export class EquipeComponent implements OnInit {
   formNovasEquipes!: FormGroup;
 
   ngOnInit(): void {
-    // FIX: O formulário de equipes agora é inicializado corretamente no início.
     this.inicializarFormularioEquipes();
 
     this.route.paramMap.subscribe((params) => {
@@ -61,19 +60,20 @@ export class EquipeComponent implements OnInit {
         this.carregarDadosDoAcampamento(id);
       } else {
         this.isLoading = true;
-        // this.acampamentoService.get().subscribe({
-        //   next: (proximoAcampamento) => {
-        //     if (proximoAcampamento) {
-        //       this.router.navigate(
-        //         ['/equipe', proximoAcampamento.idAcampamento],
-        //         { replaceUrl: true }
-        //       );
-        //     } else {
-        //       this.isLoading = false;
-        //     }
-        //   },
-        //   error: () => (this.isLoading = false),
-        // });
+        this.acampamentoService.getProximoAcampamento().subscribe({
+          next: (proximoAcampamento) => {
+            console.log(proximoAcampamento);
+            if (proximoAcampamento) {
+              this.router.navigate(
+                ['/equipe', proximoAcampamento.idAcampamento],
+                { replaceUrl: true }
+              );
+            } else {
+              this.isLoading = false;
+            }
+          },
+          error: () => (this.isLoading = false),
+        });
       }
     });
   }
@@ -86,8 +86,8 @@ export class EquipeComponent implements OnInit {
       funcionarios: this.funcionarioService.getTodosFuncionarios(id),
       campistas: this.campistaService.getTodosCampistas(id),
     }).subscribe(({ equipes, funcionarios, campistas }) => {
-      this.processarDados(equipes, funcionarios, campistas);
       this.isLoading = false;
+      this.processarDados(equipes, funcionarios, campistas);
     });
   }
 
@@ -97,7 +97,6 @@ export class EquipeComponent implements OnInit {
     campistas: CampistaDTO[]
   ): void {
     const todosMembrosIds = new Set<number>();
-
     if (equipes && Array.isArray(equipes)) {
       equipes.forEach((equipe) => {
         // if (equipe && equipe.membros && Array.isArray(equipe.membros)) {
@@ -116,8 +115,6 @@ export class EquipeComponent implements OnInit {
     this.campistasSemTime = (campistas || []).filter(
       (c) => c && !todosMembrosIds.has(c.id)
     );
-
-    // Garante que equipes seja sempre um array.
     this.equipes = equipes || [];
   }
 
@@ -179,21 +176,10 @@ export class EquipeComponent implements OnInit {
   }
 
   adicionarMembroAEquipe(membro: MembroEquipe, equipeId: number): void {
-    this.equipeService.adicionarMembros(equipeId, [membro.id]).subscribe(() => {
-      const equipeAlvo = this.equipes.find((e) => e.id === equipeId);
-      if (equipeAlvo) {
-        // equipeAlvo.membros = [...equipeAlvo.membros, membro];
-      }
-      this.funcionariosSemTime = this.funcionariosSemTime.filter(
-        (f) => f.id !== membro.id
-      );
-      this.campistasSemTime = this.campistasSemTime.filter(
-        (c) => c.id !== membro.id
-      );
-    });
+    this.equipeService
+      .adicionarMembros(equipeId, [membro.id])
+      .subscribe(() => {});
   }
-
-  // ...
 
   removerMembroDaEquipe(
     equipe: EquipeDTO,
@@ -201,22 +187,6 @@ export class EquipeComponent implements OnInit {
   ): void {
     this.equipeService
       .removerMembros(equipe.id, [membroParaRemover.id])
-      .subscribe(() => {
-        // equipe.membros = equipe.membros.filter(
-        //   (m) => m.id !== membroParaRemover.id
-        // );
-
-        if ('habilidade' in membroParaRemover) {
-          this.funcionariosSemTime = [
-            ...this.funcionariosSemTime,
-            membroParaRemover as FuncionarioDTO,
-          ];
-        } else {
-          this.campistasSemTime = [
-            ...this.campistasSemTime,
-            membroParaRemover as CampistaDTO,
-          ];
-        }
-      });
+      .subscribe(() => {});
   }
 }

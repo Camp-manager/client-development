@@ -2,6 +2,7 @@
 @use "./app/shared/styles/variables" as vars;
 @use "sass:color";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+@import "@ng-select/ng-select/themes/default.theme.css";
 
 // --- Reset e Base ---
 * {
@@ -402,7 +403,7 @@ $theme-colors: (
   "danger": vars.$danger-color,
   "warning": vars.$warning-color,
   "info": vars.$info-color
-    // Adicione "light" e "dark" se desejar outlines para eles,,,,,
+    // Adicione "light" e "dark" se desejar outlines para eles,,,,,,,
 );
 
 @each $name, $color in $theme-colors {

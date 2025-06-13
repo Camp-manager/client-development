@@ -64,14 +64,18 @@
           <tr>
             <th>Nome</th>
             <th>Telefone</th>
+            <th>Altura</th>
+            <th>Peso</th>
             <th style="width: 220px">Ação</th>
           </tr>
         </thead>
         <tbody>
           @for (campista of campistasSemTime; track campista.id) {
           <tr>
-            <td>{{ campista.nome }}</td>
-            <td>{{ campista.telefone || "Não informado" }}</td>
+            <td>{{ campista.nomeCompleto }}</td>
+            <td>{{ campista.telefone }}</td>
+            <td>{{ campista.altura }}</td>
+            <td>{{ campista.peso }}</td>
             <td class="actions">
               <select
                 class="form-control form-control-sm"
@@ -83,9 +87,10 @@
                 title="Atribuir à equipe"
               >
                 <option value="">Atribuir para a equipe...</option>
-                @for(e of equipes; track e.id) {
+                @for(e of equipes; track e.id) { @if(e.tipoEquipe ===
+                "Campista") {
                 <option [value]="e.id">{{ e.nome }}</option>
-                }
+                } }
               </select>
             </td>
           </tr>

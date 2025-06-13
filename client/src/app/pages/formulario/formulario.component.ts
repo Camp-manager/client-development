@@ -258,7 +258,7 @@ export class FormularioComponent implements OnInit {
           this.authService
             .login({
               login: payload.email,
-              password: payload.cpf.substring(0, 6),
+              password: payload.cpf.substring(0, 3),
             })
             .subscribe((success) => {
               localStorage.setItem('token', success.token);

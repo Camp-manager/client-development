@@ -1,233 +1,240 @@
 <div class="card full-page-card">
-  <form
-    [formGroup]="cronogramaForm"
-    (ngSubmit)="onSubmit()"
-    novalidate
-    class="form-container-responsive"
-  >
-    <div class="form-section">
-      <h5><i class="fas fa-calendar-alt"></i> Dados Gerais do Cronograma</h5>
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="idAcampamento">Acampamento Associado</label>
-          <select
-            id="idAcampamento"
-            formControlName="idAcampamento"
-            [class.ng-invalid.ng-touched]="
-              f['idAcampamento'].invalid && f['idAcampamento'].touched
-            "
+  <div class="card-header"><h3 class="card-title">Novo Cronograma</h3></div>
+
+  <div class="card-body">
+    <div class="form-group master-selector">
+      <label for="tipoCronograma"
+        >Qual tipo de cronograma você deseja criar?</label
+      >
+      <select
+        id="tipoCronograma"
+        [formControl]="tipoCronogramaControl"
+        class="form-control"
+      >
+        <option value="" disabled>Selecione uma opção...</option>
+        <option value="atividades">Cronograma de Atividades Gerais</option>
+        <option value="funcoes">Atribuir Funções Diárias por Equipe</option>
+      </select>
+    </div>
+
+    @if (tipoCronogramaControl.value === 'atividades' && formAtividades) {
+    <form [formGroup]="formAtividades" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-section">
+        <h5>
+          <i class="fas fa-calendar-alt"></i> Detalhes do Cronograma de
+          Atividades
+        </h5>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="idAcampamento">Acampamento</label
+            ><select
+              id="idAcampamento"
+              formControlName="idAcampamento"
+              class="form-control"
+            >
+              <option [ngValue]="null" disabled>Selecione</option>
+              @for(acamp of acampamentosDisponiveis; track acamp.idAcampamento){
+              <option [value]="acamp.idAcampamento">
+                {{ acamp.nomeAcampamento }}
+              </option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dataInicial">Data Inicial</label
+            ><input
+              type="date"
+              id="dataInicial"
+              formControlName="dataInicial"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dataFinal">Data Final</label
+            ><input
+              type="date"
+              id="dataFinal"
+              formControlName="dataFinal"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group full-width-group">
+            <label for="idsEquipes">Equipes Associadas</label>
+            <ng-select
+              id="idsEquipes"
+              formControlName="idsEquipes"
+              [items]="equipesDisponiveis"
+              bindLabel="nome"
+              bindValue="id"
+              [multiple]="true"
+              placeholder="Selecione uma ou mais equipes para esta atividade"
+              [disabled]="!formAtividades.get('idAcampamento')?.value"
+              [notFoundText]="'Nenhuma equipe encontrada'"
+            >
+              <ng-template ng-header-tmp>
+                <div class="ng-select-header">
+                  <label class="select-all-label">
+                    <input
+                      type="checkbox"
+                      [checked]="todosSelecionados"
+                      (change)="toggleSelecionarTodos()"
+                    />
+                    <span>Selecionar Todos</span>
+                  </label>
+                </div>
+              </ng-template>
+            </ng-select>
+          </div>
+          <div class="form-group full-width-group">
+            <label for="descricao">Descrição Geral</label
+            ><textarea
+              id="descricao"
+              formControlName="descricao"
+              class="form-control"
+              rows="2"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h5><i class="fas fa-tasks"></i> Lista de Atividades</h5>
+        <div formArrayName="atividades" class="form-array-container">
+          @for(ctrl of atividades(formAtividades).controls; track $index; let i
+          = $index) {
+          <div [formGroupName]="i" class="form-array-item">
+            <div class="item-header">
+              <h6>Atividade {{ i + 1 }}</h6>
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                (click)="removerAtividade(i)"
+              >
+                Remover
+              </button>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Tipo</label
+                ><select formControlName="tipo" class="form-control">
+                  <option value="L">Lazer</option>
+                  <option value="E">Espiritual</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Período</label
+                ><select formControlName="horario" class="form-control">
+                  <option value="M">Manhã</option>
+                  <option value="T">Tarde</option>
+                  <option value="N">Noite</option>
+                </select>
+              </div>
+              <div class="form-group full-width-group">
+                <label>Descrição da Atividade</label
+                ><textarea
+                  formControlName="descricao"
+                  class="form-control"
+                  rows="2"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          }
+          <button
+            type="button"
+            class="btn btn-info btn-sm add-item-btn"
+            (click)="adicionarAtividade()"
           >
-            <option value="" disabled>Selecione um acampamento</option>
-            @for(acamp of acampamentosDisponiveis; track acamp.codigoRegistro) {
-            <option [value]="acamp.codigoRegistro">
-              {{ acamp.tipoAcampamento }} - {{ acamp.tema.descricao }} ({{
-                acamp.dataInicio | date : "dd/MM/yy"
-              }})
+            Adicionar Atividade
+          </button>
+        </div>
+      </div>
+      <div class="button-container">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="formAtividades.invalid || isSubmitting"
+        >
+          Salvar Cronograma de Atividades
+        </button>
+      </div>
+    </form>
+    } @if (tipoCronogramaControl.value === 'funcoes' && formFuncoes) {
+    <form [formGroup]="formFuncoes" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-section">
+        <h5><i class="fas fa-campground"></i> 1. Selecione o Acampamento</h5>
+        <div class="form-group full-width-group">
+          <label for="idAcampamentoFunc">Acampamento</label>
+          <select
+            id="idAcampamentoFunc"
+            formControlName="idAcampamento"
+            class="form-control"
+          >
+            <option [ngValue]="null" disabled>
+              Selecione para gerar os dias de função...
+            </option>
+            @for(acamp of acampamentosDisponiveis; track acamp.idAcampamento){
+            <option [value]="acamp.idAcampamento">
+              {{ acamp.nomeAcampamento }}
             </option>
             }
           </select>
-          @if(f['idAcampamento'].invalid && f['idAcampamento'].touched) {
-          <small class="error-text">Acampamento é obrigatório.</small>
-          }
         </div>
-
-        <div class="form-group">
-          <label for="dataInicial">Data Inicial</label>
-          <input
-            type="date"
-            id="dataInicial"
-            formControlName="dataInicial"
-            [class.ng-invalid.ng-touched]="
-              f['dataInicial'].invalid && f['dataInicial'].touched
-            "
-          />
-          @if(f['dataInicial'].hasError('required') && f['dataInicial'].touched)
-          {
-          <small class="error-text">Data inicial é obrigatória.</small>
-          }
-        </div>
-
-        <div class="form-group">
-          <label for="dataFinal">Data Final</label>
-          <input
-            type="date"
-            id="dataFinal"
-            formControlName="dataFinal"
-            [class.ng-invalid.ng-touched]="
-              (f['dataFinal'].invalid ||
-                cronogramaForm.hasError('datasInvalidas')) &&
-              f['dataFinal'].touched
-            "
-          />
-          @if(f['dataFinal'].hasError('required') && f['dataFinal'].touched) {
-          <small class="error-text">Data final é obrigatória.</small>
-          } @if(cronogramaForm.hasError('datasInvalidas') &&
-          (f['dataInicial'].touched || f['dataFinal'].touched)) {
-          <small class="error-text"
-            >Data final deve ser igual ou posterior à data inicial.</small
-          >
-          }
-        </div>
-        <div class="form-group full-width-group">
-          <label for="descricaoCronograma">Descrição do Cronograma</label>
-          <textarea
-            id="descricaoCronograma"
-            formControlName="descricao"
-            rows="3"
-            [class.ng-invalid.ng-touched]="
-              f['descricao'].invalid && f['descricao'].touched
-            "
-          ></textarea>
-          @if(f['descricao'].invalid && f['descricao'].touched) {
-          <small class="error-text">Descrição é obrigatória.</small>
+      </div>
+      @if(formFuncoes.get('idAcampamento')?.value) {
+      <div class="form-section">
+        <h5>
+          <i class="fas fa-calendar-day"></i> 2. Atribuição de Funções Diárias
+        </h5>
+        <div formArrayName="funcoesDiarias" class="form-array-container">
+          @for(diaCtrl of funcoesDiarias(formFuncoes).controls; track $index;
+          let i = $index) {
+          <div [formGroupName]="i" class="form-array-item">
+            <div class="item-header">
+              <h6>
+                {{ diaCtrl.get("data")?.value | date : "dd/MM/yyyy (EEEE)" }}
+              </h6>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Equipe Responsável</label
+                ><select formControlName="idEquipe" class="form-control">
+                  <option [ngValue]="null" disabled>Selecione</option>
+                  @for(eq of equipesDisponiveis; track eq.id){
+                  <option [value]="eq.id">{{ eq.nome }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Função da Equipe neste Dia</label
+                ><input
+                  type="text"
+                  formControlName="descricaoFuncao"
+                  class="form-control"
+                  placeholder="Ex: Responsável pela limpeza da manhã"
+                />
+              </div>
+            </div>
+          </div>
           }
         </div>
       </div>
-    </div>
-
-    <div class="form-section">
-      <h5><i class="fas fa-tasks"></i> Atividades do Cronograma</h5>
-      <div formArrayName="atividades" class="form-array-container">
-        @for(atividadeCtrl of atividades.controls; track atividadeCtrl; let i =
-        $index) {
-        <div [formGroupName]="i" class="form-array-item">
-          <div class="item-header">
-            <h6>Atividade {{ i + 1 }}</h6>
-            <button
-              type="button"
-              class="btn btn-danger btn-sm remove-item-btn"
-              (click)="removerAtividade(i)"
-            >
-              <i class="fas fa-trash-alt"></i> Remover
-            </button>
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="atividadeTipo{{ i }}">Tipo</label>
-              <select id="atividadeTipo{{ i }}" formControlName="tipo">
-                <option value="" disabled>Selecione</option>
-                <option value="R">Reunião</option>
-                <option value="L">Lazer</option>
-                <option value="A">Alimentação</option>
-                <option value="E">Espiritual</option>
-                <option value="O">Outro</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="atividadeHorario{{ i }}">Período/Horário</label>
-              <select id="atividadeHorario{{ i }}" formControlName="horario">
-                <option value="" disabled>Selecione</option>
-                <option value="M">Manhã (08:00-12:00)</option>
-                <option value="T">Tarde (13:00-18:00)</option>
-                <option value="N">Noite (19:00-22:00)</option>
-                <option value="X">Dia Inteiro</option>
-              </select>
-            </div>
-            <div class="form-group full-width-group">
-              <label for="atividadeDescricao{{ i }}"
-                >Descrição da Atividade</label
-              >
-              <textarea
-                id="atividadeDescricao{{ i }}"
-                formControlName="descricao"
-                rows="2"
-              ></textarea>
-            </div>
-          </div>
-        </div>
-        }
+      }
+      <div class="button-container">
         <button
-          type="button"
-          class="btn btn-info btn-sm add-item-btn"
-          (click)="adicionarAtividade()"
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="formFuncoes.invalid || isSubmitting"
         >
-          <i class="fas fa-plus-circle"></i> Adicionar Atividade
+          Salvar Cronograma de Funções
         </button>
       </div>
-    </div>
-
-    <div class="form-section">
-      <h5><i class="fas fa-users-cog"></i> Equipes Envolvidas</h5>
-      <div formArrayName="equipes" class="form-array-container">
-        @for(equipeCtrl of equipes.controls; track equipeCtrl; let j = $index) {
-        <div [formGroupName]="j" class="form-array-item">
-          <div class="item-header">
-            <h6>
-              Equipe {{ j + 1 }}:
-              {{ equipeCtrl.get("nome")?.value || "Nova Equipe" }}
-            </h6>
-            <button
-              type="button"
-              class="btn btn-danger btn-sm remove-item-btn"
-              (click)="removerEquipe(j)"
-            >
-              <i class="fas fa-trash-alt"></i> Remover Equipe
-            </button>
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="equipeNome{{ j }}">Nome da Equipe</label>
-              <input
-                type="text"
-                id="equipeNome{{ j }}"
-                formControlName="nome"
-                placeholder="Ex: Equipe Cozinha"
-              />
-            </div>
-            <div class="form-group">
-              <label for="equipeTipo{{ j }}">Tipo de Equipe</label>
-              <select id="equipeTipo{{ j }}" formControlName="tipo">
-                <option value="" disabled>Selecione</option>
-                <option value="C">Cozinha</option>
-                <option value="A">Animação/Lazer</option>
-                <option value="S">Suporte/Logística</option>
-                <option value="E">Espiritualidade</option>
-                <option value="L">Limpeza</option>
-                <option value="O">Outro</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="equipe-dias-container" formArrayName="diasDeFuncao">
-            <h6>
-              <i class="fas fa-calendar-day"></i> Funções Diárias para "{{
-                equipeCtrl.get("nome")?.value
-              }}"
-            </h6>
-            @if(getDiasDoCronograma().length === 0 && (f['dataInicial'].valid &&
-            f['dataFinal'].valid)) {
-            <p class="text-muted small">
-              Defina as datas do cronograma para atribuir funções diárias.
-            </p>
-            }
-          </div>
-        </div>
-        }
-        <button
-          type="button"
-          class="btn btn-primary btn-sm add-item-btn"
-          (click)="adicionarEquipe()"
-        >
-          <i class="fas fa-users"></i> Adicionar Equipe
-        </button>
-      </div>
-    </div>
-
+    </form>
+    } @if (tipoCronogramaControl.value) {
     <div class="button-container">
       <button type="button" class="btn btn-secondary" (click)="cancelar()">
         Cancelar
       </button>
-      <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="cronogramaForm.invalid || isSubmitting"
-      >
-        @if(isSubmitting) {
-        <span><i class="fas fa-spinner fa-spin"></i> Salvando...</span>
-        } @else {
-        <span><i class="fas fa-save"></i> Salvar Cronograma</span>
-        }
-      </button>
     </div>
-  </form>
+    }
+  </div>
 </div>

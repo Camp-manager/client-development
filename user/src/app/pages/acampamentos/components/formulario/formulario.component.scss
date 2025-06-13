@@ -177,3 +177,10 @@
     font-size: 0.9rem;
   }
 }
+
+.input-com-botao {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+}

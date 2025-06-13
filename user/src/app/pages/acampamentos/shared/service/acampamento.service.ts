@@ -26,44 +26,15 @@ export class AcampamentoService {
     );
   }
 
+  getProximoAcampamento() {
+    return this.http.get<Acampamento>(`${this.baseUrl}/proximo`);
+  }
+
   getAcampamentoCompleto(id: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/buscar-completo/${id}`);
   }
 
-  adicionarAcampamento(request: any) {
-    this.SERVICE_TEMA.cadastrarTema(
-      new TemaRequest(
-        request.descricao,
-        request.precoCamisa,
-        request.precoInscricao
-      )
-    ).subscribe((success: number) => {
-      request = new AcampamentoRequest(request, success);
-      this.http.post<any>(`${this.baseUrl}/adicionar`, request).subscribe(
-        (success) => {
-          window.location.reload();
-        },
-        (error) => console.log(error)
-      );
-    });
-  }
-
-  adicionarAcampamentoComTemaExistente(request: any) {
-    this.SERVICE_TEMA.atualizarTema(
-      new TemaRequest(
-        request.descricao,
-        request.precoCamisa,
-        request.precoInscricao,
-        request.idTema
-      )
-    ).subscribe((success) => {
-      request = new AcampamentoRequest(request, request.idTema);
-      this.http.post<any>(`${this.baseUrl}/adicionar`, request).subscribe(
-        (success) => {
-          window.location.reload();
-        },
-        (error) => console.log(error)
-      );
-    });
+  adicionarAcampamento(request: AcampamentoRequest): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/adicionar`, request);
   }
 }
