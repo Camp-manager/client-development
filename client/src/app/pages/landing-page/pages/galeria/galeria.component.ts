@@ -47,4 +47,10 @@ export class GaleriaComponent implements OnInit {
     this.albumSelecionado = null;
     this.modoDeExibicao = 'lista';
   }
+  getImagemRelativa(pathAbsoluto: string): string {
+    const basePath =
+      'file:///home/guigas/www/personal/big-projects/CampManager/server/../front/client/public/';
+    let path = pathAbsoluto.replace(basePath, '');
+    return path;
+  }
 }

@@ -187,7 +187,7 @@ export class FormularioCronogramaComponent implements OnInit, OnDestroy {
         this.equipesCampistasDisponiveis = equipes.filter(
           (e) => e.tipoEquipe === 'Campista'
         );
-        console.log(this.equipesTrabalhoDisponiveis);
+        console.log(this.equipesCampistasDisponiveis);
       });
     }
   }
@@ -228,6 +228,8 @@ export class FormularioCronogramaComponent implements OnInit, OnDestroy {
       }
       const payload: CriarCronogramaCampistasRequest =
         new CriarCronogramaCampistasRequest(this.formCampistas.getRawValue());
+
+      console.log(payload);
       servico$ = this.cronogramaService.salvarCronogramaCampistas(payload);
     } else {
       this.isSubmitting = false;

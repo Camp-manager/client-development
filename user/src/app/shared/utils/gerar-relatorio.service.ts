@@ -314,7 +314,6 @@ export class GerarRelatorioService {
     const componentHtml = componentRef.location.nativeElement.innerHTML;
     componentRef.destroy();
 
-    // 2. O método agora usa a constante de CSS para montar o HTML final.
     const finalHtml = `
       <!DOCTYPE html>
       <html lang="pt-BR">

@@ -181,7 +181,11 @@ export class AcampamentoListarComponent
   onArquivoZipSelecionado(event: any): void {
     const file = event.target.files[0];
     console.log(file);
-    if (file && file.type === 'application/x-zip-compressed') {
+    if (
+      file &&
+      (file.type === 'application/x-zip-compressed' ||
+        file.type === 'application/zip')
+    ) {
       this.arquivoZipSelecionado = file;
       this.formUploadZip.patchValue({ arquivo: file });
     } else {

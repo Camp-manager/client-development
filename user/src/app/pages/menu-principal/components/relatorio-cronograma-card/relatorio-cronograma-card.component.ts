@@ -42,10 +42,8 @@ export class RelatorioCronogramaCardComponent implements OnInit {
 
   exportarRelatorioCronograma(): void {
     if (!this.idAcampamentoSelecionado) {
-      alert('Por favor, selecione um acampamento.');
       return;
     }
-
     this.isGeneratingReport = true;
 
     this.cronogramaService

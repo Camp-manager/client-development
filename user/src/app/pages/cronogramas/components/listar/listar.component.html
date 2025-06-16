@@ -25,15 +25,15 @@
             </tr>
           </thead>
           <tbody>
-            @for(equipe of dadosCronograma.cronogramasEquipeTrabalho; track
-            equipe.nomeEquipe) { @for(item of equipe.cronogramas; track item.id)
-            {
+            @for(equipe of dadosCronograma.cronogramasEquipeCampistas; track
+            equipe.nomeEquipe) { @for(item of equipe.cronogramaDaEquipeCampista;
+            track item.funcao) {
             <tr>
               <td>
                 <strong>{{ equipe.nomeEquipe }}</strong>
               </td>
-              <td>{{ item.descricao }}</td>
-              <td>{{ item.dataInicio }} - horario</td>
+              <td>{{ item.funcao }}</td>
+              <td>{{ item.data | date : "EEEE" }}</td>
             </tr>
             } } @empty {
             <tr>
@@ -61,7 +61,7 @@
             </tr>
           </thead>
           <tbody>
-            @for(equipe of dadosCronograma.cronogramasEquipeCampistas; track
+            @for(equipe of dadosCronograma.cronogramasEquipeTrabalho; track
             equipe.nomeEquipe) { @for(item of equipe.cronogramas; track item.id)
             {
             <tr>

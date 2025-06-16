@@ -43,10 +43,13 @@
       @for(foto of albumSelecionado.imagensDoAcampamento; track
       foto.nomeDoArquivo) {
       <div class="photo-card">
-        <img [src]="foto.pathImagem" [alt]="foto.nomeDoArquivo" />
+        <img
+          [src]="getImagemRelativa(foto.pathImagem)"
+          [alt]="foto.nomeDoArquivo"
+        />
         <div class="photo-overlay">
           <a
-            [href]="foto.pathImagem"
+            [href]="getImagemRelativa(foto.pathImagem)"
             [download]="foto.nomeDoArquivo"
             class="download-button"
             title="Baixar Imagem"

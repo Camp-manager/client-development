@@ -46,7 +46,7 @@ export class CriarCronogramaCampistasRequest {
   equipesDiaFuncaoRequests: EquipeDiaFuncaoRequest[];
   constructor(payload: any) {
     this.idDoCampamento = payload.idDoCampamento;
-    this.idsDasEquipes = [payload.idDoCampamento];
+    this.idsDasEquipes = [payload.idsDasEquipes];
     this.equipesDiaFuncaoRequests = payload.equipesDiaFuncaoRequests;
   }
 }

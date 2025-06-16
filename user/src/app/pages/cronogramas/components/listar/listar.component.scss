@@ -1,29 +1,49 @@
+@use "sass:color";
 @use "../../../../shared/styles/variables" as vars;
 
-.section {
-  margin-bottom: 2.5rem;
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
 
-  &:last-of-type {
-    margin-bottom: 0;
+ng-pro-calendar {
+  flex-grow: 1;
+  height: 1px;
+}
+
+.custom-event-card {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.8rem;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  border-left: 4px solid;
+
+  &.trabalho {
+    background-color: color.change(vars.$primary-blue, $alpha: 0.8);
+    border-left-color: color.adjust(vars.$primary-blue, $lightness: -15%);
   }
-}
 
-.section-title {
-  font-size: 1.5rem;
-  color: vars.$primary-blue;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid vars.$border-color-light;
-}
-
-.app-table {
-  strong {
-    font-weight: 500;
+  &.campista {
+    background-color: color.change(#845ec2, $alpha: 0.8);
+    border-left-color: color.adjust(#845ec2, $lightness: -15%);
   }
-}
 
-.empty-state {
-  text-align: center;
-  padding: 2rem;
-  color: vars.$secondary-text;
+  .event-title {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .event-comment {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

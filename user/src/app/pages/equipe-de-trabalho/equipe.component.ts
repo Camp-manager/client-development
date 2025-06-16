@@ -6,6 +6,7 @@ import {
   FormArray,
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -30,7 +31,13 @@ import {
 @Component({
   selector: 'app-equipe-de-trabalho',
   standalone: true,
-  imports: [CommonModule, RouterModule, DialogComponent, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    DialogComponent,
+    ReactiveFormsModule,
+    FormsModule,
+  ],
   templateUrl: './equipe.component.html',
   styleUrls: ['./equipe.component.scss'],
 })
@@ -51,6 +58,7 @@ export class EquipeComponent implements OnInit {
   isLoading = true;
 
   mostrarDialogoNovasEquipes = false;
+  mostrarDialogoAtribuirEquipe = false;
   formNovasEquipes!: FormGroup;
 
   ngOnInit(): void {
@@ -195,12 +203,7 @@ export class EquipeComponent implements OnInit {
         ];
       }
 
-      this.funcionariosSemTime = this.funcionariosSemTime.filter(
-        (f) => f.id !== membro.id
-      );
-      this.campistasSemTime = this.campistasSemTime.filter(
-        (c) => c.id !== membro.id
-      );
+      this.carregarDadosDoAcampamento(this.idAcampamento);
     });
   }
 
@@ -222,6 +225,26 @@ export class EquipeComponent implements OnInit {
           );
           this.campistasSemTime = [...this.campistasSemTime, membroParaRemover];
         }
+      });
+  }
+
+  abrirDialogoAtribuirLider(membro: any): void {
+    this.membroSelecionado = membro;
+    this.mostrarDialogoAtribuirEquipe = true;
+  }
+
+  fecharDialogoAtribuirLider(): void {
+    this.mostrarDialogoAtribuirEquipe = false;
+  }
+
+  membroSelecionado: FuncionarioBasicoDTO | null = null;
+  equipe: number | null = null;
+
+  atribuirLider(membro: FuncionarioBasicoDTO, equipe: number): void {
+    this.equipeService
+      .selecionarLider(equipe, membro.id, this.idAcampamento)
+      .subscribe(() => {
+        this.fecharDialogoAtribuirLider();
       });
   }
 }

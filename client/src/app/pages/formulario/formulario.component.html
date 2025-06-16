@@ -229,6 +229,12 @@
               id="cep-campista"
               type="tel"
               formControlName="cep"
+              (change)="
+                buscarEndereco(
+                  form.get('pessoa.endereco.cep')?.value,
+                  'pessoa.endereco'
+                )
+              "
               class="form-control"
               mask="00000-000"
             />
@@ -333,6 +339,12 @@
                 id="cep-familiar"
                 type="tel"
                 formControlName="cep"
+                (change)="
+                  buscarEndereco(
+                    form.get('pessoa.familiar.endereco.cep')?.value,
+                    'pessoa.familiar.endereco'
+                  )
+                "
                 class="form-control"
                 mask="00000-000"
               />

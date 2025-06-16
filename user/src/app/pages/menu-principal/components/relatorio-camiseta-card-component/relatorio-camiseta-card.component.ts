@@ -54,7 +54,6 @@ export class RelatorioCamisetaCardComponent implements OnInit {
             (a) => a.idAcampamento === this.idAcampamentoSelecionado
           );
 
-          // Passa o objeto de dados completo para o gerador de PDF
           this.reportService
             .generatePdf(
               RelatorioCamisetasComponent,
@@ -67,9 +66,7 @@ export class RelatorioCamisetaCardComponent implements OnInit {
             )
             .finally(() => (this.isGeneratingReport = false));
         },
-        error: () => {
-          /* ... */
-        },
+        error: () => {},
       });
   }
 }

@@ -1,8 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { switchMap, finalize, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 
 import { TodosCronogramaDTO } from '../../shared/model/cronograma.dto';
 import { CronogramaService } from '../../shared/service/cronograma.service';
@@ -11,7 +9,7 @@ import { AcampamentoService } from '../../../acampamentos/shared/service/acampam
 @Component({
   selector: 'app-listar-cronogramas',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, DatePipe],
   templateUrl: './listar.component.html',
   styleUrls: ['./listar.component.scss'],
 })

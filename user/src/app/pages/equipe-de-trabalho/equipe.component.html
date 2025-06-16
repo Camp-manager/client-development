@@ -36,9 +36,10 @@
                 (change)="adicionarMembroAEquipe(func, +s.value); s.value = ''"
               >
                 <option value="">Atribuir para...</option>
-                @for(e of equipes; track e.id) {
+                @for(e of equipes; track e.id) {@if(e.tipoEquipe === 'Trabalho')
+                {
                 <option [value]="e.id">{{ e.nome }}</option>
-                }
+                } }
               </select>
             </td>
           </tr>
@@ -125,10 +126,11 @@
             </td>
             <td>{{ equipe.nome }}</td>
             <td class="text-center">
+              @if(equipe.funcionariosNaEquipe && equipe.campistasNaEquipe){
               {{
                 equipe.funcionariosNaEquipe.length +
                   equipe.campistasNaEquipe.length
-              }}
+              }}}
             </td>
             <td class="text-center">{{ equipe.tipoEquipe }}</td>
           </tr>
@@ -136,7 +138,8 @@
           <tr class="membros-row">
             <td colspan="4">
               <div class="membros-container">
-                @if (equipe.funcionariosNaEquipe.length > 0) {
+                @if (equipe.funcionariosNaEquipe &&
+                equipe.funcionariosNaEquipe.length > 0) {
                 <h6>Equipe de Trabalho</h6>
                 <table class="app-table app-table-inner">
                   <tbody>
@@ -144,7 +147,7 @@
                     membro.id) {
                     <tr>
                       <td>{{ membro.nome }}</td>
-                      <td class="text-center">
+                      <td class="text-center" style="display: flex; gap: 15px">
                         <button
                           class="btn btn-sm btn-warning"
                           (click)="
@@ -154,12 +157,22 @@
                         >
                           Remover
                         </button>
+                        @if(equipe.nome === "Líder" || equipe.nome === "Líderes"
+                        || equipe.nome === "Lideres" || equipe.nome ===
+                        "Lider"){
+                        <button
+                          class="btn btn-sm btn-secondary"
+                          (click)="abrirDialogoAtribuirLider(membro)"
+                        >
+                          Atribuir líder</button
+                        >}
                       </td>
                     </tr>
                     }
                   </tbody>
                 </table>
-                } @if (equipe.campistasNaEquipe.length > 0) {
+                } @if (equipe.campistasNaEquipe &&
+                equipe.campistasNaEquipe.length > 0) {
                 <h6 class="mt-3">Campistas</h6>
                 <table class="app-table app-table-inner">
                   <tbody>
@@ -181,8 +194,10 @@
                     }
                   </tbody>
                 </table>
-                } @if (equipe.funcionariosNaEquipe.length === 0 &&
-                equipe.campistasNaEquipe.length === 0) {
+                } @if (equipe.funcionariosNaEquipe &&
+                equipe.funcionariosNaEquipe.length === 0 &&
+                equipe.campistasNaEquipe && equipe.campistasNaEquipe.length ===
+                0) {
                 <p class="empty-state-inner">Nenhum membro nesta equipe.</p>
                 }
               </div>
@@ -270,6 +285,42 @@
       [disabled]="formNovasEquipes.invalid"
     >
       Salvar Equipes
+    </button>
+  </ng-container>
+</dialog>
+} @if (mostrarDialogoAtribuirEquipe) {
+<dialog
+  [isOpen]="mostrarDialogoAtribuirEquipe"
+  (close)="fecharDialogoNovasEquipes()"
+  [dialogTitle]="'Atribuir Equipe'"
+  dialogWidth="600px"
+>
+  <ng-container dialog-body>
+    <form
+      [formGroup]="formNovasEquipes"
+      (ngSubmit)="atribuirLider(membroSelecionado!, equipe!)"
+      id="form-novas-equipes"
+    >
+      <label for="equipe">Equipe no qual será atribuido ele como líder</label>
+      <select
+        id="equipe"
+        class="form-control form-control-sm"
+        [(ngModel)]="equipe"
+        [ngModelOptions]="{ standalone: true }"
+      >
+        <option value="">Atribuir para...</option>
+        @for(e of equipes; track e.id) { @if(e.tipoEquipe === 'Campista') {
+        <option [value]="e.id">{{ e.nome }}</option>
+        } }
+      </select>
+    </form>
+  </ng-container>
+  <ng-container dialog-footer>
+    <button class="btn btn-secondary" (click)="fecharDialogoAtribuirLider()">
+      Cancelar
+    </button>
+    <button class="btn btn-primary" type="submit" form="form-novas-equipes">
+      Atribuir Lider
     </button>
   </ng-container>
 </dialog>

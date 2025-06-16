@@ -6,9 +6,15 @@ export interface CronogramaEquipeDTO {
   equipeId: number;
 }
 
+export interface FuncaoEquipeDTO {
+  funcao: string;
+  data: Date;
+}
+
 export interface CronogramaComEquipeDTO {
   nomeEquipe: string;
   cronogramas: CronogramaEquipeDTO[];
+  cronogramaDaEquipeCampista: FuncaoEquipeDTO[];
 }
 
 export interface TodosCronogramaDTO {

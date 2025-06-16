@@ -47,7 +47,12 @@ export class RelatorioEquipeCardComponent implements OnInit {
     if (idAcamp) {
       this.equipeService
         .getEquipes(idAcamp)
-        .subscribe((equipes) => (this.equipesDoAcampamento = equipes));
+        .subscribe(
+          (equipes) =>
+            (this.equipesDoAcampamento = equipes.filter(
+              (e) => e.tipoEquipe === 'Campista'
+            ))
+        );
     }
   }
 

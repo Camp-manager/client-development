@@ -21,6 +21,7 @@ import {
   MedicamentoDTO,
   MedicamentoService,
 } from './shared/service/medicamento.service';
+import { ViaCepService } from './shared/service/via-cep.service';
 
 @Component({
   selector: 'app-formulario',
@@ -36,8 +37,9 @@ export class FormularioComponent implements OnInit {
   private acampamentoService = inject(AcampamentoService);
   private camisetaService = inject(CamisetaService);
   private authService = inject(AuthService);
-  private pessoaService = inject(PessoaService); // Injete o serviço
+  private pessoaService = inject(PessoaService);
   private medicamentoService = inject(MedicamentoService);
+  private viaCepService = inject(ViaCepService);
   parentescosDisponiveis: string[] = [];
   medicamentosDisponiveis: MedicamentoDTO[] = [];
 
@@ -86,6 +88,7 @@ export class FormularioComponent implements OnInit {
       }
 
       this.buildForm();
+      this.addCepListeners();
       this.carregarDadosIniciais(this.idAcampamento);
       this.formState = 'lookup';
     });
@@ -167,6 +170,47 @@ export class FormularioComponent implements OnInit {
         tamanhoCamisa: [''],
       });
     }
+  }
+
+  private addCepListeners(): void {
+    this.form
+      .get('pessoa.endereco.cep')
+      ?.valueChanges.subscribe((cep: string) => {
+        if (cep && cep.replace(/\D/g, '').length === 8) {
+          this.buscarEndereco(cep, 'pessoa.endereco');
+        }
+      });
+
+    this.form
+      .get('pessoa.familiar.endereco.cep')
+      ?.valueChanges.subscribe((cep: string) => {
+        if (cep && cep.replace(/\D/g, '').length === 8) {
+          this.buscarEndereco(cep, 'pessoa.familiar.endereco');
+        }
+      });
+  }
+  buscarEndereco(cep: string, formGroupPath: string): void {
+    const addressFormGroup = this.form.get(formGroupPath) as FormGroup;
+    // Clear previous address fields before fetching
+    addressFormGroup.patchValue({
+      rua: '',
+      bairro: '',
+      cidade: '',
+      pontoReferencia: '',
+    });
+
+    this.viaCepService.buscarEnderecoPorCep(cep).subscribe({
+      next: (data) => {
+        if (!data.erro) {
+          addressFormGroup.patchValue({
+            rua: data.logradouro,
+            bairro: data.bairro,
+            cidade: data.localidade,
+          });
+        }
+      },
+      error: (err) => {},
+    });
   }
 
   buscarDadosPorCPF(): void {
