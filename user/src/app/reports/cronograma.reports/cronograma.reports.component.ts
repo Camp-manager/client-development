@@ -6,7 +6,6 @@ import { CommonModule, DatePipe } from '@angular/common';
   selector: 'cronograma.reports',
   imports: [CommonModule, DatePipe],
   templateUrl: './cronograma.reports.component.html',
-  styleUrl: '../styles.scss',
 })
 export class CronogramaReport {
   @Input() dadosCronograma: TodosCronogramaDTO | null = null;

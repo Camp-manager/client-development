@@ -1,13 +1,11 @@
-import { CronogramaDTO } from '../../../cronogramas/shared/model/cronograma.dto';
-import { CampistaDTO } from './campista.dto';
-import { FuncionarioDTO } from './funcionario.dto';
-
-export type MembroEquipe = FuncionarioDTO | CampistaDTO;
+import { CampistaBasicoDTO, FuncionarioBasicoDTO } from './pessoa.dto';
 
 export interface EquipeDTO {
   id: number;
   nome: string;
   tipoEquipe: string;
-  cronogramas: CronogramaDTO[];
+  cronogramas: any[];
+  campistasNaEquipe: CampistaBasicoDTO[];
+  funcionariosNaEquipe: FuncionarioBasicoDTO[];
   expanded?: boolean;
 }

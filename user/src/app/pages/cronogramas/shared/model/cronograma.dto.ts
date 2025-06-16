@@ -1,13 +1,14 @@
-export interface CronogramaDTO {
+export interface CronogramaEquipeDTO {
   id: number;
   dataInicio: string;
   dataFinal: string;
   descricao: string;
+  equipeId: number;
 }
 
 export interface CronogramaComEquipeDTO {
   nomeEquipe: string;
-  cronogramas: CronogramaDTO[];
+  cronogramas: CronogramaEquipeDTO[];
 }
 
 export interface TodosCronogramaDTO {

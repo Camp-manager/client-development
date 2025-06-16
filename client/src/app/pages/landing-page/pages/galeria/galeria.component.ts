@@ -1,109 +1,50 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { GaleriaService } from './shared/service/galeria.service';
+import { DiretorioDeImagensDTO } from './shared/model/imagem.dto';
 
 @Component({
   selector: 'app-galeria',
   standalone: false,
   templateUrl: './galeria.component.html',
-  styleUrl: './galeria.component.scss'
+  styleUrls: ['./galeria.component.scss'],
 })
 export class GaleriaComponent implements OnInit {
+  private galeriaService = inject(GaleriaService);
+  private sanitizer = inject(DomSanitizer);
 
-  galerias: any[] = [
-    {
-      id: 1,
-      title: 'Galeria 1',
-      images: [
-        {path: 'teste.jpg', title: 'Teste 1', isCapa: true},
-        {path: 'teste.jpg', title: 'Teste 2'},
-        {path: 'teste.jpg', title: 'Teste 3'}
-      ]
-    },
-    {
-      id: 2,
-      title: 'Galeria 2',
-      images: [
-        {path: 'teste.jpg', title: 'Teste 1'},
-        {path: 'teste.jpg', title: 'Teste 2'},
-        {path: 'teste.jpg', title: 'Teste 3', isCapa: true}
-      ]
-    },
-    {
-      id: 3,
-      title: 'Galeria 3',
-      images: [
-        {path: 'teste.jpg', title: 'Teste 1'},
-        {path: 'teste.jpg', title: 'Teste 2', isCapa: true}
-      ]
-    },{
-      id: 1,
-      title: 'Galeria 1',
-      images: [
-        {path: 'teste.jpg', title: 'Teste 1', isCapa: true},
-        {path: 'teste.jpg', title: 'Teste 2'},
-        {path: 'teste.jpg', title: 'Teste 3'}
-      ]
-    },
-    {
-      id: 2,
-      title: 'Galeria 2',
-      images: [
-        {path: 'teste.jpg', title: 'Teste 1'},
-        {path: 'teste.jpg', title: 'Teste 2'},
-        {path: 'teste.jpg', title: 'Teste 3', isCapa: true}
-      ]
-    },
-    {
-      id: 3,
-      title: 'Galeria 3',
-      images: [
-        {path: 'teste.jpg', title: 'Teste 1'},
-        {path: 'teste.jpg', title: 'Teste 2', isCapa: true}
-      ]
-    },{
-      id: 1,
-      title: 'Galeria 1',
-      images: [
-        {path: 'teste.jpg', title: 'Teste 1', isCapa: true},
-        {path: 'teste.jpg', title: 'Teste 2'},
-        {path: 'teste.jpg', title: 'Teste 3'}
-      ]
-    },
-    {
-      id: 2,
-      title: 'Galeria 2',
-      images: [
-        {path: 'teste.jpg', title: 'Teste 1'},
-        {path: 'teste.jpg', title: 'Teste 2'},
-        {path: 'teste.jpg', title: 'Teste 3', isCapa: true}
-      ]
-    },
-    {
-      id: 3,
-      title: 'Galeria 3',
-      images: [
-        {path: 'teste.jpg', title: 'Teste 1'},
-        {path: 'teste.jpg', title: 'Teste 2', isCapa: true}
-      ]
-    },
-  ]
+  // NOVO: Controle de visualização
+  modoDeExibicao: 'lista' | 'detalhes' = 'lista';
 
-  constructor(private router: Router) { }
+  galerias: DiretorioDeImagensDTO[] = [];
+  albumSelecionado: DiretorioDeImagensDTO | null = null;
+  isLoading = true;
 
   ngOnInit(): void {
-    const element = document.querySelector('.galeria') as HTMLElement;
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      var quantidadeDeElementos = this.galerias.length;
-      var quantidade = Math.floor(rect.width / (170 + 16));
-      for(; quantidadeDeElementos%quantidade != 0; quantidadeDeElementos++) {
-        this.galerias.push({});
-      }
-    }
+    this.galeriaService.getTodosDiretorios().subscribe({
+      next: (data) => {
+        this.galerias = data;
+        this.isLoading = false;
+      },
+      error: () => (this.isLoading = false),
+    });
   }
 
-  openGaleria(galeria: any) {
-    this.router.navigate(['galeria', galeria.id]);
+  getImagemDeCapa(base64String: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(
+      `data:image/jpeg;base64,${base64String}`
+    );
   }
 
+  mostrarDetalhes(album: DiretorioDeImagensDTO): void {
+    this.albumSelecionado = album;
+    this.modoDeExibicao = 'detalhes';
+  }
+
+  mostrarLista(): void {
+    this.albumSelecionado = null;
+    this.modoDeExibicao = 'lista';
+  }
 }

@@ -1,19 +1,162 @@
+@use "../../../../../../../user/src/app/shared/styles/variables" as vars;
 
-.scroll {
-  padding-top: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 40px 16px;
-  padding-bottom: 170px;
+.gallery-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+.gallery-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.gallery-header h1 {
+  font-size: 2.5rem;
+  color: vars.$primary-blue;
+}
+.gallery-header p {
+  font-size: 1.1rem;
+  color: vars.$secondary-text;
+}
+.status-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #888;
+  padding: 2rem;
+}
+
+// Estilos para a grade de ÁLBUNS
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+.album-card {
+  background: #fff;
+  border-radius: vars.$small-border-radius;
+  box-shadow: vars.$box-shadow;
   overflow: hidden;
-  .galeria-item {
-    width: 170px;
-    height: 170px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    border-radius: 15px;
-    position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    .album-overlay {
+      opacity: 1;
+    }
+  }
+}
+.album-image-wrapper {
+  position: relative;
+  img {
+    display: block;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+}
+.album-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.album-title {
+  padding: 1rem;
+}
+.album-title h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+}
+.album-title small {
+  color: vars.$secondary-text;
+}
+
+// Estilos para a tela de DETALHES
+.details-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.details-header h1 {
+  font-size: 2.5rem;
+  color: vars.$primary-blue;
+  margin-bottom: 0.25rem;
+}
+.details-header p {
+  font-size: 1.1rem;
+  color: vars.$secondary-text;
+}
+.btn-back {
+  background: #f1f1f1;
+  border: 1px solid #ddd;
+  color: #555;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  transition: background-color 0.2s;
+  &:hover {
+    background-color: #e0e0e0;
+  }
+}
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.photo-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  img {
+    display: block;
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  &:hover img {
+    transform: scale(1.05);
+  }
+  .photo-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  &:hover .photo-overlay {
+    opacity: 1;
+  }
+}
+.download-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: background-color 0.2s;
+  &:hover {
+    background-color: vars.$primary-blue;
   }
 }

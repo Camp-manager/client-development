@@ -1,160 +1,104 @@
 @use "sass:color";
-@use "./app/shared/styles/variables" as vars;
-@use "@angular/material" as mat;
-@import "@angular/material/prebuilt-themes/indigo-pink.css";
+@use "../../user/src/app/shared/styles/variables" as vars;
 
-html {
-  @include mat.theme(
-    (
-      color: (
-        theme-type: light,
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    )
-  );
-} /* You can add global styles to this file, and also import other style files */
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-@import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+@import "@ng-select/ng-select/themes/default.theme.css";
 
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
-  font-family: "Inter", sans-serif;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
-  width: 100svw;
-  height: 100svh;
-  overflow: hidden;
-  &::-webkit-scrollbar-thumb {
-    background-color: #5e5e5e;
-    border-radius: 20px;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: #bdbdbd;
+  font-family: "Inter";
+  background-color: #f5f7fa;
+  color: vars.$primary-text;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Estilo de scrollbar customizado
+body::-webkit-scrollbar {
+  width: 10px;
+}
+body::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 5px;
+  &:hover {
+    background-color: #a8a8a8;
   }
 }
 
-h1 {
-  font-size: 28px;
-  font-weight: bolder;
-  line-height: 36px;
-}
-h2 {
-  font-size: 26px;
-  font-weight: bolder;
-  line-height: 34px;
-}
-h3 {
-  font-size: 24px;
-  font-weight: bolder;
-  line-height: 32px;
-}
-h4 {
-  font-size: 22px;
-  font-weight: bolder;
-  line-height: 30px;
-}
-h5 {
-  font-size: 20px;
-  font-weight: bolder;
-  line-height: 28px;
-}
-h6 {
-  font-size: 18px;
-  font-weight: bolder;
-  line-height: 26px;
-}
-p {
-  font-size: 16px;
-}
-.container {
-  height: 100%;
-  overflow-y: auto;
-}
 .ng-select .ng-select-container {
   min-height: 44px !important;
-  padding: 0 16px;
-  font-size: 16px;
-  background-color: #efefef;
-  border: 2px solid #dcdcdc;
-  border-radius: 8px;
+  border: 1px solid vars.$border-color-light !important;
+  border-radius: vars.$small-border-radius !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &:hover {
+    border-color: color.adjust(
+      vars.$border-color-light,
+      $lightness: 10%
+    ) !important;
+  }
+}
+
+.ng-select.ng-select-focused .ng-select-container {
+  border-color: vars.$primary-blue !important;
+  box-shadow: 0 0 0 3px vars.$focus-shadow-color !important;
 }
 
 .btn {
-  display: inline-block;
-  font-weight: 500; // Peso da fonte padrão
-  line-height: 1.5;
-  color: vars.$primary-text; // Cor de texto padrão para botões não coloridos (ex: outline)
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
   text-align: center;
   text-decoration: none;
-  vertical-align: middle;
   cursor: pointer;
-  user-select: none; // Impede seleção de texto ao clicar
-  background-color: transparent;
+  user-select: none;
   border: 1px solid transparent;
-  padding: 0.6rem 1.2rem; // Padding padrão (ajuste conforme seu design)
-  font-size: 1rem; // Tamanho de fonte padrão
-  border-radius: vars.$small-border-radius; // Usa o raio de borda menor
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: vars.$small-border-radius;
+  transition: all 0.2s ease-in-out;
 
-  // Estado de Foco
-  &:focus {
-    outline: 0;
-    // Sombra de foco sutil, usando a cor primária por padrão
-    box-shadow: 0 0 0 0.2rem color.change(vars.$primary-blue, $alpha: 0.25);
-  }
-
-  // Estado Desabilitado
-  &:disabled,
-  &.disabled {
+  &:disabled {
     opacity: 0.65;
     cursor: not-allowed;
-    pointer-events: none; // Impede eventos de mouse
-  }
-
-  // Para links <a> estilizados como botões que não devem ter borda dupla
-  &.no-border {
-    border-color: transparent !important;
-  }
-
-  // Para botões com ícones
-  i,
-  .fas,
-  .far,
-  .fab {
-    // Classes comuns do Font Awesome
-    margin-right: 0.5em; // Espaço entre ícone e texto
-    &:only-child {
-      // Se o botão só tiver um ícone
-      margin-right: 0;
-    }
   }
 }
 
-// --- Modificadores de Cor ---
-
-// Botão Primário
 .btn-primary {
-  color: vars.$sidebar-text; // Texto branco
+  color: #fff;
   background-color: vars.$primary-blue;
   border-color: vars.$primary-blue;
 
-  &:hover {
-    color: vars.$sidebar-text;
+  &:hover:not(:disabled) {
     background-color: color.adjust(vars.$primary-blue, $lightness: -8%);
     border-color: color.adjust(vars.$primary-blue, $lightness: -10%);
   }
-  &:focus {
-    box-shadow: 0 0 0 0.2rem color.change(vars.$primary-blue, $alpha: 0.5);
-  }
-  &:active,
-  &.active {
-    background-color: color.adjust(vars.$primary-blue, $lightness: -10%);
-    border-color: color.adjust(vars.$primary-blue, $lightness: -12%);
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: vars.$secondary-text;
+  border-color: vars.$secondary-text;
+  &:hover:not(:disabled) {
+    background-color: color.adjust(vars.$secondary-text, $lightness: -8%);
+    border-color: color.adjust(vars.$secondary-text, $lightness: -10%);
   }
 }

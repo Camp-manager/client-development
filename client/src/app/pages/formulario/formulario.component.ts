@@ -16,6 +16,11 @@ import { SafeUrl } from '@angular/platform-browser';
 import { AcampamentoService } from '../../shared/services/acampamento.service';
 import { CamisetaService } from '../../shared/services/camiseta.service';
 import { environment } from '../../../../../.enviroment';
+import { PessoaService } from './shared/service/pessoa.service';
+import {
+  MedicamentoDTO,
+  MedicamentoService,
+} from './shared/service/medicamento.service';
 
 @Component({
   selector: 'app-formulario',
@@ -31,6 +36,10 @@ export class FormularioComponent implements OnInit {
   private acampamentoService = inject(AcampamentoService);
   private camisetaService = inject(CamisetaService);
   private authService = inject(AuthService);
+  private pessoaService = inject(PessoaService); // Injete o serviço
+  private medicamentoService = inject(MedicamentoService);
+  parentescosDisponiveis: string[] = [];
+  medicamentosDisponiveis: MedicamentoDTO[] = [];
 
   formState: 'loading' | 'lookup' | 'filling' | 'error' = 'loading';
   acampamento: Acampamento | null = null;
@@ -62,6 +71,12 @@ export class FormularioComponent implements OnInit {
 
       if (tipo.toLowerCase() === 'cam') {
         this.tipoFormulario = 'campista';
+        this.pessoaService
+          .getParentesco()
+          .subscribe((success) => (this.parentescosDisponiveis = success));
+        this.medicamentoService.getTodosMedicamentos().subscribe((success) => {
+          this.medicamentosDisponiveis = success;
+        });
       } else if (tipo.toLowerCase() === 'fun') {
         this.tipoFormulario = 'funcionario';
       } else {
@@ -101,6 +116,7 @@ export class FormularioComponent implements OnInit {
     if (this.tipoFormulario === 'campista') {
       this.form = this.fb.group({
         usaMedicamento: [false, Validators.required],
+        idsDeMedicamentos: [[]],
         temAlergia: [false, Validators.required],
         alergias: [''],
         jaFezAcampamento: [false, Validators.required],
@@ -284,6 +300,7 @@ export class FormularioComponent implements OnInit {
   fecharDialogoQRCode() {
     this.mostrarDialogoQRCode = false;
     this.qrCodeImageURL = null;
+    this.router.navigate(['/nossa-historia']);
   }
 
   onQRCodeURL(url: SafeUrl): void {

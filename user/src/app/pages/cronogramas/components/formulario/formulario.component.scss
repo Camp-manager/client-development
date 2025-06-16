@@ -178,3 +178,22 @@
     }
   }
 }
+.daily-functions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.day-function-row {
+  display: grid;
+  grid-template-columns: 220px 1fr; // Coluna fixa para a data, flexível para o input
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.day-label {
+  font-weight: 500;
+  text-align: right;
+  color: var(--text-color-light, #6c757d);
+}

@@ -1,27 +1,62 @@
-<div class="container galeria">
-  <div class="scroll">
-    @for (galeria of galerias; track $index) {
-      @for (image of galeria.images; track $index) {
-        @if (image.isCapa) {
-          <div
-            class="galeria-item"
-            [style.backgroundImage]="'url(' + image.path + ')'"
-            (click)="openGaleria(galeria)"
-          >
-            <h3 style="position: absolute; bottom: -28px; left: 5px">{{ galeria.title }}</h3>
-            <p style="position: absolute; bottom: -40px; left: 5px">{{ galeria.images.length }}</p>
-          </div>
-        }
-      }
-      @if(!galeria.images) {
-        <div
-          class="galeria-item"
-          [style.opacity]="galeria.id !== undefined ? 1 : 0"
-        ></div>
-      }
+<div class="gallery-container">
+  @if (modoDeExibicao === 'lista') {
+  <header class="gallery-header">
+    <h1>Nossas Memórias</h1>
+    <p>Relembre os melhores momentos de cada acampamento.</p>
+  </header>
+
+  @if(isLoading) {
+  <p class="status-message">Carregando álbuns...</p>
+  } @else {
+  <div class="gallery-grid">
+    @for(album of galerias; track album.nomeDoAcampamento) {
+    <div class="album-card" (click)="mostrarDetalhes(album)">
+      <div class="album-image-wrapper">
+        <img
+          [src]="getImagemDeCapa(album.imagemDeCapa)"
+          [alt]="'Capa do álbum ' + album.nomeDoAcampamento"
+        />
+        <div class="album-overlay"><span>Ver Álbum</span></div>
+      </div>
+      <div class="album-title">
+        <h3>{{ album.nomeDoAcampamento }}</h3>
+        <small>{{ album.imagensDoAcampamento.length }} fotos</small>
+      </div>
+    </div>
+    } @empty {
+    <p class="status-message">Nenhum álbum de fotos encontrado.</p>
     }
   </div>
+  } } @if (modoDeExibicao === 'detalhes' && albumSelecionado) {
+  <div class="details-view">
+    <header class="details-header">
+      <button class="btn-back" (click)="mostrarLista()">
+        <i class="fas fa-arrow-left"></i> Voltar para todos os álbuns
+      </button>
+      <div class="header-text">
+        <h1>{{ albumSelecionado.nomeDoAcampamento }}</h1>
+        <p>{{ albumSelecionado.imagensDoAcampamento.length }} fotos</p>
+      </div>
+    </header>
 
+    <div class="photo-grid">
+      @for(foto of albumSelecionado.imagensDoAcampamento; track
+      foto.nomeDoArquivo) {
+      <div class="photo-card">
+        <img [src]="foto.pathImagem" [alt]="foto.nomeDoArquivo" />
+        <div class="photo-overlay">
+          <a
+            [href]="foto.pathImagem"
+            [download]="foto.nomeDoArquivo"
+            class="download-button"
+            title="Baixar Imagem"
+          >
+            <i class="fas fa-download"></i>
+          </a>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
 </div>
-
-<router-outlet />

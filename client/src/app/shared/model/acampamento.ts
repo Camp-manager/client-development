@@ -12,4 +12,6 @@ export interface Acampamento {
   nomeAcampamento: string;
   tipoAcampamento: TipoAcampamento;
   tema: TemaAcampamento;
+  dataInicio: Date;
+  dataFim: Date;
 }

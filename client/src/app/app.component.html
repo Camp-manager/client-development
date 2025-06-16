@@ -2,10 +2,14 @@
   <router-outlet />
 </div>
 
-<div
-  class="button whatsapp"
-  [ngClass]="{ 'formulario-style': isFormularioRoute() }"
+<a
+  href="https://wa.me/5511996979078"
+  target="_blank"
+  class="whatsapp-fab"
+  [class.compacto]="isFormularioRoute"
 >
-  <i class="fa-brands fa-whatsapp"></i>
-  {{ isFormularioRoute() ? "" : "Fale Conosco" }}
-</div>
+  <i class="fab fa-whatsapp"></i>
+  @if(!isFormularioRoute) {
+  <span>Fale Conosco</span>
+  }
+</a>

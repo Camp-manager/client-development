@@ -403,7 +403,7 @@ $theme-colors: (
   "danger": vars.$danger-color,
   "warning": vars.$warning-color,
   "info": vars.$info-color
-    // Adicione "light" e "dark" se desejar outlines para eles,,,,,,,
+    // Adicione "light" e "dark" se desejar outlines para eles,,,,,,,,,,
 );
 
 @each $name, $color in $theme-colors {

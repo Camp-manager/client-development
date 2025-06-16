@@ -1,14 +1,42 @@
-<div class="content">
-  <h1>Agenda</h1>
-  <p>Proximo acampamento a ser realizado é o <strong>MIRIM</strong>, ainda não foi realizado nenhuma reunião.</p>
-  <div class="datas">
-    <div class="data">
-      <p>Primeira Reunião</p>
-      <h2>19/07/2025</h2>
+<div class="agenda-container">
+  <div class="header">
+    <h1>Agenda</h1>
+    @if(!isLoading && proximoAcampamento) {
+    <p>
+      Eventos e reuniões para o próximo acampamento:
+      <strong>{{ proximoAcampamento.nomeAcampamento }}</strong> <br />
+      <strong
+        >{{ proximoAcampamento.dataInicio | date : "dd/MM" }} -
+        {{ proximoAcampamento.dataFim | date : "dd/MM/yyyy" }}</strong
+      >
+    </p>
+    }
+  </div>
+
+  <div class="content">
+    @if(isLoading) {
+    <p class="status-message">Carregando agenda...</p>
+    } @else if(error) {
+    <p class="status-message error">{{ error }}</p>
+    } @else if(eventosFiltrados.length > 0) {
+    <div class="events-list">
+      @for(equipe of eventosFiltrados; track equipe.nomeEquipe) { @for(evento of
+      equipe.cronogramas; track evento.id) {
+      <div class="event-card">
+        <div class="event-date">
+          <span>{{ evento.dataInicio }}</span>
+        </div>
+        <div class="event-details">
+          <h5 class="event-title">{{ evento.descricao }}</h5>
+          <small class="event-team">Equipe: {{ equipe.nomeEquipe }}</small>
+        </div>
+      </div>
+      } }
     </div>
-    <div class="data">
-      <p>Primeira Reunião</p>
-      <h2>19/07/2025</h2>
-    </div>
+    } @else {
+    <p class="status-message">
+      Nenhuma reunião ou novena agendada para o próximo acampamento.
+    </p>
+    }
   </div>
 </div>

@@ -1,31 +1,67 @@
-.whatsapp {
-  position: fixed;
-  bottom: 90px;
-  right: 30px;
-  background-color: #25d366;
-  border-radius: 50px;
-  width: 140px;
-  height: 44px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 98;
-  font-size: 12px;
-  gap: 6px;
-  color: #000;
-  i {
-    color: #ffffff;
-    font-size: 24px;
-  }
-  transition: color 0.5s 0.3s, width 0.5s;
+// Variáveis para fácil customização
+:root {
+  --whatsapp-green: #25d366;
+  --fab-size: 56px;
+  --fab-margin: 20px;
+  --nav-height-mobile: 60px;
 }
-.formulario-style {
-  width: 44px;
-  color: transparent;
-}
+
 .container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+}
+.whatsapp-fab {
+  position: fixed;
+  bottom: calc(var(--nav-height-mobile) + var(--fab-margin));
+  right: var(--fab-margin);
+  height: var(--fab-size);
+
+  width: auto;
+  padding: 0 20px;
+
+  background-color: var(--whatsapp-green);
+  color: white;
+  border-radius: 50px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  i {
+    font-size: 1.8rem;
+  }
+
+  span {
+    transition: opacity 0.2s ease, width 0.3s ease, margin-left 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &.compacto {
+    width: var(--fab-size);
+    padding: 0;
+
+    span {
+      width: 0;
+      opacity: 0;
+      margin-left: -0.8rem;
+    }
+  }
+}
+
+// Ajuste para Desktop
+@media (min-width: 768px) {
+  .whatsapp-fab {
+    bottom: var(--fab-margin);
+  }
 }

@@ -1,0 +1,46 @@
+// Importa as variáveis globais para manter a consistência de cores e fontes
+@use "../../../../shared/styles/variables" as vars;
+
+// Container principal para o conteúdo dentro do card
+.report-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // Espaçamento entre o parágrafo de instrução e os controles
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: vars.$secondary-text; // Usa a cor de texto secundária das variáveis
+    line-height: 1.4;
+  }
+}
+
+// Container que agrupa o seletor e o botão
+.report-controls {
+  display: flex;
+
+  // Em telas pequenas (mobile-first), os itens ficam um embaixo do outro
+  flex-direction: column;
+  gap: 0.75rem;
+
+  // Em telas maiores (a partir de 768px de largura)
+  @media (min-width: 768px) {
+    // Os itens ficam lado a lado
+    flex-direction: row;
+    align-items: center; // Alinha o botão e o seletor verticalmente
+  }
+
+  // Faz o ng-select ocupar o espaço disponível
+  ng-select {
+    flex-grow: 1;
+  }
+
+  // Garante que o botão não encolha e tenha uma margem à esquerda em telas maiores
+  .btn {
+    flex-shrink: 0;
+
+    @media (min-width: 768px) {
+      margin-left: 0.5rem;
+    }
+  }
+}

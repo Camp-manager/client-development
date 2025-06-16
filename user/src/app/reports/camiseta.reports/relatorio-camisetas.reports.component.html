@@ -1,0 +1,72 @@
+<div class="report-container">
+  <header>
+    <h1>Relatório de Pedidos de Camiseta</h1>
+    <p>
+      {{ nomeAcampamento }} - Gerado em: {{ dataAtual | date : "dd/MM/yyyy" }}
+    </p>
+  </header>
+
+  @if(dadosRelatorio) {
+  <div class="section summary-panel">
+    <div class="summary-item">
+      <span>Total Arrecadado</span>
+      <strong>{{ dadosRelatorio.totalComVendas | currency : "BRL" }}</strong>
+    </div>
+    <div class="summary-item">
+      <span>Total de Compradores</span>
+      <strong>{{ dadosRelatorio.totalCompradores }}</strong>
+    </div>
+    <div class="summary-item">
+      <span>Campistas</span>
+      <strong>{{ dadosRelatorio.quantidadeCompradoresCampistas }}</strong>
+    </div>
+    <div class="summary-item">
+      <span>Equipe de Trabalho</span>
+      <strong>{{ dadosRelatorio.quantidadeCompradoresFuncionarios }}</strong>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Campistas com Camiseta</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome do Campista</th>
+          <th>Tamanho Solicitado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(p of dadosRelatorio.campistasCompradores; track p.id) {
+        <tr>
+          <td>{{ p.nome }}</td>
+          <td>{{ p.tamanhoCamisetaComprado }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Equipe de Trabalho com Camiseta</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome do Membro da Equipe</th>
+          <th>Tamanho Solicitado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(p of dadosRelatorio.funcionariosCompradores; track p.id) {
+        <tr>
+          <td>{{ p.nome }}</td>
+          <td>{{ p.tamanhoCamisetaComprado }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  } @else {
+  <p class="empty-state">Nenhum dado para o relatório foi encontrado.</p>
+  }
+</div>

@@ -3,6 +3,7 @@ export interface TemaAcampamento {
   descricao: string;
   precoCamiseta: number;
   precoAcampamento: number;
+  design: Blob;
 }
 
 export interface TipoAcampamento {

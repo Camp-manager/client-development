@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      .carteirinha {
+        width: 350px;
+        height: 200px;
+        border: 2px solid #444;
+        border-radius: 12px;
+        padding: 16px;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #f0f0f0, #dcdcdc);
+        box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .titulo {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 12px;
+        color: #222;
+      }
+
+      .campo {
+        margin-bottom: 8px;
+      }
+
+      .label {
+        font-weight: bold;
+        color: #333;
+      }
+
+      .valor {
+        margin-left: 5px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="carteirinha">
+      <div class="titulo">Carteirinha do Acampamento</div>
+
+      <div class="campo">
+        <span class="label">Nome:</span>
+        <span class="valor">{{ equipeDeTrabalho.nomeFuncionario }}</span>
+      </div>
+
+      <div class="campo">
+        <span class="label">Equipe:</span>
+        <span class="valor">{{ equipeDeTrabalho.nomeEquipe }}</span>
+      </div>
+
+      <div class="campo">
+        <span class="label">Descrição do Acampamento:</span>
+        <!-- <span class="valor">{{ descricaoAcampamento }}</span> -->
+      </div>
+    </div>
+  </body>
+</html>

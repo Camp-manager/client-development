@@ -1,7 +1,7 @@
-import { CriarCronogramaRequest } from '../../../cronogramas/shared/model/cronograma.request';
+import { CronogramaTrabalhoItemRequest } from '../../../cronogramas/shared/model/cronograma.request';
 
 export class AcampamentoRequest {
-  cronogramaRequest: CriarCronogramaRequest;
+  cronogramaRequest: CronogramaTrabalhoItemRequest;
 
   nomeDoAcampamento: string;
 
@@ -18,6 +18,7 @@ export class AcampamentoRequest {
       dataInicial: form.dataInicio,
       dataFinal: form.dataFim,
       descricao: 'Data do Acampamento',
+      atividades: [],
     };
     this.nomeDoAcampamento = form.descricao;
     this.limiteCampistas = form.limiteCampistas;

@@ -292,14 +292,17 @@
             />
           </div>
           <div class="form-group">
-            <label for="parentesco-familiar">Parentesco</label
-            ><input
+            <label for="parentesco-familiar">Parentesco</label>
+            <select
               id="parentesco-familiar"
-              type="text"
               formControlName="parentesco"
               class="form-control"
-              placeholder="Ex: Mãe, Pai, Tio"
-            />
+            >
+              <option value="" disabled>Selecione o parentesco...</option>
+              @for(p of parentescosDisponiveis; track p) {
+              <option [value]="p">{{ p }}</option>
+              }
+            </select>
           </div>
           <div class="form-group">
             <label for="tel-familiar">Telefone do Responsável</label
@@ -404,14 +407,31 @@
           >
         </div>
         <div class="form-group radio-group">
-          <label>Usa algum medicamento?</label
-          ><mat-radio-group formControlName="usaMedicamento"
-            ><mat-radio-button [value]="true">Sim</mat-radio-button
-            ><mat-radio-button [value]="false"
-              >Não</mat-radio-button
-            ></mat-radio-group
-          >
+          <label>Usa algum medicamento?</label>
+          <mat-radio-group formControlName="usaMedicamento">
+            <mat-radio-button [value]="true">Sim</mat-radio-button>
+            <mat-radio-button [value]="false">Não</mat-radio-button>
+          </mat-radio-group>
         </div>
+
+        @if(form.get('usaMedicamento')?.value === true) {
+        <div class="form-group">
+          <label for="medicamentos"
+            >Quais medicamentos? (selecione na lista)</label
+          >
+          <ng-select
+            id="medicamentos"
+            formControlName="idsDeMedicamentos"
+            [items]="medicamentosDisponiveis"
+            bindLabel="nome"
+            bindValue="id"
+            [multiple]="true"
+            placeholder="Selecione os medicamentos"
+            [closeOnSelect]="false"
+          >
+          </ng-select>
+        </div>
+        }
         <div class="form-group radio-group">
           <label>Possui alguma alergia?</label
           ><mat-radio-group formControlName="temAlergia"

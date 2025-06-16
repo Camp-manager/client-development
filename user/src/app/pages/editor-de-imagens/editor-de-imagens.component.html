@@ -1,0 +1,48 @@
+<div class="editor-container">
+  <div class="toolbar">
+    <h5><i class="fas fa-magic"></i> Criar Arte</h5>
+    <p class="toolbar-subtitle">
+      Comece com um modelo ou adicione seus próprios elementos.
+    </p>
+
+    <button class="btn btn-primary" (click)="adicionarCamiseta()">
+      <i class="fas fa-tshirt"></i> Adicionar Camiseta
+    </button>
+
+    <hr />
+    <h5><i class="fas fa-tools"></i> Ferramentas</h5>
+
+    <button class="btn btn-secondary" (click)="adicionarTexto()">
+      <i class="fas fa-font"></i> Adicionar Texto
+    </button>
+
+    <button class="btn btn-secondary" (click)="fileInput.click()">
+      <i class="fas fa-image"></i> Upload de Imagem
+    </button>
+    <input
+      type="file"
+      #fileInput
+      hidden
+      (change)="handleImageUpload($event)"
+      accept="image/png, image/jpeg"
+    />
+
+    <div class="toolbar-footer">
+      <button
+        class="btn btn-primary"
+        (click)="salvarArteNoServidor()"
+        [disabled]="isUploading"
+      >
+        @if (isUploading) {
+        <span><i class="fas fa-spinner fa-spin"></i> Salvando...</span>
+        } @else {
+        <span><i class="fas fa-save"></i> Salvar Arte no Servidor</span>
+        }
+      </button>
+    </div>
+  </div>
+
+  <div class="canvas-wrapper">
+    <canvas id="canvas-editor" width="800" height="600"></canvas>
+  </div>
+</div>

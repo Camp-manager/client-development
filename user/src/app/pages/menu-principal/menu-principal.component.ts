@@ -4,6 +4,9 @@ import { Router, RouterModule } from '@angular/router';
 import { CardConfig } from '../../shared/model/CardConfig';
 import { DynamicContentDirective } from '../../shared/directives/dynamic-content.directive';
 import { RelatorioCronogramaCardComponent } from './components/relatorio-cronograma-card/relatorio-cronograma-card.component';
+import { RelatorioCamisetaCardComponent } from './components/relatorio-camiseta-card-component/relatorio-camiseta-card.component';
+import { RelatorioEquipeCardComponent } from './components/relatorio-equipe-card/relatorio-equipe-card.component';
+import { RelatorioDoacoesCardComponent } from './components/relatorio-doacoes-card/relatorio-doacoes-card.component';
 
 @Component({
   selector: 'app-menu-principal',
@@ -18,11 +21,11 @@ export class MenuPrincipalComponent {
   cards: CardConfig[] = [
     {
       id: 'card1',
-      title: 'Opção 1',
-      type: 'default',
-      columnSpanClass: 'col-1',
-      content: 'Conteúdo do card de opção 1.',
-      routerLink: '/alguma-rota',
+      title: 'Bem-vindo ao CampManager!',
+      type: 'justify',
+      columnSpanClass: 'full-w',
+      content:
+        'Este é o seu painel de gerenciamento. Utilize os cards para navegar pelas funcionalidades, criar acampamentos, gerenciar equipes e gerar relatórios.',
     },
     {
       id: 'cardRelatorioCronograma',
@@ -33,40 +36,28 @@ export class MenuPrincipalComponent {
       component: RelatorioCronogramaCardComponent,
     },
     {
-      id: 'card4',
-      title: 'Outra Opção',
+      id: 'cardRelatorioCamisetas',
+      title: 'Relatório de Camisetas',
       type: 'default',
-      columnSpanClass: 'col-1',
-      content: 'Mais uma opção simples.',
+      columnSpanClass: 'col-2',
+      icon: 'fas fa-tshirt',
+      component: RelatorioCamisetaCardComponent,
     },
     {
-      id: 'card5',
-      title: 'Justificado',
-      type: 'justify',
-      columnSpanClass: 'full-w',
-      content: 'Item com alinhamento justificado.',
-    },
-    {
-      id: 'cardDestaque',
-      title: 'Opção Destaque',
-      type: 'mega',
-      columnSpanClass: 'full-w',
-      content: 'Este card ocupa toda a largura e tem informações importantes.',
-      icon: 'fas fa-bullhorn',
-    },
-    {
-      id: 'card7',
-      title: 'Opção Três Colunas',
+      id: 'cardRelatorioEquipe',
+      title: 'Relatório por Equipe',
+      icon: 'fas fa-users',
       type: 'default',
-      columnSpanClass: 'col-3',
-      content: 'Conteúdo que se estende por três colunas.',
+      columnSpanClass: 'col-2',
+      component: RelatorioEquipeCardComponent,
     },
     {
-      id: 'card8',
-      title: 'Final',
+      id: 'cardRelatorioDoacoes',
+      title: 'Relatório de Doações',
+      icon: 'fas fa-hand-holding-heart',
       type: 'default',
-      columnSpanClass: 'col-1',
-      content: 'Último card da lista.',
+      columnSpanClass: 'col-2',
+      component: RelatorioDoacoesCardComponent,
     },
   ];
 

@@ -1,0 +1,58 @@
+<div class="report-container">
+  <header>
+    <h1>Relatório de Membros da Equipe</h1>
+    <p>
+      {{ nomeAcampamento }} - Gerado em: {{ dataAtual | date : "dd/MM/yyyy" }}
+    </p>
+  </header>
+
+  @if(equipe) {
+  <div class="section">
+    <h2 class="section-title">Equipe: {{ equipe.nome }}</h2>
+
+    @if (equipe.funcionariosNaEquipe && equipe.funcionariosNaEquipe.length > 0)
+    {
+    <h4>Membros da Equipe de Trabalho</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome do Membro</th>
+          <th>Telefone de Contato</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(membro of equipe.funcionariosNaEquipe; track membro.id) {
+        <tr>
+          <td>{{ membro.nome }}</td>
+          <td>{{ membro.telefone }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    } @if (equipe.campistasNaEquipe && equipe.campistasNaEquipe.length > 0) {
+    <h4 style="margin-top: 20px">Campistas na Equipe</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome do Campista</th>
+          <th>Telefone de Contato</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(membro of equipe.campistasNaEquipe; track membro.id) {
+        <tr>
+          <td>{{ membro.nomeCompleto }}</td>
+          <td>{{ membro.telefone }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    } @if(equipe.funcionariosNaEquipe.length === 0 &&
+    equipe.campistasNaEquipe.length === 0) {
+    <p class="empty-state">Esta equipe não possui membros.</p>
+    }
+  </div>
+  } @else {
+  <p class="empty-state">Nenhuma equipe selecionada para o relatório.</p>
+  }
+</div>

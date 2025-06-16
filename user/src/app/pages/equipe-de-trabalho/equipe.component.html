@@ -8,19 +8,17 @@
 
   <div class="card-body">
     @if (isLoading) {
-    <p class="loading-state">Carregando dados das equipes...</p>
+    <p class="loading-state">Carregando...</p>
     } @else {
-
     <div class="unassigned-section">
       <h4>Pessoas Sem Equipe</h4>
-
       <h5>Equipe de Trabalho Disponível</h5>
       @if (funcionariosSemTime.length > 0) {
       <table class="app-table unassigned-table">
         <thead>
           <tr>
             <th>Nome</th>
-            <th>Habilidades Principais</th>
+            <th>Habilidades</th>
             <th>Telefone</th>
             <th style="width: 220px">Ação</th>
           </tr>
@@ -34,14 +32,10 @@
             <td class="actions">
               <select
                 class="form-control form-control-sm"
-                #selectEquipeFunc
-                (change)="
-                  adicionarMembroAEquipe(func, +selectEquipeFunc.value);
-                  selectEquipeFunc.value = ''
-                "
-                title="Atribuir à equipe"
+                #s
+                (change)="adicionarMembroAEquipe(func, +s.value); s.value = ''"
               >
-                <option value="">Atribuir para a equipe...</option>
+                <option value="">Atribuir para...</option>
                 @for(e of equipes; track e.id) {
                 <option [value]="e.id">{{ e.nome }}</option>
                 }
@@ -74,21 +68,19 @@
           <tr>
             <td>{{ campista.nomeCompleto }}</td>
             <td>{{ campista.telefone }}</td>
-            <td>{{ campista.altura }}</td>
-            <td>{{ campista.peso }}</td>
+            <td>{{ campista.altura ? campista.altura + "m" : "" }}</td>
+            <td>{{ campista.peso ? campista.peso + "kg" : "" }}</td>
             <td class="actions">
               <select
                 class="form-control form-control-sm"
-                #selectEquipeCampista
+                #sc
                 (change)="
-                  adicionarMembroAEquipe(campista, +selectEquipeCampista.value);
-                  selectEquipeCampista.value = ''
+                  adicionarMembroAEquipe(campista, +sc.value); sc.value = ''
                 "
-                title="Atribuir à equipe"
               >
-                <option value="">Atribuir para a equipe...</option>
+                <option value="">Atribuir para...</option>
                 @for(e of equipes; track e.id) { @if(e.tipoEquipe ===
-                "Campista") {
+                'Campista') {
                 <option [value]="e.id">{{ e.nome }}</option>
                 } }
               </select>
@@ -103,7 +95,6 @@
       </p>
       }
     </div>
-
     <hr />
 
     <div class="table-responsive-wrapper">
@@ -128,28 +119,29 @@
               <i
                 class="fas"
                 [ngClass]="
-                  equipe.expanded ? 'fa-chevron-right' : 'fa-chevron-right'
+                  equipe.expanded ? 'fa-chevron-down' : 'fa-chevron-right'
                 "
               ></i>
             </td>
             <td>{{ equipe.nome }}</td>
-            <td class="text-center">{{ equipe }}</td>
+            <td class="text-center">
+              {{
+                equipe.funcionariosNaEquipe.length +
+                  equipe.campistasNaEquipe.length
+              }}
+            </td>
             <td class="text-center">{{ equipe.tipoEquipe }}</td>
           </tr>
           @if (equipe.expanded) {
           <tr class="membros-row">
             <td colspan="4">
               <div class="membros-container">
-                <!-- @if (equipe.membros.length > 0) {
+                @if (equipe.funcionariosNaEquipe.length > 0) {
+                <h6>Equipe de Trabalho</h6>
                 <table class="app-table app-table-inner">
-                  <thead>
-                    <tr>
-                      <th>Nome do Membro</th>
-                      <th class="text-center" style="width: 200px">Ação</th>
-                    </tr>
-                  </thead>
                   <tbody>
-                    @for (membro of equipe.membros; track membro.id) {
+                    @for (membro of equipe.funcionariosNaEquipe; track
+                    membro.id) {
                     <tr>
                       <td>{{ membro.nome }}</td>
                       <td class="text-center">
@@ -160,23 +152,46 @@
                             $event.stopPropagation()
                           "
                         >
-                          <i class="fas fa-arrow-down"></i> Remover da Equipe
+                          Remover
                         </button>
                       </td>
                     </tr>
                     }
                   </tbody>
                 </table>
-                } @else { -->
+                } @if (equipe.campistasNaEquipe.length > 0) {
+                <h6 class="mt-3">Campistas</h6>
+                <table class="app-table app-table-inner">
+                  <tbody>
+                    @for (membro of equipe.campistasNaEquipe; track membro.id) {
+                    <tr>
+                      <td>{{ membro.nomeCompleto }}</td>
+                      <td class="text-center">
+                        <button
+                          class="btn btn-sm btn-warning"
+                          (click)="
+                            removerMembroDaEquipe(equipe, membro);
+                            $event.stopPropagation()
+                          "
+                        >
+                          Remover
+                        </button>
+                      </td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+                } @if (equipe.funcionariosNaEquipe.length === 0 &&
+                equipe.campistasNaEquipe.length === 0) {
                 <p class="empty-state-inner">Nenhum membro nesta equipe.</p>
-                <!-- } -->
+                }
               </div>
             </td>
           </tr>
           } } @empty {
           <tr>
             <td colspan="4">
-              <p class="empty-state">Nenhuma equipe de trabalho foi criada.</p>
+              <p class="empty-state">Nenhuma equipe criada.</p>
             </td>
           </tr>
           }

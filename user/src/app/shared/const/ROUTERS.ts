@@ -33,4 +33,9 @@ export const ROUTERS: RouterHelpers = [
       },
     ],
   },
+  {
+    nome: 'Canva',
+    path: '/editar',
+    icon: 'fa-edit',
+  },
 ];

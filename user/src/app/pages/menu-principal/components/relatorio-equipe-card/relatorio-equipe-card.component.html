@@ -1,0 +1,38 @@
+<div class="report-card-content">
+  <p>
+    Selecione um acampamento e uma equipe para gerar o relatório de membros.
+  </p>
+
+  <div class="report-controls">
+    <ng-select
+      [(ngModel)]="idAcampamentoSelecionado"
+      (change)="onAcampamentoChange($event)"
+      placeholder="1. Selecione um acampamento..."
+    >
+      @for(acamp of acampamentos; track acamp.idAcampamento) {
+      <ng-option [value]="acamp.idAcampamento">{{
+        acamp.nomeAcampamento
+      }}</ng-option>
+      }
+    </ng-select>
+
+    <ng-select
+      [(ngModel)]="equipeSelecionada"
+      [items]="equipesDoAcampamento"
+      bindLabel="nome"
+      [disabled]="!idAcampamentoSelecionado"
+      placeholder="2. Selecione uma equipe..."
+    >
+    </ng-select>
+
+    <button
+      class="btn btn-secondary"
+      (click)="exportarRelatorioDeEquipe()"
+      [disabled]="!equipeSelecionada || isGeneratingReport"
+    >
+      @if(isGeneratingReport){ Gerando... } @else { Gerar Relatório }
+    </button>
+  </div>
+</div>
+
+<ng-template #pdfContainer></ng-template>

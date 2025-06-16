@@ -84,6 +84,15 @@
               >
                 <i class="fas fa-qrcode"></i>
               </button>
+              @if (containerPadrao) {
+              <button
+                class="button-icon"
+                (click)="abrirDialogoUploadZip(acamp)"
+                title="Enviar Fotos do Acampamento (.zip)"
+              >
+                <i class="fas fa-file-archive"></i>
+              </button>
+              }
             </td>
           </tr>
           }
@@ -152,6 +161,12 @@
   <ng-container dialog-footer>
     <button
       class="btn btn-info"
+      (click)="abrirDialogoArte(acampamentoSelecionado)"
+    >
+      <i class="fas fa-palette"></i> Ver Arte do Tema
+    </button>
+    <button
+      class="btn btn-info"
       [routerLink]="['/equipe', acampamentoSelecionado.idAcampamento]"
       (click)="fecharDialogoDetalhes()"
     >
@@ -159,6 +174,44 @@
     </button>
     <button class="btn btn-secondary" (click)="fecharDialogoDetalhes()">
       OK
+    </button>
+  </ng-container>
+</dialog>
+} @if (mostrarDialogoArte) {
+<dialog
+  [isOpen]="mostrarDialogoArte"
+  (close)="fecharDialogoArte()"
+  dialogTitle="Arte do Tema"
+>
+  <ng-container dialog-body>
+    <div class="arte-container">
+      @if (arteTemaUrl) {
+      <img
+        [src]="arteTemaUrl"
+        alt="Arte do tema do acampamento"
+        width="800"
+        height="600"
+      />
+      } @else {
+      <p class="empty-state-inner">
+        Nenhuma imagem de arte foi encontrada para este tema.
+      </p>
+      }
+    </div>
+  </ng-container>
+
+  <ng-container dialog-footer>
+    <a
+      [routerLink]="['/editar', acampamentoSelecionado!.idAcampamento]"
+      class="btn btn-primary"
+      (click)="fecharDialogoArte()"
+      title="Editar os detalhes deste acampamento"
+    >
+      <i class="fas fa-edit"></i> Editar Acampamento
+    </a>
+
+    <button class="btn btn-secondary" (click)="fecharDialogoArte()">
+      Fechar
     </button>
   </ng-container>
 </dialog>
@@ -211,6 +264,60 @@
     </a>
     <button class="btn btn-secondary" (click)="fecharDialogoQRCode()">
       Fechar
+    </button>
+  </ng-container>
+</dialog>
+} @if (mostrarDialogoUploadZip) {
+<dialog
+  [isOpen]="mostrarDialogoUploadZip"
+  (close)="fecharDialogoUploadZip()"
+  [dialogTitle]="'Enviar Fotos para: ' + acampamentoParaUpload?.nomeAcampamento"
+  dialogWidth="500px"
+>
+  <ng-container dialog-body>
+    <form
+      [formGroup]="formUploadZip"
+      (ngSubmit)="enviarZip()"
+      id="form-upload-zip"
+    >
+      <div class="form-group">
+        <label for="ano-fotos">Ano das Fotos</label>
+        <input
+          id="ano-fotos"
+          type="number"
+          formControlName="ano"
+          class="form-control"
+          placeholder="Ex: 2025"
+        />
+      </div>
+      <div class="form-group">
+        <label for="arquivo-zip">Arquivo .zip</label>
+        <input
+          id="arquivo-zip"
+          type="file"
+          (change)="onArquivoZipSelecionado($event)"
+          class="form-control"
+          accept=".zip,application/x-zip-compressed"
+        />
+        @if (arquivoZipSelecionado) {
+        <small class="text-muted mt-2"
+          >Arquivo selecionado: {{ arquivoZipSelecionado.name }}</small
+        >
+        }
+      </div>
+    </form>
+  </ng-container>
+  <ng-container dialog-footer>
+    <button class="btn btn-secondary" (click)="fecharDialogoUploadZip()">
+      Cancelar
+    </button>
+    <button
+      class="btn btn-primary"
+      type="submit"
+      form="form-upload-zip"
+      [disabled]="formUploadZip.invalid"
+    >
+      Enviar Arquivo
     </button>
   </ng-container>
 </dialog>

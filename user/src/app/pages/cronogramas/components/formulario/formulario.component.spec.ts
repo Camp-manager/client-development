@@ -1,18 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormularioCronogramaComponent } from './formulario.component';
 
-import { FormularioComponent } from './formulario.component';
-
-describe('FormularioComponent', () => {
-  let component: FormularioComponent;
-  let fixture: ComponentFixture<FormularioComponent>;
+describe('FormularioCronogramaComponent', () => {
+  let component: FormularioCronogramaComponent;
+  let fixture: ComponentFixture<FormularioCronogramaComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormularioComponent]
-    })
-    .compileComponents();
+      imports: [FormularioCronogramaComponent],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(FormularioComponent);
+    fixture = TestBed.createComponent(FormularioCronogramaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,83 +1,125 @@
-.content {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  .container {
-    width: 100%;
-    height: 100svh;
-    position: relative;
-    overflow: hidden;
+// =================================================================
+// 1. VARIÁVEIS DE DESIGN (com SASS)
+// Definimos as variáveis usando '$'. Elas serão processadas durante a compilação.
+// =================================================================
+$nav-height-mobile: 60px; // Altura ajustada para um visual mais compacto
+$sidebar-width-desktop: 80px;
+$primary-color: #4a80c6;
+$text-light: #6c757d;
+$border-color: #e0e0e0;
+$nav-background: #ffffff;
+$font-family-base: "Inter", sans-serif;
+
+// =================================================================
+// 2. LAYOUT PRINCIPAL (MOBILE-FIRST)
+// =================================================================
+.app-layout {
+  .main-content {
+    // Adiciona um espaçamento na parte de baixo para o conteúdo não ficar atrás do menu
+    padding-bottom: $nav-height-mobile;
   }
-  footer {
-    width: 100%;
-    height: 60px;
-    padding: 10px 0;
-    border-top: 2px solid #BDBDBD;
+
+  .main-nav {
+    // --- Estilos para Mobile (Bottom Bar) ---
     position: fixed;
     bottom: 0;
+    left: 0;
+    width: 100%;
+    height: $nav-height-mobile;
+    background-color: $nav-background;
+    border-top: 1px solid $border-color;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    gap: 10px;
-    z-index: 99;
-    background-color: #FFFFFF;
+
     a {
-      width: 120px;
-      height: 60px;
-      color: #000000;
-      text-decoration: none;
-      font-size: 14px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      flex-direction: column;
-      text-align: center;
+      justify-content: center;
+      gap: 4px;
+      height: 100%;
+      min-width: 80px;
+      color: $text-light;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-family: $font-family-base;
+      transition: color 0.2s ease;
+
       i {
-        font-size: 18px;
+        font-size: 1.5rem;
+      }
+
+      // Estilo do link quando a rota está ativa
+      &.ativo {
+        color: $primary-color;
+        font-weight: bold;
       }
     }
   }
 }
-@media (min-width: 740px) {
-  .content {
+
+// =================================================================
+// 3. LAYOUT PARA DESKTOP (Responsividade)
+// =================================================================
+@media (min-width: 768px) {
+  .app-layout {
     display: flex;
-    flex-direction: row-reverse;
-    .container {
-      width: 93%;
-      height: 100svh;
-      position: relative;
-      overflow: hidden;
-      overflow-y: auto;
-    }
-    footer {
-      position: relative;
-      height: 100vh;
-      width: 7%;
-      flex-direction: column;
-      border-top: 0px solid #BDBDBD;
-      border-right: 2px solid #BDBDBD;
-      justify-content: start;
-      gap: 30px;
-      a {
-        width: 100px;
-        font-size: 12px;
-        i {
-          font-size: 24px;
-        }
-        p {
-          display: none;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  // A barra de navegação vira uma SIDEBAR fixa à esquerda
+  .app-layout .main-nav {
+    position: static;
+    width: $sidebar-width-desktop;
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 20px;
+    gap: 25px;
+    border-top: none;
+    border-right: 1px solid $border-color;
+    box-shadow: none;
+
+    a {
+      width: 100%;
+      height: auto;
+
+      i {
+        font-size: 1.8rem;
+      }
+      span {
+        text-align: center;
+        font-size: 0.75rem;
+      }
+
+      &.ativo {
+        position: relative;
+        color: $primary-color;
+
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 4px;
+          height: 80%;
+          background-color: $primary-color;
+          border-radius: 0 4px 4px 0;
         }
       }
     }
   }
 
-
+  .app-layout .main-content {
+    flex-grow: 1;
+    height: 100%;
+    overflow-y: auto;
+    padding-bottom: 0;
+  }
 }
-
-.ativo {
-  width: 150px !important;
-  gap: 5px;
-  flex-direction: row !important;
-  text-align: start !important;
-}
-

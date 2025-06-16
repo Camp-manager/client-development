@@ -1,3 +1,4 @@
+import { CriarCronogramaCampistasRequest } from './../../shared/model/cronograma.request';
 import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
@@ -6,12 +7,11 @@ import {
   Validators,
   FormControl,
   ReactiveFormsModule,
+  AbstractControl,
 } from '@angular/forms';
 import { CommonModule, DatePipe, formatDate } from '@angular/common';
 import { Router } from '@angular/router';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { startWith } from 'rxjs/operators';
-import { addDays, isValid as isValidDate, parseISO } from 'date-fns';
+import { Subscription, Observable } from 'rxjs';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -23,11 +23,13 @@ import {
   Acampamento,
 } from '../../../acampamentos/shared/model/acampamento';
 import { EquipeDTO } from '../../../equipe-de-trabalho/shared/model/equipe.dto';
+import { CriarCronogramaTrabalhoRequest } from '../../shared/model/cronograma.request';
+import { addDays, format, isValid, parseISO } from 'date-fns';
 
 @Component({
   selector: 'app-formulario-cronograma',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe, NgSelectModule],
+  imports: [CommonModule, ReactiveFormsModule, NgSelectModule],
   templateUrl: './formulario.component.html',
   styleUrls: ['./formulario.component.scss'],
 })
@@ -40,11 +42,13 @@ export class FormularioCronogramaComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
   tipoCronogramaControl = new FormControl('', Validators.required);
-  formAtividades!: FormGroup;
-  formFuncoes!: FormGroup;
+
+  formTrabalho!: FormGroup;
+  formCampistas!: FormGroup;
 
   acampamentosDisponiveis: Acampamentos = [];
-  equipesDisponiveis: EquipeDTO[] = [];
+  equipesTrabalhoDisponiveis: EquipeDTO[] = [];
+  equipesCampistasDisponiveis: EquipeDTO[] = [];
   isSubmitting = false;
 
   ngOnInit(): void {
@@ -60,90 +64,98 @@ export class FormularioCronogramaComponent implements OnInit, OnDestroy {
 
   escutarMudancasTipoCronograma(): void {
     const sub = this.tipoCronogramaControl.valueChanges.subscribe((tipo) => {
-      this.equipesDisponiveis = [];
-      if (tipo === 'atividades') {
-        this.inicializarFormAtividades();
-      } else if (tipo === 'funcoes') {
-        this.inicializarFormFuncoes();
+      this.equipesTrabalhoDisponiveis = [];
+      this.equipesCampistasDisponiveis = [];
+      if (tipo === 'trabalho') {
+        this.inicializarFormTrabalho();
+      } else if (tipo === 'campistas') {
+        this.inicializarFormCampistas();
       }
     });
     this.subscriptions.add(sub);
   }
 
-  inicializarFormAtividades(): void {
-    this.formAtividades = this.fb.group({
-      idAcampamento: [null, Validators.required],
+  inicializarFormTrabalho(): void {
+    this.formTrabalho = this.fb.group({
+      idDoCampamento: [null, Validators.required],
+      idsDasEquipes: [[], Validators.required],
+      cronogramasParaAEquipe: this.fb.array([
+        this.novoCronogramaTrabalhoItem(),
+      ]),
+    });
+    this.subscriptions.add(
+      this.formTrabalho
+        .get('idDoCampamento')!
+        .valueChanges.subscribe((id) => this.carregarEquipes(id, 'Trabalho'))
+    );
+  }
+  cronogramasTrabalho(form: FormGroup): FormArray {
+    return form.get('cronogramasParaAEquipe') as FormArray;
+  }
+  novoCronogramaTrabalhoItem(): FormGroup {
+    return this.fb.group({
       dataInicial: ['', Validators.required],
       dataFinal: ['', Validators.required],
       descricao: ['', Validators.required],
-      idsEquipes: [[], Validators.required],
       atividades: this.fb.array([this.novaAtividade()]),
     });
-    const sub = this.formAtividades
-      .get('idAcampamento')!
+  }
+  atividades(cronogramaItem: AbstractControl): FormArray {
+    return cronogramaItem.get('atividades') as FormArray;
+  }
+  novaAtividade(): FormGroup {
+    return this.fb.group({ tipo: 'L', horario: 'M', descricao: '' });
+  }
+  adicionarCronogramaItem(): void {
+    this.cronogramasTrabalho(this.formTrabalho).push(
+      this.novoCronogramaTrabalhoItem()
+    );
+  }
+  removerCronogramaItem(index: number): void {
+    this.cronogramasTrabalho(this.formTrabalho).removeAt(index);
+  }
+  adicionarAtividade(cronogramaItem: AbstractControl): void {
+    this.atividades(cronogramaItem).push(this.novaAtividade());
+  }
+  removerAtividade(cronogramaItem: AbstractControl, ativIndex: number): void {
+    this.atividades(cronogramaItem).removeAt(ativIndex);
+  }
+
+  // --- LÓGICA PARA FORMULÁRIO DE EQUIPE DE CAMPISTAS ---
+  inicializarFormCampistas(): void {
+    this.formCampistas = this.fb.group({
+      idDoCampamento: [null, Validators.required],
+      idsDasEquipes: [[], Validators.required],
+      equipesDiaFuncaoRequests: this.fb.array([]),
+    });
+
+    const sub = this.formCampistas
+      .get('idDoCampamento')!
       .valueChanges.subscribe((idAcamp) => {
-        this.carregarEquipes(idAcamp, 'Trabalho');
+        this.carregarEquipes(idAcamp, 'Campista');
+        this.acampamentoService
+          .getAcampamentoBasicoPorId(idAcamp)
+          .subscribe((success) => {
+            if (success) {
+              this.gerarLinhasDeFuncaoDiaria(success);
+            }
+          });
       });
     this.subscriptions.add(sub);
   }
-  atividades(form: FormGroup): FormArray {
-    return form.get('atividades') as FormArray;
-  }
-  novaAtividade(): FormGroup {
-    return this.fb.group({
-      tipo: ['', Validators.required],
-      horario: ['', Validators.required],
-      descricao: ['', Validators.required],
-    });
-  }
-  adicionarAtividade(): void {
-    this.atividades(this.formAtividades).push(this.novaAtividade());
-  }
-  removerAtividade(index: number): void {
-    this.atividades(this.formAtividades).removeAt(index);
-  }
 
-  // Função centralizada para carregar equipes
-  carregarEquipes(idAcampamento: number | null, type: string): void {
-    if (idAcampamento) {
-      this.equipeService.getEquipes(idAcampamento).subscribe(
-        (equipes) =>
-          (this.equipesDisponiveis = equipes.filter((e) => {
-            return e.tipoEquipe == type;
-          }))
-      );
-    }
-  }
-
-  inicializarFormFuncoes(): void {
-    this.formFuncoes = this.fb.group({
-      idAcampamento: [null, Validators.required],
-      funcoesDiarias: this.fb.array([]),
-    });
-
-    const subAcampamento = this.formFuncoes
-      .get('idAcampamento')!
-      .valueChanges.subscribe((idAcamp: any) => {
-        const acampamento = this.acampamentosDisponiveis.find(
-          (a) => a.idAcampamento === idAcamp
-        );
-        if (acampamento) {
-          this.carregarEquipes(idAcamp, 'Campista');
-          this.gerarLinhasDeFuncaoDiaria(acampamento);
-        }
-      });
-    this.subscriptions.add(subAcampamento);
-  }
   funcoesDiarias(form: FormGroup): FormArray {
-    return form.get('funcoesDiarias') as FormArray;
+    return form.get('equipesDiaFuncaoRequests') as FormArray;
   }
-  gerarLinhasDeFuncaoDiaria(acampamento: Acampamento): void {
-    const funcoesArray = this.funcoesDiarias(this.formFuncoes);
-    funcoesArray.clear();
-    const dataInicio = acampamento.dataInicio;
-    const dataFim = acampamento.dataFim;
 
-    if (isValidDate(dataInicio) && isValidDate(dataFim)) {
+  gerarLinhasDeFuncaoDiaria(acampamento: Acampamento): void {
+    const funcoesArray = this.funcoesDiarias(this.formCampistas);
+    funcoesArray.clear();
+
+    const dataInicio = new Date(acampamento.dataInicio + 'T12:00:00Z');
+    const dataFim = new Date(acampamento.dataFim + 'T12:00:00Z');
+
+    if (isValid(dataInicio) && isValid(dataFim)) {
       let diaAtual = dataInicio;
       while (diaAtual <= dataFim) {
         funcoesArray.push(
@@ -155,8 +167,7 @@ export class FormularioCronogramaComponent implements OnInit, OnDestroy {
               },
               Validators.required,
             ],
-            idEquipe: [null, Validators.required],
-            descricaoFuncao: ['', Validators.required],
+            funcao: ['', Validators.required],
           })
         );
         diaAtual = addDays(diaAtual, 1);
@@ -164,69 +175,75 @@ export class FormularioCronogramaComponent implements OnInit, OnDestroy {
     }
   }
 
-  get todosOsIdsDeEquipes(): number[] {
-    return this.equipesDisponiveis.map((e) => e.id);
-  }
-
-  get todosSelecionados(): boolean {
-    const idsSelecionados = this.formAtividades?.get('idsEquipes')?.value;
-    if (!idsSelecionados || idsSelecionados.length === 0) {
-      return false;
-    }
-    return idsSelecionados.length === this.equipesDisponiveis.length;
-  }
-
-  toggleSelecionarTodos(): void {
-    const controleEquipes = this.formAtividades?.get('idsEquipes');
-    if (!controleEquipes) return;
-
-    if (this.todosSelecionados) {
-      controleEquipes.patchValue([]); // Limpa a seleção
-    } else {
-      controleEquipes.patchValue(this.todosOsIdsDeEquipes); // Seleciona todos
+  carregarEquipes(
+    idAcampamento: number,
+    tipo: 'Trabalho' | 'Campista' | 'Todos'
+  ): void {
+    if (idAcampamento) {
+      this.equipeService.getEquipes(idAcampamento).subscribe((equipes) => {
+        this.equipesTrabalhoDisponiveis = equipes.filter(
+          (e) => e.tipoEquipe !== 'Campista'
+        );
+        this.equipesCampistasDisponiveis = equipes.filter(
+          (e) => e.tipoEquipe === 'Campista'
+        );
+        console.log(this.equipesTrabalhoDisponiveis);
+      });
     }
   }
 
-  // --- Lógica de Submissão ---
   onSubmit(): void {
-    let formAtual: FormGroup;
-    let servico$: Observable<any>;
-    let payload: any;
-
-    if (this.tipoCronogramaControl.value === 'atividades') {
-      formAtual = this.formAtividades;
-      payload = { ...formAtual.getRawValue() };
-
-      // servico$ = this.cronogramaService.salvarCronogramaAtividades(payload);
-    } else if (this.tipoCronogramaControl.value === 'funcoes') {
-      formAtual = this.formFuncoes;
-      payload = { ...formAtual.getRawValue() };
-
-      // servico$ = this.cronogramaService.salvarCronogramaFuncoes(payload);
-    } else {
-      return;
-    }
-
-    if (formAtual.invalid) {
-      formAtual.markAllAsTouched();
-      return;
-    }
-
     this.isSubmitting = true;
-    // servico$.subscribe({
-    //   next: () => {
-    //     alert('Cronograma salvo com sucesso!');
-    //     this.router.navigate(['/acampamentos/lista']); // Ou outra rota de sucesso
-    //   },
-    //   error: (err: any) => {
-    //     alert('Erro ao salvar o cronograma.');
-    //     console.error(err);
-    //   },
-    //   complete: () => (this.isSubmitting = false),
-    // });
-  }
+    let servico$: Observable<any>;
 
-  cancelar(): void {
-    this.router.navigate(['/acampamentos']);
+    if (this.tipoCronogramaControl.value === 'trabalho') {
+      if (this.formTrabalho.invalid) {
+        this.formTrabalho.markAllAsTouched();
+        this.isSubmitting = false;
+        return;
+      }
+      let payload = this.formTrabalho.getRawValue();
+
+      if (
+        payload.cronogramasParaAEquipe &&
+        Array.isArray(payload.cronogramasParaAEquipe)
+      ) {
+        payload.cronogramasParaAEquipe.forEach((cronograma: any) => {
+          if (cronograma.dataInicial) {
+            const dataInicioObj = parseISO(cronograma.dataInicial);
+            cronograma.dataInicial = format(dataInicioObj, 'dd/MM/yyyy');
+          }
+          if (cronograma.dataFinal) {
+            const dataFimObj = parseISO(cronograma.dataFinal);
+            cronograma.dataFinal = format(dataFimObj, 'dd/MM/yyyy');
+          }
+        });
+      }
+      servico$ = this.cronogramaService.salvarCronogramaTrabalho(payload);
+    } else if (this.tipoCronogramaControl.value === 'campistas') {
+      if (this.formCampistas.invalid) {
+        this.formCampistas.markAllAsTouched();
+        this.isSubmitting = false;
+        return;
+      }
+      const payload: CriarCronogramaCampistasRequest =
+        new CriarCronogramaCampistasRequest(this.formCampistas.getRawValue());
+      servico$ = this.cronogramaService.salvarCronogramaCampistas(payload);
+    } else {
+      this.isSubmitting = false;
+      return;
+    }
+
+    servico$.subscribe({
+      next: () => {
+        alert('Cronograma salvo com sucesso!');
+        this.router.navigate(['/cronogramas/buscar-todos']);
+      },
+      error: (err) => {
+        alert('Erro ao salvar o cronograma.');
+        console.error(err);
+      },
+      complete: () => (this.isSubmitting = false),
+    });
   }
 }

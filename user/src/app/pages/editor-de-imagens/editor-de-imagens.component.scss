@@ -1,0 +1,71 @@
+// Importa as variáveis globais para manter a consistência de cores e fontes
+@use "../../shared/styles/variables" as vars;
+
+// Container principal que organiza a tela em duas colunas: toolbar e canvas
+.editor-container {
+  display: flex;
+  height: calc(100vh - 80px);
+  width: 100%;
+  background-color: vars.$background;
+}
+
+.toolbar {
+  width: 260px;
+  flex-shrink: 0;
+  padding: 1.5rem;
+  background-color: vars.$background-card;
+  border-right: 1px solid vars.$border-color-light;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  h5 {
+    font-size: 1.1rem;
+    color: vars.$primary-text;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .toolbar-subtitle {
+    font-size: 0.9rem;
+    color: vars.$secondary-text;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid vars.$border-color-light;
+    margin: 1rem 0;
+  }
+
+  .toolbar-footer {
+    margin-top: auto;
+  }
+}
+
+.canvas-wrapper {
+  flex-grow: 1;
+  padding: 1.5rem;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  canvas {
+    border: 1px dashed vars.$border-color-light;
+    box-shadow: vars.$box-shadow;
+  }
+}

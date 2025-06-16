@@ -12,10 +12,8 @@ import {
 
 // --- FIX: Imports de serviços e modelos corrigidos para seus arquivos individuais ---
 import { DialogComponent } from '../../components/dialog/dialog.component';
-import { EquipeDTO, MembroEquipe } from './shared/model/equipe.dto';
+import { EquipeDTO } from './shared/model/equipe.dto';
 import { EquipeRequest } from './shared/model/equipe.request';
-import { FuncionarioDTO } from './shared/model/funcionario.dto';
-import { CampistaDTO } from './shared/model/campista.dto';
 import { Acampamento } from '../acampamentos/shared/model/acampamento';
 
 import {
@@ -24,6 +22,10 @@ import {
   FuncionarioService,
 } from './shared/service/equipe.service';
 import { AcampamentoService } from '../acampamentos/shared/service/acampamento.service';
+import {
+  CampistaBasicoDTO,
+  FuncionarioBasicoDTO,
+} from './shared/model/pessoa.dto';
 
 @Component({
   selector: 'app-equipe-de-trabalho',
@@ -44,8 +46,8 @@ export class EquipeComponent implements OnInit {
   idAcampamento!: number;
   acampamento?: Acampamento;
   equipes: EquipeDTO[] = [];
-  funcionariosSemTime: FuncionarioDTO[] = [];
-  campistasSemTime: CampistaDTO[] = [];
+  funcionariosSemTime: FuncionarioBasicoDTO[] = [];
+  campistasSemTime: CampistaBasicoDTO[] = [];
   isLoading = true;
 
   mostrarDialogoNovasEquipes = false;
@@ -93,28 +95,29 @@ export class EquipeComponent implements OnInit {
 
   processarDados(
     equipes: EquipeDTO[],
-    funcionarios: FuncionarioDTO[],
-    campistas: CampistaDTO[]
+    todosOsFuncionarios: FuncionarioBasicoDTO[],
+    todosOsCampistas: CampistaBasicoDTO[]
   ): void {
-    const todosMembrosIds = new Set<number>();
-    if (equipes && Array.isArray(equipes)) {
-      equipes.forEach((equipe) => {
-        // if (equipe && equipe.membros && Array.isArray(equipe.membros)) {
-        //   equipe.membros.forEach((membro) => {
-        //     if (membro && membro.id) {
-        //       todosMembrosIds.add(membro.id);
-        //     }
-        //   });
-        // }
-      });
-    }
+    const idsDePessoasEmEquipes = new Set<string>();
 
-    this.funcionariosSemTime = (funcionarios || []).filter(
-      (f) => f && !todosMembrosIds.has(f.id)
+    (equipes || []).forEach((equipe) => {
+      (equipe.funcionariosNaEquipe || []).forEach((membro) =>
+        idsDePessoasEmEquipes.add(`F-${membro.id}`)
+      );
+
+      (equipe.campistasNaEquipe || []).forEach((membro) =>
+        idsDePessoasEmEquipes.add(`C-${membro.id}`)
+      );
+    });
+
+    this.funcionariosSemTime = (todosOsFuncionarios || []).filter(
+      (func) => func && !idsDePessoasEmEquipes.has(`F-${func.id}`)
     );
-    this.campistasSemTime = (campistas || []).filter(
-      (c) => c && !todosMembrosIds.has(c.id)
+
+    this.campistasSemTime = (todosOsCampistas || []).filter(
+      (campista) => campista && !idsDePessoasEmEquipes.has(`C-${campista.id}`)
     );
+
     this.equipes = equipes || [];
   }
 
@@ -175,18 +178,50 @@ export class EquipeComponent implements OnInit {
     equipe.expanded = !equipe.expanded;
   }
 
-  adicionarMembroAEquipe(membro: MembroEquipe, equipeId: number): void {
-    this.equipeService
-      .adicionarMembros(equipeId, [membro.id])
-      .subscribe(() => {});
+  adicionarMembroAEquipe(membro: any, equipeId: number): void {
+    this.equipeService.adicionarMembros(equipeId, [membro.id]).subscribe(() => {
+      const equipeAlvo = this.equipes.find((e) => e.id === equipeId);
+      if (!equipeAlvo) return;
+
+      if ('habilidade' in membro) {
+        equipeAlvo.funcionariosNaEquipe = [
+          ...equipeAlvo.funcionariosNaEquipe,
+          membro,
+        ];
+      } else {
+        equipeAlvo.campistasNaEquipe = [
+          ...equipeAlvo.campistasNaEquipe,
+          membro,
+        ];
+      }
+
+      this.funcionariosSemTime = this.funcionariosSemTime.filter(
+        (f) => f.id !== membro.id
+      );
+      this.campistasSemTime = this.campistasSemTime.filter(
+        (c) => c.id !== membro.id
+      );
+    });
   }
 
-  removerMembroDaEquipe(
-    equipe: EquipeDTO,
-    membroParaRemover: MembroEquipe
-  ): void {
+  removerMembroDaEquipe(equipe: EquipeDTO, membroParaRemover: any): void {
     this.equipeService
       .removerMembros(equipe.id, [membroParaRemover.id])
-      .subscribe(() => {});
+      .subscribe(() => {
+        if ('habilidade' in membroParaRemover) {
+          equipe.funcionariosNaEquipe = equipe.funcionariosNaEquipe.filter(
+            (m) => m.id !== membroParaRemover.id
+          );
+          this.funcionariosSemTime = [
+            ...this.funcionariosSemTime,
+            membroParaRemover,
+          ];
+        } else {
+          equipe.campistasNaEquipe = equipe.campistasNaEquipe.filter(
+            (m) => m.id !== membroParaRemover.id
+          );
+          this.campistasSemTime = [...this.campistasSemTime, membroParaRemover];
+        }
+      });
   }
 }

@@ -25,9 +25,9 @@ export class TemaService {
 
   adicionarImagem(idTema: number, imagem: File): Observable<void> {
     const formData = new FormData();
-    formData.append('imagem', imagem, imagem.name);
+    formData.append('file', imagem, imagem.name);
     formData.append('idTema', idTema.toString());
-    return this.http.post<void>(`${this.baseUrl}/adicionar-imagem`, formData);
+    return this.http.put<void>(`${this.baseUrl}/adicionar-imagem`, formData);
   }
 
   atualizarTema(temaRequest: TemaRequest): Observable<void> {

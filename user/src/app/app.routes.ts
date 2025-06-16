@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { acampamentosRoutes } from './pages/acampamentos/acampamentos.routes';
 import { equipeTrabalhoRoutes } from './pages/equipe-de-trabalho/equipe.routes';
 import { cronogramasRoutes } from './pages/cronogramas/cronogramas.routes';
+import { editorRoutes } from './pages/editor-de-imagens/editor-de-imagens.routes';
 
 export const routes: Routes = [
   {
@@ -22,6 +23,7 @@ export const routes: Routes = [
   ...acampamentosRoutes,
   ...equipeTrabalhoRoutes,
   ...cronogramasRoutes,
+  ...editorRoutes,
 
   {
     path: '**',

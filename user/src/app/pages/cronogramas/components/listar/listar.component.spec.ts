@@ -1,18 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ListarCronogramasComponent } from './listar.component';
 
-import { ListarComponent } from './listar.component';
-
-describe('ListarComponent', () => {
-  let component: ListarComponent;
-  let fixture: ComponentFixture<ListarComponent>;
+describe('ListarCronogramasComponent', () => {
+  let component: ListarCronogramasComponent;
+  let fixture: ComponentFixture<ListarCronogramasComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListarComponent]
-    })
-    .compileComponents();
+      imports: [ListarCronogramasComponent],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(ListarComponent);
+    fixture = TestBed.createComponent(ListarCronogramasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

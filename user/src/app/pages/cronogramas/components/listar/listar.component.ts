@@ -1,42 +1,53 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { CommonModule, DatePipe } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { switchMap, finalize, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 import { TodosCronogramaDTO } from '../../shared/model/cronograma.dto';
 import { CronogramaService } from '../../shared/service/cronograma.service';
-import { DatePipe } from '@angular/common';
+import { AcampamentoService } from '../../../acampamentos/shared/service/acampamento.service';
 
 @Component({
   selector: 'app-listar-cronogramas',
-  imports: [DatePipe],
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './listar.component.html',
   styleUrls: ['./listar.component.scss'],
 })
 export class ListarCronogramasComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private cronogramaService = inject(CronogramaService);
+  private acampamentoService = inject(AcampamentoService);
 
   dadosCronograma: TodosCronogramaDTO | null = null;
   isLoading = true;
   error: string | null = null;
+  idAcampamento!: number;
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(
-        switchMap((params) => {
-          const idAcampamento = Number(params.get('idAcampamento'));
-          this.isLoading = true;
-          return this.cronogramaService.buscarTodos(idAcampamento);
-        })
-      )
-      .subscribe({
-        next: (data) => {
-          this.dadosCronograma = data;
+    this.isLoading = true;
+    this.route.paramMap.subscribe((params) => {
+      const id = Number(params.get('idAcampamento'));
+      if (!id) {
+        this.error = 'ID do acampamento não fornecido na URL.';
+        this.acampamentoService
+          .getProximoAcampamento()
+          .subscribe((success) =>
+            this.router.navigate([
+              '/cronogramas/buscar-todos',
+              success.idAcampamento,
+            ])
+          );
+      }
+      this.idAcampamento = id;
+      this.cronogramaService
+        .buscarTodos(this.idAcampamento)
+        .subscribe((success) => {
           this.isLoading = false;
-        },
-        error: (err) => {
-          this.error = 'Erro ao carregar cronogramas.';
-          this.isLoading = false;
-        },
-      });
+          this.dadosCronograma = success;
+        });
+    });
   }
 }

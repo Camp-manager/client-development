@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CampistaDTO } from '../model/campista.dto';
-import { FuncionarioDTO } from '../model/funcionario.dto';
 import { EquipeRequest } from '../model/equipe.request';
 import { environment } from '../../../../../../../.enviroment';
+import { CampistaBasicoDTO, FuncionarioBasicoDTO } from '../model/pessoa.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +36,7 @@ export class EquipeService {
   }
 
   removerMembros(idEquipe: number, idsPessoas: number[]): Observable<void> {
-    return this.http.post<void>(
+    return this.http.put<void>(
       `${this.baseUrl}/remover-pessoas/${idEquipe}`,
       idsPessoas
     );
@@ -62,8 +61,8 @@ export class CampistaService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.API}/pessoa`;
 
-  getTodosCampistas(idAcampamento: number): Observable<CampistaDTO[]> {
-    return this.http.get<CampistaDTO[]>(
+  getTodosCampistas(idAcampamento: number): Observable<CampistaBasicoDTO[]> {
+    return this.http.get<CampistaBasicoDTO[]>(
       `${this.baseUrl}/buscar-todos/campistas/${idAcampamento}`
     );
   }
@@ -76,8 +75,10 @@ export class FuncionarioService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${environment.API}/pessoa`;
 
-  getTodosFuncionarios(idAcampamento: number): Observable<FuncionarioDTO[]> {
-    return this.http.get<FuncionarioDTO[]>(
+  getTodosFuncionarios(
+    idAcampamento: number
+  ): Observable<FuncionarioBasicoDTO[]> {
+    return this.http.get<FuncionarioBasicoDTO[]>(
       `${this.baseUrl}/buscar-todos/funcionarios/${idAcampamento}`
     );
   }
