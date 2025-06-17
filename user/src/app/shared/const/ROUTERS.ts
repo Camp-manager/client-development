@@ -38,4 +38,9 @@ export const ROUTERS: RouterHelpers = [
     path: '/editar',
     icon: 'fa-edit',
   },
+  {
+    nome: 'Estoque',
+    path: '/estoques',
+    icon: 'fa-boxes-stacked',
+  },
 ];

@@ -3,6 +3,7 @@ import { acampamentosRoutes } from './pages/acampamentos/acampamentos.routes';
 import { equipeTrabalhoRoutes } from './pages/equipe-de-trabalho/equipe.routes';
 import { cronogramasRoutes } from './pages/cronogramas/cronogramas.routes';
 import { editorRoutes } from './pages/editor-de-imagens/editor-de-imagens.routes';
+import { estoqueRoutes } from './pages/estoques/estoques.routes';
 
 export const routes: Routes = [
   {
@@ -24,6 +25,7 @@ export const routes: Routes = [
   ...equipeTrabalhoRoutes,
   ...cronogramasRoutes,
   ...editorRoutes,
+  ...estoqueRoutes,
 
   {
     path: '**',
