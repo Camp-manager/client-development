@@ -1,0 +1,147 @@
+<div class="container-estoque card full-page-card">
+  <div class="card-header">
+    <h3 class="card-title">Controle de Estoque e Doações</h3>
+  </div>
+
+  <div class="card-body">
+    @if(isLoading) {
+    <p class="loading-state">Carregando estoques...</p>
+    } @else {
+    <div class="dashboard-grid">
+      @for (estoque of estoques; track estoque.id) {
+      <div class="estoque-card">
+        <div class="estoque-card-header">
+          <i class="fas fa-box-open"></i>
+          <h4>{{ estoque.localEstoque }}</h4>
+        </div>
+        <div class="estoque-card-body">
+          <div class="stock-info">
+            <span>Ocupação</span>
+            <strong
+              >{{ estoque.quantidade }} / {{ estoque.limite }} itens</strong
+            >
+          </div>
+          <div class="progress-bar">
+            <div
+              class="progress"
+              [style.width.%]="calcularOcupacao(estoque)"
+            ></div>
+          </div>
+
+          <button
+            class="btn btn-secondary btn-sm"
+            (click)="abrirDialogoAdicionarItens(estoque)"
+          >
+            <i class="fas fa-plus"></i> Adicionar Itens
+          </button>
+        </div>
+        <div class="estoque-card-footer">
+          <small>{{ estoque.itens.length }} tipos de item cadastrados.</small>
+        </div>
+      </div>
+      } @empty {
+      <p class="empty-state">Nenhum local de estoque encontrado.</p>
+      }
+    </div>
+    }
+  </div>
+</div>
+
+@if (mostrarDialogoAdicionarItens) {
+<dialog
+  [isOpen]="mostrarDialogoAdicionarItens"
+  (close)="fecharDialogoAdicionarItens()"
+  [dialogTitle]="'Adicionar Itens em ' + estoqueSelecionado?.localEstoque"
+  dialogWidth="700px"
+>
+  <ng-container dialog-body>
+    <form
+      [formGroup]="formAdicionarItens"
+      (ngSubmit)="salvarNovosItens()"
+      id="form-add-itens"
+    >
+      <div formArrayName="itens" class="form-array-container">
+        @for (itemCtrl of itensArray.controls; track $index; let i = $index) {
+        <div [formGroupName]="i" class="form-array-item">
+          <div class="item-header">
+            <h6>Item {{ i + 1 }}</h6>
+            <button
+              type="button"
+              class="btn-remove"
+              (click)="removerItemDoForm(i)"
+            >
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+          <div class="form-grid-item">
+            <div class="form-group">
+              <label>Descrição</label
+              ><input
+                type="text"
+                formControlName="descricao"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label>Quantidade</label
+              ><input
+                type="number"
+                formControlName="quantidade"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label>Tipo</label
+              ><select formControlName="tipoItem" class="form-control">
+                <option value="Medicamento">Medicamento</option>
+                <option value="Alimento">Alimento</option>
+                <option value="Vestimenta">Vestimenta</option>
+                <option value="Livro">Livro</option>
+                <option value="Bebida">Bebida</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Validade</label
+              ><input
+                type="date"
+                formControlName="validade"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label>Valor (R$)</label
+              ><input
+                type="number"
+                formControlName="valor"
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      <button
+        type="button"
+        class="btn btn-info btn-sm add-item-btn"
+        (click)="adicionarItemAoForm()"
+      >
+        <i class="fas fa-plus-circle"></i> Adicionar Outro Item
+      </button>
+    </form>
+  </ng-container>
+  <ng-container dialog-footer>
+    <button class="btn btn-secondary" (click)="fecharDialogoAdicionarItens()">
+      Cancelar
+    </button>
+    <button
+      class="btn btn-primary"
+      type="submit"
+      form="form-add-itens"
+      [disabled]="formAdicionarItens.invalid"
+    >
+      Salvar Itens
+    </button>
+  </ng-container>
+</dialog>
+}
